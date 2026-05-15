@@ -1,21 +1,9 @@
-[gd_scene format=3 uid="uid://game_scene_blank"]
+[gd_scene load_steps=2 format=3 uid="uid://game_scene_blank"]
+
+[ext_resource type="PackedScene" uid="uid://c8yvxg3ulq3a" path="res://scenes/places/place_scene.tscn" id="1_place_scene"]
 
 [node name="GameScene" type="Node2D"]
 
-[node name="UILayer" type="CanvasLayer" parent="."]
-
-[node name="Label" type="Label" parent="UILayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -100.0
-offset_top = -20.0
-offset_right = 100.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "Game Scene"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="PlaceScene" parent="." instance=ExtResource("1_place_scene")]
+place_id = "inn_room"
+default_time_of_day = "morning"

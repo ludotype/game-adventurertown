@@ -1,0 +1,14 @@
+{
+  "interaction_id": "talk",
+  "label": "대화",
+  "available_when": { "target_npc": "elena" },
+  "events": [
+    {
+      "id": "elena_talk_default",
+      "priority": 0,
+      "actions": [
+        { "type": "dialogue", "dialogue_id": "elena_default" }
+      ]
+    }
+  ]
+}

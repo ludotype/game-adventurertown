@@ -1,0 +1,13 @@
+
+class_name Flag
+
+# static var로 변수를 선언해두면 dialogue에서 전역적으로 사용할 수 있습니다.
+static var test_var
+static var npc_luise_greet
+static var npc_liselotte_saved
+static var npc_erin_saved
+static var ppl_savecount
+static var talked_mess_today
+static var talked_mess_ever
+static var today_talkedto_erin
+static var today_talkedto_lise

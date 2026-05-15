@@ -1,0 +1,8 @@
+{
+  "place_id": "lobby",
+  "display_name": "여관 로비",
+  "background_path": "res://assets/bg/lobby.png",
+  "bgm": "inn_calm",
+  "empty_weight": 6,
+  "connections": ["hallway", "street_south"]
+}

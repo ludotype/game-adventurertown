@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_lobby",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "여관 로비를 둘러보았다." }
+      ]
+    }
+  ]
+}

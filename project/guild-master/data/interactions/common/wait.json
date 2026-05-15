@@ -1,0 +1,13 @@
+{
+  "interaction_id": "wait",
+  "label": "잠시 기다리기",
+  "events": [
+    {
+      "id": "wait_default",
+      "priority": 0,
+      "actions": [
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    }
+  ]
+}

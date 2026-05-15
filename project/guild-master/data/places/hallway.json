@@ -1,0 +1,8 @@
+{
+  "place_id": "hallway",
+  "display_name": "복도",
+  "background_path": "res://assets/bg/hallway.png",
+  "bgm": "town_day",
+  "empty_weight": 0,
+  "connections": ["inn_room", "lobby"]
+}

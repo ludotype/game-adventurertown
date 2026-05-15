@@ -1,8 +1,16 @@
 {
   "npc_id": "elena",
   "display_name": "엘레나",
-  "default_portrait": "res://assets/portraits/elena.png",
+  "default_portrait": "res://graphics/scg/morigan_default.png",
+  "default_dialogue": "elena_default",
   "schedules": [
+    {
+      "place_id": "hallway",
+      "weight": 10,
+      "conditions": {
+        "time_of_day": ["morning", "afternoon"]
+      }
+    },
     {
       "place_id": "town_square",
       "weight": 10,

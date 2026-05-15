@@ -4,44 +4,142 @@
 
 [node name="PlaceScene" type="Node2D"]
 script = ExtResource("1_place")
+place_id = "inn_room"
 
 [node name="BackgroundSprite" type="Sprite2D" parent="."]
 position = Vector2(960, 540)
 
-[node name="NPCOverlay" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+[node name="UILayer" type="CanvasLayer" parent="."]
 
-[node name="NPCPortrait" type="TextureRect" parent="NPCOverlay"]
+[node name="UIRoot" type="Control" parent="UILayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="PlaceNameLabel" type="Label" parent="UILayer/UIRoot"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 36.0
+offset_top = 28.0
+offset_right = 700.0
+offset_bottom = 84.0
+theme_override_font_sizes/font_size = 40
+text = ""
+
+[node name="TimeLabel" type="Label" parent="UILayer/UIRoot"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 38.0
+offset_top = 86.0
+offset_right = 700.0
+offset_bottom = 126.0
+theme_override_font_sizes/font_size = 24
+text = ""
+
+[node name="NPCOverlay" type="Control" parent="UILayer/UIRoot"]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -520.0
-offset_top = -780.0
-offset_right = -120.0
+offset_left = -780.0
+offset_top = -880.0
+offset_right = -380.0
 offset_bottom = -180.0
 grow_horizontal = 0
 grow_vertical = 0
+mouse_filter = 0
+mouse_default_cursor_shape = 2
+
+[node name="NPCPortrait" type="TextureRect" parent="UILayer/UIRoot/NPCOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -50.0
+mouse_filter = 1
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NPCNameLabel" type="Label" parent="NPCOverlay"]
+[node name="NPCNameLabel" type="Label" parent="UILayer/UIRoot/NPCOverlay"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 7
+anchor_left = 0.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -500.0
-offset_top = -160.0
-offset_right = -140.0
-offset_bottom = -120.0
-grow_horizontal = 0
-grow_vertical = 0
+offset_top = -48.0
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RightPanel" type="PanelContainer" parent="UILayer/UIRoot"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -320.0
+offset_right = -30.0
+offset_bottom = 220.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="RightMargin" type="MarginContainer" parent="UILayer/UIRoot/RightPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 16
+
+[node name="ActionContainer" type="VBoxContainer" parent="UILayer/UIRoot/RightPanel/RightMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ActionTitle" type="Label" parent="UILayer/UIRoot/RightPanel/RightMargin/ActionContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "행동"
+horizontal_alignment = 1
+
+[node name="ActionList" type="VBoxContainer" parent="UILayer/UIRoot/RightPanel/RightMargin/ActionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BottomPanel" type="PanelContainer" parent="UILayer/UIRoot"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = -170.0
+offset_right = -370.0
+offset_bottom = -30.0
+grow_vertical = 0
+
+[node name="BottomMargin" type="MarginContainer" parent="UILayer/UIRoot/BottomPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 12
+
+[node name="MoveContainer" type="VBoxContainer" parent="UILayer/UIRoot/BottomPanel/BottomMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MoveTitle" type="Label" parent="UILayer/UIRoot/BottomPanel/BottomMargin/MoveContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "이동"
+
+[node name="MoveList" type="HBoxContainer" parent="UILayer/UIRoot/BottomPanel/BottomMargin/MoveContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+alignment = 0

@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_street_north",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "북쪽 거리 너머에서 선술집의 불빛이 새어 나온다." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "place_id": "inn_room",
+  "display_name": "여관방",
+  "background_path": "res://assets/bg/inn_room.png",
+  "bgm": "inn_calm",
+  "empty_weight": 100,
+  "connections": ["hallway"]
+}

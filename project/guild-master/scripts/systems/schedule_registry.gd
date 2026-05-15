@@ -14,6 +14,7 @@ class ScheduleEntry:
 	var npc_id: String
 	var display_name: String
 	var portrait_path: String
+	var dialogue_id: String
 	var place_id: String
 	var weight: int
 	var conditions: Dictionary
@@ -22,6 +23,7 @@ class ScheduleEntry:
 		npc_id = npc_data.get("npc_id", "")
 		display_name = npc_data.get("display_name", "")
 		portrait_path = npc_data.get("default_portrait", "")
+		dialogue_id = data.get("dialogue_id", npc_data.get("default_dialogue", ""))
 		place_id = data.get("place_id", "")
 		weight = data.get("weight", 1)
 		conditions = data.get("conditions", {})
@@ -82,7 +84,6 @@ func _load_schedule_file(path: String) -> void:
 		return
 
 	var data: Dictionary = json.get_data()
-	var npc_id: String = data.get("npc_id", "")
 	var schedules: Array = data.get("schedules", [])
 
 	for sched in schedules:

@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_town_square",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "광장 한가운데에서 마을의 흐름을 바라보았다." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "interaction_id": "standby",
+  "label": "빈둥거린다",
+  "events": [
+    {
+      "id": "standby_default",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "별다른 일 없이 시간을 보냈다." },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    }
+  ]
+}

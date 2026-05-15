@@ -1,0 +1,8 @@
+{
+  "place_id": "street_north",
+  "display_name": "북쪽 거리",
+  "background_path": "res://assets/bg/street_north.png",
+  "bgm": "town_day",
+  "empty_weight": 10,
+  "connections": ["town_square", "tavern"]
+}

@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_tavern",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "선술집 안에는 술잔 부딪히는 소리와 낮은 웃음소리가 섞여 있다." }
+      ]
+    }
+  ]
+}

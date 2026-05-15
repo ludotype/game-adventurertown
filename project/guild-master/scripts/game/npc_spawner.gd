@@ -54,6 +54,7 @@ func spawn(current_time: String = "morning", story_flags: Array = []) -> void:
 				"npc_id": entry.npc_id,
 				"display_name": entry.display_name,
 				"portrait_path": entry.portrait_path,
+				"dialogue_id": entry.dialogue_id,
 				"place_id": entry.place_id,
 				"weight": entry.weight,
 				"probability": float(entry.weight) / float(total_weight)
@@ -99,6 +100,7 @@ func get_probability_table(current_time: String = "morning", story_flags: Array 
 		result["entries"].append({
 			"npc_id": entry.npc_id,
 			"display_name": entry.display_name,
+			"dialogue_id": entry.dialogue_id,
 			"weight": entry.weight,
 			"probability": float(entry.weight) / float(total_weight)
 		})

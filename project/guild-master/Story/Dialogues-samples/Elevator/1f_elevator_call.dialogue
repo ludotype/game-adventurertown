@@ -1,0 +1,15 @@
+~ ask_call_elevator
+
+엘리베이터를 부를까? [ID:elv_call_01]
+- 부른다 [ID:elv_call_opt_1]
+	[wait 0.5]
+	(......)
+	[wait 1.0]
+	(띵-)
+	# 현재 플레이어가 있는 위치에 기반하여 엘리베이터를 부릅니다.
+	do ElevatorManager.call_to_location(LocationManager.current_location_id)
+	엘리베이터가 도착했다. [ID:elv_call_02]
+- 부르지 않는다 [ID:elv_call_opt_2]
+	=> END
+
+=> END

@@ -1,0 +1,27 @@
+{
+  "interaction_id": "standby",
+  "label": "함께 쉰다",
+  "available_when": { "target_npc": "elena" },
+  "events": [
+    {
+      "id": "elena_standby_hallway",
+      "priority": 20,
+      "when": { "at_place": "hallway" },
+      "actions": [
+        { "type": "dialogue", "dialogue_id": "elena_standby_hallway" },
+        { "type": "change_metric", "key": "npc.elena.affection", "amount": 1 },
+        { "type": "change_metric", "key": "npc.elena.mood", "amount": 3 },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    },
+    {
+      "id": "elena_standby_default",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "엘레나와 잠시 같은 장소에서 시간을 보냈다." },
+        { "type": "change_metric", "key": "npc.elena.affection", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    }
+  ]
+}

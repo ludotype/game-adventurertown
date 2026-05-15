@@ -1,0 +1,13 @@
+{
+  "interaction_id": "check_inventory",
+  "label": "소지품 확인",
+  "events": [
+    {
+      "id": "check_inventory_placeholder",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "인벤토리 시스템이 연결되면 소지품을 연다." }
+      ]
+    }
+  ]
+}

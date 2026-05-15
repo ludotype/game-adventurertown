@@ -1,0 +1,15 @@
+{
+  "interaction_id": "sleep",
+  "label": "잠자고 하루 넘기기",
+  "events": [
+    {
+      "id": "sleep_inn_room",
+      "priority": 0,
+      "actions": [
+        { "type": "sleep_until_next_day" },
+        { "type": "set_flag", "key": "rested_today", "value": false },
+        { "type": "log", "message": "새로운 아침이 밝았다." }
+      ]
+    }
+  ]
+}

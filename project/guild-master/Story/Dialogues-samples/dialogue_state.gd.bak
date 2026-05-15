@@ -1,0 +1,10 @@
+class_name Flag
+# static var로 변수를 선언해두면 dialogue에서 전역적으로 사용할 수 있습니다.
+
+static var die = 0
+static var talked_mess_erin = 0
+static var talked_mess_ever = 0
+static var talked_mess_lise = 0
+static var talked_mess_today = 0
+static var talked_mess_upgr_1 = 0
+static var test_var = 0

@@ -3,5 +3,6 @@
   "display_name": "중앙 광장",
   "background_path": "res://assets/bg/town_square.png",
   "bgm": "town_day",
-  "empty_weight": 8
+  "empty_weight": 8,
+  "connections": ["street_south", "street_north"]
 }

@@ -3,5 +3,6 @@
   "display_name": "황금 돼지 선술집",
   "background_path": "res://assets/bg/tavern.png",
   "bgm": "tavern_ambient",
-  "empty_weight": 3
+  "empty_weight": 3,
+  "connections": ["street_north"]
 }

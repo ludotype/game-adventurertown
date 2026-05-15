@@ -1,7 +1,8 @@
 {
   "npc_id": "rock",
   "display_name": "록",
-  "default_portrait": "res://assets/portraits/rock.png",
+  "default_portrait": "res://graphics/scg/placeholder_tv_bellhop.png",
+  "default_dialogue": "rock_default",
   "schedules": [
     {
       "place_id": "town_square",

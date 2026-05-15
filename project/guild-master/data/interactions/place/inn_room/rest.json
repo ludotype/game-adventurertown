@@ -1,0 +1,15 @@
+{
+  "interaction_id": "rest",
+  "label": "쉬기",
+  "available_when": { "flag_eq": ["rested_today", false] },
+  "events": [
+    {
+      "id": "rest_inn_room",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "여관방에서 잠시 몸을 쉬었다." },
+        { "type": "set_flag", "key": "rested_today", "value": true }
+      ]
+    }
+  ]
+}

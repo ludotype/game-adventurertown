@@ -1,0 +1,40 @@
+{
+  "interaction_id": "playmusic",
+  "label": "연주한다",
+  "events": [
+    {
+      "id": "playmusic_late_noise",
+      "priority": 50,
+      "when": {
+        "all_of": [
+          { "time_block": ["night", "late_night"] },
+          { "not": { "at_place": "inn_room" } }
+        ]
+      },
+      "actions": [
+        { "type": "log", "message": "늦은 시각의 서툰 연주에 누군가가 벽을 두드렸다." },
+        { "type": "change_metric", "key": "player.music", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    },
+    {
+      "id": "playmusic_skilled_default",
+      "priority": 20,
+      "when": { "metric_gte": ["player.music", 3] },
+      "actions": [
+        { "type": "log", "message": "연주가 제법 자연스러워졌다. 지나가던 사람이 잠시 귀를 기울였다." },
+        { "type": "change_metric", "key": "player.music", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    },
+    {
+      "id": "playmusic_default",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "짧게 악기를 연주했다. 아직은 평범한 선율이다." },
+        { "type": "change_metric", "key": "player.music", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    }
+  ]
+}

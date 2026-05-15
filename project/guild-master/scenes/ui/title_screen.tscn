@@ -103,7 +103,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 64
-text = "DO NOT DISTURB"
+text = "Adventure Town"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -201,7 +201,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
 
-[connection signal="pressed" from="VBoxContainer/MenuContainer/StartButton" to="." method="_on_dialogue_test_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MenuContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MenuContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MenuContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/MenuContainer/QuitButton" to="." method="_on_quit_button_pressed"]

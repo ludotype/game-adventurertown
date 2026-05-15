@@ -25,12 +25,17 @@ config/icon="res://icon.svg"
 Flags="*res://scripts/core/game_flags.gd"
 PlaceRegistry="*res://scripts/systems/place_registry.gd"
 ScheduleRegistry="*res://scripts/systems/schedule_registry.gd"
+InteractionRegistry="*res://scripts/systems/interaction_registry.gd"
 SettingsManager="*res://scripts/core/settings_manager.gd"
 SaveManager="*res://scripts/core/save_manager.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 AudioManager="*res://scripts/core/audio_manager.gd"
 BGMManager="*res://scripts/core/bgm_manager.gd"
 Utils="*res://scripts/core/utils.gd"
+ConditionEvaluator="*res://scripts/engines/condition_evaluator.gd"
+ActionRunner="*res://scripts/engines/action_runner.gd"
+TimeSystem="*res://scripts/state/time_system.gd"
+MetricStore="*res://scripts/state/metric_store.gd"
 
 [dialogue_manager]
 
@@ -67,6 +72,7 @@ ui_focus_prev={
 [internationalization]
 
 locale/translations=PackedStringArray("res://assets/translations/dialogue/common_strings.en.translation", "res://assets/translations/dialogue/common_strings.ko.translation", "res://assets/translations/dialogue/common_strings.ja.translation", "res://assets/translations/ui/ui_common.en.translation", "res://assets/translations/ui/ui_common.ko.translation", "res://assets/translations/ui/ui_common.ja.translation")
+locale/translations_pot_files=PackedStringArray("res://Story/Dialogues-samples/Work/phone_calls.dialogue", "res://Story/Dialogues-samples/Work/manual.dialogue", "res://Story/Dialogues-samples/Intro/prologue_main.dialogue", "res://Story/Dialogues-samples/Intro/intro_sequence.dialogue", "res://Story/Dialogues-samples/Intro/intro_draft.dialogue", "res://Story/Dialogues-samples/Intro/game_intro.dialogue", "res://Story/Dialogues-samples/events/outside_exit_blocked.dialogue", "res://Story/Dialogues-samples/events/item_interactions.dialogue", "res://Story/Dialogues-samples/Encounters/room_encounter.dialogue", "res://Story/Dialogues-samples/Encounters/item_pickups.dialogue", "res://Story/Dialogues-samples/Encounters/banana_test.dialogue", "res://Story/Dialogues-samples/Elevator/elevator_interior.dialogue", "res://Story/Dialogues-samples/Elevator/1f_elevator_call.dialogue", "res://data/dialogues/elena_default.dialogue", "res://data/dialogues/rock_default.dialogue", "res://data/dialogues/elena_standby_hallway.dialogue", "res://data/dialogues/elena_touch_default.dialogue", "res://data/dialogues/elena_touch_morning.dialogue")
 
 [physics]
 

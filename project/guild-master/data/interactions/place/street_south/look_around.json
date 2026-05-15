@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_street_south",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "남쪽 거리에는 여관으로 향하는 사람들의 발걸음이 오간다." }
+      ]
+    }
+  ]
+}

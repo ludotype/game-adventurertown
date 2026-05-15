@@ -1,0 +1,32 @@
+{
+  "interaction_id": "touch",
+  "label": "접촉",
+  "available_when": { "target_npc": "elena" },
+  "events": [
+    {
+      "id": "elena_touch_friendly",
+      "priority": 60,
+      "when": { "metric_gte": ["npc.elena.affection", 3] },
+      "actions": [
+        { "type": "dialogue", "dialogue_id": "elena_touch_friendly" },
+        { "type": "change_metric", "key": "npc.elena.mood", "amount": 1 }
+      ]
+    },
+    {
+      "id": "elena_touch_morning",
+      "priority": 30,
+      "when": { "time_block": "morning" },
+      "actions": [
+        { "type": "dialogue", "dialogue_id": "elena_touch_morning" },
+        { "type": "change_metric", "key": "npc.elena.mood", "amount": -1 }
+      ]
+    },
+    {
+      "id": "elena_touch_default",
+      "priority": 0,
+      "actions": [
+        { "type": "dialogue", "dialogue_id": "elena_touch_default" }
+      ]
+    }
+  ]
+}

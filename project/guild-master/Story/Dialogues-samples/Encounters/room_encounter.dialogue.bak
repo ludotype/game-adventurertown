@@ -1,0 +1,128 @@
+~ room_door_start
+
+# [전처리] EncounterManager에서 이미 Flags.door_state와 Flags.has_entity가 주입되어 있습니다.
+
+# 방의 상태에 따른 초기 묘사
+if Flags.door_state == 3 # SLIGHTLY_OPEN
+	(객실 문이 기분 나쁠 정도로 살짝 열려 있다. 틈새 사이로 어둠만이 보인다.) [ID:room_enc_desc_slightly_open]
+elif Flags.door_state == 2 # LOCKED
+	(방 번호 {{Flags.current_room_number}}호. 문은 굳게 잠겨 있다.) [ID:room_enc_desc_locked]
+else
+	(방 번호 {{Flags.current_room_number}}호 앞이다. 문이 닫혀 있다.) [ID:room_enc_desc_closed]
+
+# 엔티티가 있을 때의 추가 연출 (모듈형)
+if Flags.has_entity
+	(문 너머에서 형용할 수 없는 기묘한 소음이 들려온다. 본능적인 공포가 느껴진다.) [ID:room_enc_desc_entity_presence]
+
+~ main_menu
+- 안을 엿본다 [if Flags.door_state == 3] # 반쯤 열린 문일 때만 가능 [ID:room_enc_opt_peek]
+	(숨을 죽이고 문틈 사이를 들여다본다...) [ID:room_enc_act_peek]
+	if Flags.has_entity
+		(어둠 속에서 무언가 번뜩이는 눈동자와 마주친 것 같다!) [ID:room_enc_res_peek_entity]
+		do GameManager.take_damage(5) # 정신력 소폭 감소
+	else
+		(방 안은 조용하다. 가구들의 그림자가 길게 늘어져 있을 뿐이다.) [ID:room_enc_res_peek_empty]
+	=> main_menu
+
+- 노크하기 [ID:room_enc_opt_knock]
+	(똑... 똑...) [ID:room_enc_act_knock]
+	if Flags.has_entity
+		(노크 소리가 끝나자마자 안쪽의 소음이 딱 멈췄다. 숨 막히는 침묵이 흐른다.) [ID:room_enc_res_knock_entity]
+	elif Flags.enc_is_room_occupied
+		(안쪽에서 인기척이 느껴진다.) [ID:room_enc_res_knock_occupied]
+		# 여기서부터는 기존의 투숙객 성격별 대화 로직으로 점프 가능
+		=> guest_interaction
+	else
+		(아무런 반응이 없다. 빈 방인 것 같다.) [ID:room_enc_res_knock_empty]
+	=> main_menu
+
+- 문을 열고 들어가기 [ID:room_enc_opt_open]
+	if Flags.door_state == 2 # LOCKED
+		if Flags.has_master_key
+			(철컥-) 마스터 키로 잠금을 해제했다. [ID:room_enc_act_unlock]
+			# 리소스 상태를 직접 업데이트
+			do LocationManager.get_location_resource(Flags.current_room_id).set("door_state", 1) # OPEN으로 변경
+			=> enter_room
+		else
+			(문이 잠겨 있다. 열쇠가 필요할 것 같다.) [ID:room_enc_res_locked]
+			=> main_menu
+	else
+		=> enter_room
+
+- 문을 닫고 잠근다 [if Flags.door_state == 1 or Flags.door_state == 3] # OPEN or SLIGHTLY_OPEN [ID:room_enc_opt_trap]
+	(재빨리 문을 닫고 잠금장치를 걸었다.) [ID:room_enc_act_trap]
+	do LocationManager.get_location_resource(Flags.current_room_id).set("door_state", 2) # LOCKED
+	if Flags.has_entity
+		(문 너머에서 쾅! 하는 소리와 함께 거친 숨소리가 들려온다. 격리에 성공한 것 같다.) [ID:room_enc_res_trap_entity]
+	else
+		(문이 굳게 잠겼다.) [ID:room_enc_res_trap_empty]
+	=> main_menu
+
+- 창문에 슬리퍼를 놓는다 [if LocationManager.get_location_resource(Flags.current_room_id).has_window and InventoryManager.has_item("slippers") and LocationManager.get_location_resource(Flags.current_room_id).placed_item_id == ""] [ID:room_enc_opt_slippers]
+	(슬리퍼를 창틀 위에 가지런히 올려두었다.) [ID:room_enc_act_slippers]
+	do LocationManager.get_location_resource(Flags.current_room_id).set("placed_item_id", "slippers")
+	do InventoryManager.use_item("slippers")
+	(이제 무언가 이 슬리퍼를 보고 밖으로 나가길 기다려야 한다.) [ID:room_enc_res_slippers]
+	=> main_menu
+
+- 그냥 지나친다 [ID:room_enc_opt_leave]
+	do EncounterManager.finish_encounter()
+	=> END
+
+~ enter_room
+(조심스럽게 문을 열고 방 안으로 발을 들인다...) [ID:room_enc_act_enter]
+do LocationManager.move_to(Flags.current_room_id)
+do EncounterManager.finish_encounter()
+=> END
+
+~ phone_complaint_start
+(따르릉- 따르릉-) 데스크의 전화기가 요란하게 울린다. [ID:room_enc_phone_ring]
+(수화기를 든다.) [ID:room_enc_phone_pick]
+
+if Flags.current_guest_personality == "grumpy"
+	손님: 여보세요! 지배인?! 대체 복도에서 무슨 짓을 하고 있는 거야?! [ID:room_enc_phone_grumpy_1]
+	손님: 쿵쾅거리는 소리에 잠을 잘 수가 없잖아! 당장 어떻게 좀 해봐! [ID:room_enc_phone_grumpy_2]
+elif Flags.current_guest_personality == "scared"
+	손님: (겁에 질린 목소리) 저기... 지배인님? 제발... 제 방 문 밖에서 누가 계속 서성거리는 것 같아요... [ID:room_enc_phone_scared_1]
+	손님: 무서워서 죽을 것 같아요... 제발 도와주세요... [ID:room_enc_phone_scared_2]
+elif Flags.current_guest_personality == "polite"
+	손님: 실례합니다, 지배인님. 늦은 시간에 죄송하지만 복도의 소음이 너무 심해서 연락드렸습니다. [ID:room_enc_phone_polite_1]
+	손님: 손님들의 편안한 휴식을 위해 조치를 취해주셨으면 합니다. [ID:room_enc_phone_polite_2]
+else
+	손님: 지배인님...? 방 안의 가구들이... 자꾸 제 자리를 바꾸고 있어요... 이거 정상인가요...? [ID:room_enc_phone_dazed]
+
+~ phone_menu
+- "죄송합니다, 즉시 확인하겠습니다." [ID:room_enc_phone_opt_sorry]
+	손님: 꼭 그래야 할 거요! 지켜보겠어. [ID:room_enc_phone_res_sorry]
+	do EncounterManager.finish_encounter()
+	=> END
+- 아이템을 보내 달래준다 [ID:room_enc_phone_opt_item]
+	~ item_menu
+	- 귀마개를 증정한다 (소음 해결) [if Flags.has_item_earplugs] [ID:room_enc_phone_item_earplugs]
+		(투숙객에게 귀마개를 전달하기로 약속했다.) [ID:room_enc_phone_act_earplugs]
+		손님: 오, 그런 게 있었나요? 그럼 훨씬 낫겠군요. 감사합니다. [ID:room_enc_phone_res_earplugs]
+		# 스트레스 초기화 및 리뷰 보정
+		do GuestManager.resolve_complaint(Flags.current_room_id)
+		set Flags.has_item_earplugs = false
+		do EncounterManager.finish_encounter()
+		=> END
+	- 와인과 과자 세트를 증정한다 (기분 전환) [if Flags.has_item_wine_gift] [ID:room_enc_phone_item_wine]
+		(투숙객에게 최고급 와인 세트를 전달하기로 약속했다.) [ID:room_enc_phone_act_wine]
+		손님: 아니, 이렇게까지...? 후후, 화냈던 게 조금 미안해지는군요. 잘 마시겠습니다. [ID:room_enc_phone_res_wine]
+		# 스트레스 초기화 및 리뷰 보정
+		do GuestManager.resolve_complaint(Flags.current_room_id)
+		set Flags.has_item_wine_gift = false
+		do EncounterManager.finish_encounter()
+		=> END
+	- 뒤로 [ID:room_enc_phone_item_back]
+		=> phone_menu
+
+- 전화를 끊는다 [ID:room_enc_phone_opt_hangup]
+	(뚝-) [ID:room_enc_phone_act_hangup]
+	do EncounterManager.finish_encounter()
+	=> END
+
+~ guest_interaction
+# (기존의 성격별 대사 로직을 여기에 통합하거나 분리하여 유지)
+손님: 누구쇼? 이 밤중에... [ID:room_enc_guest_who]
+=> main_menu
