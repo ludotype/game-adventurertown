@@ -1,0 +1,1429 @@
+/*
+------- Extended Typography Styles --------
+Copyright (C) 2025 Avyrra
+
+This software is licensed under the MIT License.
+You are free to use, modify, and distribute this work,
+provided that the above copyright notice and this
+permission notice are included in all copies.
+*/
+
+/* @settings
+name: Extended Typography Styles
+id: extended-typography-styles
+settings:
+
+# Font Selection
+
+-
+    id: ets-font-selection-section-header
+    title: Font Selection
+    description: Choose Fonts
+    type: heading
+    level: 1
+    collapsed: true
+
+-
+    id: ets-body-font-selection
+    title: Body Font
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-inline-title-font-selection
+    title: Inline Title Font
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-header-font-selection
+    title: Header Font
+    type: variable-text
+    default: Noto Sans
+
+
+## Separate Header Selection
+
+-
+    id: ets-separate-header-header
+    title: Separate Header Fonts
+    description: Choose separate fonts for each header
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-use-separate-header-toggle
+    title: Use Separate Header Fonts
+    type: class-toggle
+
+-
+    id: ets-separate-header1-font-selection
+    title: Header 1
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-separate-header2-font-selection
+    title: Header 2
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-separate-header3-font-selection
+    title: Header 3
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-separate-header4-font-selection
+    title: Header 4
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-separate-header5-font-selection
+    title: Header 5
+    type: variable-text
+    default: Noto Sans
+
+-
+    id: ets-separate-header6-font-selection
+    title: Header 6
+    type: variable-text
+    default: Noto Sans
+
+
+# Font Size
+-
+    id: ets-font-size-section-header
+    title: Font Size
+    description: Set Font Size Multiplier for Inline Title and Headers
+    type: heading
+    level: 1
+    collapsed: true
+
+-
+    id: ets-inline-title-size-selection
+    title: Inline Title
+    type: variable-number
+    default: 2.50
+
+-
+    id: ets-header1-size-selection
+    title: Header 1
+    type: variable-number
+    default: 1.75
+
+-
+    id: ets-header2-size-selection
+    title: Header 2
+    type: variable-number
+    default: 1.50
+
+-
+    id: ets-header3-size-selection
+    title: Header 3
+    type: variable-number
+    default: 1.35
+
+-
+    id: ets-header4-size-selection
+    title: Header 4
+    type: variable-number
+    default: 1.25
+
+-
+    id: ets-header5-size-selection
+    title: Header 5
+    type: variable-number
+    default: 1.20
+
+-
+    id: ets-header6-size-selection
+    title: Header 6
+    type: variable-number
+    default: 1.15
+
+
+# Font Weight
+-
+    id: ets-font-weight-section-header
+    title: Font Weight
+    description: Set Font Weight
+    type: heading
+    level: 1
+    collapsed: true
+
+-
+    id: ets-body-weight-selection
+    title: Body
+    type: variable-number
+    default: 400
+
+-
+    id: ets-inline-title-weight-selection
+    title: Inline Title
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header1-weight-selection
+    title: Header 1
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header2-weight-selection
+    title: Header 2
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header3-weight-selection
+    title: Header 3
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header4-weight-selection
+    title: Header 4
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header5-weight-selection
+    title: Header 5
+    type: variable-number
+    default: 400
+
+-
+    id: ets-header6-weight-selection
+    title: Header 6
+    type: variable-number
+    default: 400
+
+
+## Bold Text
+
+-
+    id: ets-bold-weight-section-header
+    title: Bold Text
+    description: Set Weight for Bold Text
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-bold-weight-selection
+    title: Body
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header1-bold-weight-selection
+    title: Header 1
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header2-bold-weight-selection
+    title: Header 2
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header3-bold-weight-selection
+    title: Header 3
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header4-bold-weight-selection
+    title: Header 4
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header5-bold-weight-selection
+    title: Header 5
+    type: variable-number
+    default: 700
+
+-
+    id: ets-header6-bold-weight-selection
+    title: Header 6
+    type: variable-number
+    default: 700
+
+
+# Spacing
+
+-
+    id: ets-spacing-header
+    title: Spacing
+    description: Adjust Word Spacing, Tracking, and Leading
+    type: heading
+    level: 1
+    collapsed: true
+
+
+## Word Spacing
+
+-
+    id: ets-word-spacing-header
+    title: Word Spacing
+    description: Adjust spacing between words
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-word-spacing-selection
+    title: Body Word Spacing
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -1
+    max: 1
+    step: 0.05
+
+-
+    id: ets-inline-title-word-spacing-selection
+    title: Inline Title Word Spacing
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -1
+    max: 1
+    step: 0.05
+
+-
+    id: ets-header-word-spacing-selection
+    title: Header Word Spacing
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -1
+    max: 1
+    step: 0.05
+
+## Tracking (Letter Spacing)
+
+-
+    id: ets-tracking-header
+    title: Tracking
+    description: Adjust space between letters. Some fonts may lose contextual alternates when this setting is used.
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-tracking-selection
+    title: Body Tracking
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -0.25
+    max: 0.5
+    step: 0.01
+
+-
+    id: ets-inline-title-tracking-selection
+    title: Inline Title Tracking
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -0.25
+    max: 0.5
+    step: 0.01
+
+-
+    id: ets-header-tracking-selection
+    title: Header Tracking
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: -0.25
+    max: 0.5
+    step: 0.01
+
+
+## Leading (Line Spacing)
+-
+    id: ets-line-spacing-header
+    title: Leading
+    description: Adjust space between lines
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-leading-selection
+    title: Leading
+    type: variable-number-slider
+    default: 1.6
+    format: rem
+    min: 0
+    max: 3
+    step: 0.1
+
+
+## Baseline
+-
+    id: ets-baseline-spacing-header
+    title: Baseline
+    description: Adjust text overall vertical position
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-baseline-selection
+    title: Body
+    type: variable-number-slider
+    default: 0
+    format: px
+    min: -10
+    max: 10
+    step: 1
+
+-
+    id: ets-inline-title-baseline-selection
+    title: Inline Title
+    type: variable-number-slider
+    default: 0
+    format: px
+    min: -10
+    max: 10
+    step: 1
+-
+    id: ets-header-baseline-selection
+    title: Header
+    type: variable-number-slider
+    default: 0
+    format: px
+    min: -10
+    max: 10
+    step: 1
+
+
+
+
+
+
+
+
+# Opentype Features
+
+-
+    id: ets-opentype-header
+    title: OpenType Features
+    description: Select unique options present in some OpenType fonts.
+    type: heading
+    level: 1
+    collapsed: true
+
+## Figures
+-
+    id: ets-figures-section-header
+    title: Figures
+    description: Set Figures Styles
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-figures-selection
+    title: Body Figure Style
+    type: variable-select
+    default: normal normal
+    options:
+        -
+            label: Default
+            value: normal normal
+        -
+            label: Proportional Lining
+            value: lining-nums proportional-nums
+        -
+            label: Proportional Oldstyle
+            value: oldstyle-nums proportional-nums
+        -
+            label: Tabular Lining
+            value: lining-nums tabular-nums
+        -
+            label: Tabular Oldstyle
+            value: oldstyle-nums tabular-nums
+
+-
+    id: ets-inline-title-figures-selection
+    title: Inline Title Figure Style
+    type: variable-select
+    default: normal normal
+    options:
+        -
+            label: Default
+            value: normal normal
+        -
+            label: Proportional Lining
+            value: lining-nums proportional-nums
+        -
+            label: Proportional Oldstyle
+            value: oldstyle-nums proportional-nums
+        -
+            label: Tabular Lining
+            value: lining-nums tabular-nums
+        -
+            label: Tabular Oldstyle
+            value: oldstyle-nums tabular-nums
+
+-
+    id: ets-header-figures-selection
+    title: Header Figure Style
+    type: variable-select
+    default: normal normal
+    options:
+        -
+            label: Default
+            value: normal normal
+        -
+            label: Proportional Lining
+            value: lining-nums proportional-nums
+        -
+            label: Proportional Oldstyle
+            value: oldstyle-nums proportional-nums
+        -
+            label: Tabular Lining
+            value: lining-nums tabular-nums
+        -
+            label: Tabular Oldstyle
+            value: oldstyle-nums tabular-nums
+
+
+
+## Stylistic Sets
+
+-
+    id: ets-stylistic-sets-header
+    title: Stylistic Sets
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-stylistic-sets-selection
+    title: Body
+    type: variable-select
+    default: "\"ss00\""
+    options:
+    -
+        label: Default
+        value: "\"ss00\""
+    -
+        label: Set 1
+        value: "\"ss01\""
+    -
+        label: Set 2
+        value: "\"ss02\""
+    -
+        label: Set 3
+        value: "\"ss03\""
+    -
+        label: Set 4
+        value: "\"ss04\""
+    -
+        label: Set 5
+        value: "\"ss05\""
+    -
+        label: Set 6
+        value: "\"ss06\""
+    -
+        label: Set 7
+        value: "\"ss07\""
+    -
+        label: Set 8
+        value: "\"ss08\""
+    -
+        label: Set 9
+        value: "\"ss09\""
+    -
+        label: Set 10
+        value: "\"ss10\""
+    -
+        label: Set 11
+        value: "\"ss11\""
+    -
+        label: Set 12
+        value: "\"ss12\""
+    -
+        label: Set 13
+        value: "\"ss13\""
+    -
+        label: Set 14
+        value: "\"ss14\""
+    -
+        label: Set 15
+        value: "\"ss15\""
+    -
+        label: Set 16
+        value: "\"ss16\""
+    -
+        label: Set 17
+        value: "\"ss17\""
+    -
+        label: Set 18
+        value: "\"ss18\""
+    -
+        label: Set 19
+        value: "\"ss19\""
+    -
+        label: Set 20
+        value: "\"ss20\""
+
+
+-
+    id: ets-inline-title-stylistic-sets-selection
+    title: Inline Title
+    type: variable-select
+    default: "\"ss00\""
+    options:
+    -
+        label: Default
+        value: "\"ss00\""
+    -
+        label: Set 1
+        value: "\"ss01\""
+    -
+        label: Set 2
+        value: "\"ss02\""
+    -
+        label: Set 3
+        value: "\"ss03\""
+    -
+        label: Set 4
+        value: "\"ss04\""
+    -
+        label: Set 5
+        value: "\"ss05\""
+    -
+        label: Set 6
+        value: "\"ss06\""
+    -
+        label: Set 7
+        value: "\"ss07\""
+    -
+        label: Set 8
+        value: "\"ss08\""
+    -
+        label: Set 9
+        value: "\"ss09\""
+    -
+        label: Set 10
+        value: "\"ss10\""
+    -
+        label: Set 11
+        value: "\"ss11\""
+    -
+        label: Set 12
+        value: "\"ss12\""
+    -
+        label: Set 13
+        value: "\"ss13\""
+    -
+        label: Set 14
+        value: "\"ss14\""
+    -
+        label: Set 15
+        value: "\"ss15\""
+    -
+        label: Set 16
+        value: "\"ss16\""
+    -
+        label: Set 17
+        value: "\"ss17\""
+    -
+        label: Set 18
+        value: "\"ss18\""
+    -
+        label: Set 19
+        value: "\"ss19\""
+    -
+        label: Set 20
+        value: "\"ss20\""
+
+
+-
+    id: ets-header-stylistic-sets-selection
+    title: Header
+    type: variable-select
+    default: "\"ss00\""
+    options:
+    -
+        label: Default
+        value: "\"ss00\""
+    -
+        label: Set 1
+        value: "\"ss01\""
+    -
+        label: Set 2
+        value: "\"ss02\""
+    -
+        label: Set 3
+        value: "\"ss03\""
+    -
+        label: Set 4
+        value: "\"ss04\""
+    -
+        label: Set 5
+        value: "\"ss05\""
+    -
+        label: Set 6
+        value: "\"ss06\""
+    -
+        label: Set 7
+        value: "\"ss07\""
+    -
+        label: Set 8
+        value: "\"ss08\""
+    -
+        label: Set 9
+        value: "\"ss09\""
+    -
+        label: Set 10
+        value: "\"ss10\""
+    -
+        label: Set 11
+        value: "\"ss11\""
+    -
+        label: Set 12
+        value: "\"ss12\""
+    -
+        label: Set 13
+        value: "\"ss13\""
+    -
+        label: Set 14
+        value: "\"ss14\""
+    -
+        label: Set 15
+        value: "\"ss15\""
+    -
+        label: Set 16
+        value: "\"ss16\""
+    -
+        label: Set 17
+        value: "\"ss17\""
+    -
+        label: Set 18
+        value: "\"ss18\""
+    -
+        label: Set 19
+        value: "\"ss19\""
+    -
+        label: Set 20
+        value: "\"ss20\""
+
+
+
+## Small Caps
+
+-
+    id: ets-small-caps-header
+    title: Small Caps
+    description: Toggle Small Caps - Looks best with supported OpenType fonts
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-body-small-caps-toggle
+    title: Body
+    type: class-toggle
+
+-
+    id: ets-inline-title-small-caps-toggle
+    title: Inline Title
+    type: class-toggle
+
+-
+    id: ets-header-small-caps-toggle
+    title: Header
+    type: class-toggle
+
+
+
+
+
+
+
+# Colors
+-
+    id: ets-colors-header
+    title: Colors
+    description: Set Colors for Bold, Italics, and Highlights
+    type: heading
+    level: 1
+    collapsed: true
+
+-
+    id: ets-bold-color-decorations-toggle
+    title: Bold Color
+    type: class-toggle
+
+-
+    id: ets-italics-color-decorations-toggle
+    title: Italics Color
+    type: class-toggle
+
+-
+    id: ets-highlight-color-decorations-toggle
+    title: Highlight Color
+    type: class-toggle
+
+-
+    id: ets-strikethrough-color-decorations-toggle
+    title: Strikethrough Color
+    type: class-toggle
+
+-
+    id: ets-link-color-decorations-toggle
+    title: Link Color
+    type: class-toggle
+
+-
+    id: ets-bold-color
+    title: Bold
+    type: variable-themed-color
+    format: 'hex'
+    opacity: false
+    default-light: '#B44B4B'
+    default-dark: '#B44B4B'
+
+-
+    id: ets-italics-color
+    title: Italics
+    type: variable-themed-color
+    format: 'hex'
+    opacity: false
+    default-light: '#4BB45D'
+    default-dark: '#4BB45D'
+
+-
+    id: ets-highlight-color
+    title: Highlight
+    type: variable-themed-color
+    format: 'hex'
+    opacity: false
+    default-light: '#887233'
+    default-dark: '#887233'
+
+-
+    id: ets-strikethrough-color
+    title: Strikethrough
+    type: variable-themed-color
+    format: 'hex'
+    opacity: false
+    default-light: '#5A7D96'
+    default-dark: '#5A7D96'
+
+-
+    id: ets-link-color
+    title: Links
+    type: variable-themed-color
+    format: 'hex'
+    opacity: false
+    default-light: '#BE4190'
+    default-dark: '#BE4190'
+
+
+
+
+
+# Other
+-
+    id: ets-other-header
+    title: Other
+    type: heading
+    level: 1
+    collapsed: true
+
+-
+    id: ets-disable-link-underline-select
+    title: Disable Link Underline
+    type: class-toggle
+
+
+## Highlight
+-
+    id: ets-highlight-styling-header
+    title: Highlight Styling
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-highlight-hpadding-select
+    title: Horizontal Padding
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: 0
+    max: 1
+    step: 0.01
+
+-
+    id: ets-highlight-vpadding-select
+    title: Vertical Padding
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: 0
+    max: 1
+    step: 0.01
+
+-
+    id: ets-highlight-radius-select
+    title: Border Radius
+    type: variable-number-slider
+    default: 0
+    format: rem
+    min: 0
+    max: 1
+    step: 0.01
+
+
+
+## Rendering Method
+-
+    id: ets-rendering-header
+    title: Text Rendering
+    type: heading
+    level: 2
+    collapsed: true
+
+-
+    id: ets-rendering-selection
+    title: Rendering Method
+    type: variable-select
+    default: auto
+    options:
+    -
+        label: Auto
+        value: auto
+
+    -
+        label: Optimize for Speed
+        value: optimizeSpeed
+
+    -
+        label: Optimize for Legibility
+        value: optimizeLegibility
+
+    -
+        label: Geometric Precision
+        value: geometricPrecision
+
+-
+    id: ets-smoothing-selection
+    title: Smoothing Method
+    type: variable-select
+    default: auto
+    options:
+    -
+        label: Auto
+        value: auto
+
+    -
+        label: Antialiased
+        value: antialiased
+
+    -
+        label: Subpixel Antialiased
+        value: subpixel-antialiased
+
+    -
+        label: None
+        value: none
+
+
+*/
+
+:root {
+    /*Variables*/
+    /*Some Variables are commented out to remind me that they're there from the yaml section, but they don't need to be defined here.*/
+
+    --ets-body-font-selection: Noto Sans;
+    --ets-inline-title-font-selection: Noto Sans;
+    --ets-header-font-selection: Noto Sans;
+
+    /*--ets-use-separate-header-toggle*/
+    --ets-separate-header1-font-selection: Noto Sans;
+    --ets-separate-header2-font-selection: Noto Sans;
+    --ets-separate-header3-font-selection: Noto Sans;
+    --ets-separate-header4-font-selection: Noto Sans;
+    --ets-separate-header5-font-selection: Noto Sans;
+    --ets-separate-header6-font-selection: Noto Sans;
+
+    --ets-inline-title-size-selection: 2.50;
+    --ets-header1-size-selection: 1.75;
+    --ets-header2-size-selection: 1.50;
+    --ets-header3-size-selection: 1.35;
+    --ets-header4-size-selection: 1.25;
+    --ets-header5-size-selection: 1.20;
+    --ets-header6-size-selection: 1.15;
+
+    --ets-body-weight-selection: 400;
+    --ets-inline-title-weight-selection: 400;
+    --ets-header1-weight-selection: 400;
+    --ets-header2-weight-selection: 400;
+    --ets-header3-weight-selection: 400;
+    --ets-header4-weight-selection: 400;
+    --ets-header5-weight-selection: 400;
+    --ets-header6-weight-selection: 400;
+
+    --ets-body-bold-weight-selection: 700;
+    --ets-header1-bold-weight-selection: 700;
+    --ets-header2-bold-weight-selection: 700;
+    --ets-header3-bold-weight-selection: 700;
+    --ets-header4-bold-weight-selection: 700;
+    --ets-header5-bold-weight-selection: 700;
+    --ets-header6-bold-weight-selection: 700;
+
+
+    --ets-body-figures-selection: normal normal;
+    --ets-inline-title-figures-selection: normal normal;
+    --ets-header-figures-selection: normal normal;
+
+    /*--ets-use-color-decorations-toggle*/
+    /*--ets-bold-color-decorations-toggle*/
+    /*--ets-italics-color-decorations-toggle*/
+    /*--ets-highlight-color-decorations-toggle*/
+    /*--ets-strikethrough-color-decorations-toggle*/
+    /*--ets-link-color-decoration-toggle*/
+    --ets-bold-color: #B44B4B;
+    --ets-italics-color: #4BB45D;
+    --ets-highlight-color: #F2D687;
+    --ets-strikethrough-color: #5A7D96;
+    --ets-link-color: #BE4190;
+
+    --ets-body-tracking-selection: 0rem;
+    --ets-inline-title-tracking-selection: 0rem;
+    --ets-header-tracking-selection: 0rem;
+    --ets-leading-selection: 1.6rem;
+
+    --ets-body-baseline-selection: 0px;
+    --ets-inline-title-baseline-selection: 0px;
+    --ets-header-baseline-selection: 0px;
+
+    /*ets-disable-link-underline*/
+
+    --ets-highlight-hpadding-select: 0rem;
+    --ets-highlight-vpadding-select: 0rem;
+    --ets-highlight-radius-select: 0rem;
+
+    /*--ets-body-stylistic-sets-selection*/
+    /*--ets-header-stylistic-sets-selection*/
+    /*--ets-inline-title-stylistic-sets-selection*/
+
+    /*--ets-rendering-selection*/
+    /*--ets-smoothing-selection*/
+
+}
+
+
+
+
+/* Body Text Styling */
+.markdown-preview-view p,
+.markdown-preview-view table,
+.markdown-preview-view ul,
+.markdown-preview-view ol,
+.markdown-preview-view .callout-title-inner,
+.markdown-rendered p,
+.markdown-source-view .cm-content{
+  font-family: var(--ets-body-font-selection) !important;
+  font-weight: var(--ets-body-weight-selection) !important;
+  font-variant-numeric: var(--ets-body-figures-selection) !important;
+  letter-spacing: var(--ets-body-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+}
+
+/*Avoid Headers in Live Preview and Source View*/
+.markdown-preview-view :is(p, table, ul, ol, .callout-title-inner):not(:is(h1, h2, h3, h4, h5, h6)),
+.markdown-rendered :is(p, table, ul, ol, .callout-title-inner):not(:is(h1, h2, h3, h4, h5, h6)) {
+  position: relative;
+  top: var(--ets-body-baseline-selection);
+  word-spacing: var(--ets-body-word-spacing-selection) !important;
+  font-feature-settings: var(--ets-body-stylistic-sets-selection) !important;
+
+}
+
+/* I don't know why it makes me separate this fuckin line */
+/*Avoid Headers in Reading Mode*/
+.markdown-source-view .cm-content > .cm-line:not([class*="header"]) {
+  position: relative;
+  top: var(--ets-body-baseline-selection);
+  word-spacing: var(--ets-body-word-spacing-selection) !important;
+  font-feature-settings: var(--ets-body-stylistic-sets-selection) !important;
+}
+
+
+/*Small Caps for Body*/
+body.ets-body-small-caps-toggle .markdown-preview-view p,
+body.ets-body-small-caps-toggle .markdown-preview-view table,
+body.ets-body-small-caps-toggle .markdown-preview-view ul,
+body.ets-body-small-caps-toggle .markdown-preview-view ol,
+body.ets-body-small-caps-toggle .markdown-preview-view .callout-title-inner,
+body.ets-body-small-caps-toggle .markdown-rendered p,
+body.ets-body-small-caps-toggle .markdown-source-view .cm-content {
+  font-variant: small-caps;
+}
+
+
+
+
+
+
+
+/* Inline Title */
+.markdown-preview-view .inline-title,
+.markdown-rendered .inline-title,
+.markdown-source-view .inline-title {
+  font-family: var(--ets-inline-title-font-selection) !important;
+  font-size: calc(1rem * var(--ets-inline-title-size-selection)) !important;
+  font-weight: var(--ets-inline-title-weight-selection) !important;
+  font-variant-numeric: var(--ets-inline-title-figures-selection) !important;
+  word-spacing: var(--ets-inline-title-word-spacing-selection) !important;
+  letter-spacing: var(--ets-inline-title-tracking-selection) !important;
+  position: relative; !important;
+  top: var(--ets-inline-title-baseline-selection); !important;
+  font-feature-settings: var(--ets-inline-title-stylistic-sets-selection) !important;
+}
+
+/*Small Caps for Inline Title*/
+body.ets-inline-title-small-caps-toggle .markdown-preview-view .inline-title,
+body.ets-inline-title-small-caps-toggle .markdown-rendered .inline-title,
+body.ets-inline-title-small-caps-toggle .markdown-source-view .inline-title {
+  font-variant: small-caps;
+}
+
+
+
+
+
+/* Header 1 */
+.markdown-preview-view h1,
+.markdown-rendered h1,
+.markdown-source-view .cm-header-1 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header1-size-selection)) !important;
+  font-weight: var(--ets-header1-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h1,
+  .markdown-rendered h1,
+  .markdown-source-view .cm-header-1 {
+    font-family: var(--ets-separate-header1-font-selection) !important;
+  }
+}
+
+/* Header 2 */
+.markdown-preview-view h2,
+.markdown-rendered h2,
+.markdown-source-view .cm-header-2 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header2-size-selection)) !important;
+  font-weight: var(--ets-header2-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h2,
+  .markdown-rendered h2,
+  .markdown-source-view .cm-header-2 {
+    font-family: var(--ets-separate-header2-font-selection) !important;
+  }
+}
+
+/* Header 3 */
+.markdown-preview-view h3,
+.markdown-rendered h3,
+.markdown-source-view .cm-header-3 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header3-size-selection)) !important;
+  font-weight: var(--ets-header3-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h3,
+  .markdown-rendered h3,
+  .markdown-source-view .cm-header-3 {
+    font-family: var(--ets-separate-header3-font-selection) !important;
+  }
+}
+
+/* Header 4 */
+.markdown-preview-view h4,
+.markdown-rendered h4,
+.markdown-source-view .cm-header-4 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header4-size-selection)) !important;
+  font-weight: var(--ets-header4-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h4,
+  .markdown-rendered h4,
+  .markdown-source-view .cm-header-4 {
+    font-family: var(--ets-separate-header4-font-selection) !important;
+  }
+}
+
+/* Header 5 */
+.markdown-preview-view h5,
+.markdown-rendered h5,
+.markdown-source-view .cm-header-5 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header5-size-selection)) !important;
+  font-weight: var(--ets-header5-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h5,
+  .markdown-rendered h5,
+  .markdown-source-view .cm-header-5 {
+    font-family: var(--ets-separate-header5-font-selection) !important;
+  }
+}
+
+/* Header 6 */
+.markdown-preview-view h6,
+.markdown-rendered h6,
+.markdown-source-view .cm-header-6 {
+  font-family: var(--ets-header-font-selection) !important;
+  font-size: calc(1rem * var(--ets-header6-size-selection)) !important;
+  font-weight: var(--ets-header6-weight-selection) !important;
+  font-variant-numeric: var(--ets-header-figures-selection) !important;
+  word-spacing: var(--ets-header-word-spacing-selection) !important;
+  letter-spacing: var(--ets-header-tracking-selection) !important;
+  line-height: var(--ets-leading-selection) !important;
+  position: relative; !important;
+  top: var(--ets-header-baseline-selection); !important;
+  font-feature-settings: var(--ets-header-stylistic-sets-selection) !important;
+}
+.ets-use-separate-header-toggle {
+  .markdown-preview-view h6,
+  .markdown-rendered h6,
+  .markdown-source-view .cm-header-6 {
+    font-family: var(--ets-separate-header6-font-selection) !important;
+  }
+}
+
+
+
+
+
+
+/* Bold Text */
+/*Body*/
+.markdown-preview-view p strong,
+.markdown-preview-view p b,
+.markdown-rendered p strong,
+.markdown-rendered p b,
+.markdown-source-view .cm-strong {
+  font-weight: var(--ets-body-bold-weight-selection) !important;
+}
+
+/*Header 1 Bold*/
+.markdown-preview-view h1 strong,
+.markdown-preview-view h1 b,
+.markdown-rendered h1 strong,
+.markdown-rendered h1 b,
+.markdown-source-view .cm-header-1 .cm-strong,
+.markdown-source-view .cm-header-1 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-1 .cm-strong,
+.markdown-source-view .HyperMD-header-1 .cm-formatting-strong {
+  font-weight: var(--ets-header1-bold-weight-selection) !important;
+}
+
+/* Header 2 Bold */
+.markdown-preview-view h2 strong,
+.markdown-preview-view h2 b,
+.markdown-rendered h2 strong,
+.markdown-rendered h2 b,
+.markdown-source-view .cm-header-2 .cm-strong,
+.markdown-source-view .cm-header-2 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-2 .cm-strong,
+.markdown-source-view .HyperMD-header-2 .cm-formatting-strong {
+  font-weight: var(--ets-header2-bold-weight-selection) !important;
+}
+
+/* Header 3 Bold */
+.markdown-preview-view h3 strong,
+.markdown-preview-view h3 b,
+.markdown-rendered h3 strong,
+.markdown-rendered h3 b,
+.markdown-source-view .cm-header-3 .cm-strong,
+.markdown-source-view .cm-header-3 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-3 .cm-strong,
+.markdown-source-view .HyperMD-header-3 .cm-formatting-strong {
+  font-weight: var(--ets-header3-bold-weight-selection) !important;
+}
+
+/* Header 4 Bold */
+.markdown-preview-view h4 strong,
+.markdown-preview-view h4 b,
+.markdown-rendered h4 strong,
+.markdown-rendered h4 b,
+.markdown-source-view .cm-header-4 .cm-strong,
+.markdown-source-view .cm-header-4 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-4 .cm-strong,
+.markdown-source-view .HyperMD-header-4 .cm-formatting-strong {
+  font-weight: var(--ets-header4-bold-weight-selection) !important;
+}
+
+/* Header 5 Bold */
+.markdown-preview-view h5 strong,
+.markdown-preview-view h5 b,
+.markdown-rendered h5 strong,
+.markdown-rendered h5 b,
+.markdown-source-view .cm-header-5 .cm-strong,
+.markdown-source-view .cm-header-5 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-5 .cm-strong,
+.markdown-source-view .HyperMD-header-5 .cm-formatting-strong {
+  font-weight: var(--ets-header5-bold-weight-selection) !important;
+}
+
+/* Header 6 Bold */
+.markdown-preview-view h6 strong,
+.markdown-preview-view h6 b,
+.markdown-rendered h6 strong,
+.markdown-rendered h6 b,
+.markdown-source-view .cm-header-6 .cm-strong,
+.markdown-source-view .cm-header-6 .cm-formatting-strong,
+.markdown-source-view .HyperMD-header-6 .cm-strong,
+.markdown-source-view .HyperMD-header-6 .cm-formatting-strong {
+  font-weight: var(--ets-header6-bold-weight-selection) !important;
+}
+
+
+/* Small Caps for Headers */
+body.ets-header-small-caps-toggle :is(.markdown-preview-view, .markdown-rendered) :is(h1, h2, h3, h4, h5, h6),
+body.ets-header-small-caps-toggle .markdown-source-view.mod-cm6 :is(.cm-header-1, .cm-header-2, .cm-header-3, .cm-header-4, .cm-header-5, .cm-header-6) {
+  font-variant: small-caps;
+}
+
+
+
+
+
+/* Color Decorations */
+.ets-bold-color-decorations-toggle {
+  strong, .cm-strong {
+    color: var(--ets-bold-color) !important;
+  }
+}
+
+.ets-italics-color-decorations-toggle {
+  em, .cm-em {
+    color: var(--ets-italics-color) !important;
+  }
+}
+
+.ets-highlight-color-decorations-toggle {
+  mark, .cm-highlight {
+    background-color: var(--ets-highlight-color) !important;
+    color: inherit !important;
+  }
+}
+
+.ets-strikethrough-color-decorations-toggle {
+  s, del, .cm-strikethrough {
+    color: var(--ets-strikethrough-color) !important;
+    text-decoration: line-through;
+    text-decoration-color: var(--ets-strikethrough-color) !important;
+  }  
+}
+
+.ets-link-color-decorations-toggle .markdown-preview-view a:not(.tag),
+.ets-link-color-decorations-toggle .markdown-rendered .internal-link:not(.tag),
+.ets-link-color-decorations-toggle .cm-s-obsidian a:not(.tag),
+.ets-link-color-decorations-toggle .cm-s-obsidian span.cm-hmd-internal-link:not(.tag),
+.ets-link-color-decorations-toggle .markdown-source-view a:not(.tag),
+.ets-link-color-decorations-toggle .markdown-source-view .cm-link:not(.tag),
+.ets-link-color-decorations-toggle .markdown-source-view .cm-url:not(.tag),
+.ets-link-color-decorations-toggle .markdown-source-view .cm-hmd-internal-link:not(.tag) {
+  color: var(--ets-link-color) !important;
+}
+
+
+
+
+
+/*Other*/
+
+/* Disable Link Underline */
+.ets-disable-link-underline-select .markdown-preview-view a,
+.ets-disable-link-underline-select .markdown-rendered .internal-link,
+.ets-disable-link-underline-select .cm-s-obsidian a,
+.ets-disable-link-underline-select .cm-s-obsidian span.cm-hmd-internal-link,
+.ets-disable-link-underline-select .markdown-source-view a,
+.ets-disable-link-underline-select .markdown-source-view .cm-link,
+.ets-disable-link-underline-select .markdown-source-view .cm-url,
+.ets-disable-link-underline-select .markdown-source-view .cm-hmd-internal-link {
+  text-decoration: none !important;
+}
+
+
+/* Highlight Styling */
+span.cm-highlight, mark {
+	padding-left: var(--ets-highlight-hpadding-select) !important;
+	padding-right: var(--ets-highlight-hpadding-select) !important;
+	padding-top: var(--ets-highlight-vpadding-select) !important;
+	padding-bottom: var(--ets-highlight-vpadding-select) !important;
+	border-radius: var(--ets-highlight-radius-select) !important;
+}
+
+
+/*CALLOUT FIX: 5-22-25*/
+/* Override for callout titles to match body bold weight */
+.markdown-preview-view .callout-title-inner,
+.markdown-rendered .callout-title-inner {
+  font-weight: var(--ets-body-bold-weight-selection) !important;
+}
+
+
+/*RENDERING- Keep at bottom for safe keeping*/
+body {
+  text-rendering: var(--ets-rendering-selection) !important;
+  -webkit-font-smoothing: var(--ets-smoothing-selection) !important;
+}

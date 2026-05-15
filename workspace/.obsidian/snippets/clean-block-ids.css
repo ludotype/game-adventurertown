@@ -1,0 +1,11 @@
+/* Hides block IDs in Live Preview... */
+.cm-blockid {
+    opacity: 0.1;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* ...but shows them when you are editing that specific line */
+.cm-active .cm-blockid {
+    opacity: 1;
+    color: var(--text-faint);
+}

@@ -1,0 +1,13 @@
+{
+  "theme": "moonstone",
+  "cssTheme": "",
+  "textFontFamily": "SN Pro",
+  "baseFontSizeAction": true,
+  "baseFontSize": 15,
+  "enabledCssSnippets": [
+    "clean-block-ids",
+    "Extended Typography Styles",
+    "Table Styles",
+    "Workspace Editor"
+  ]
+}

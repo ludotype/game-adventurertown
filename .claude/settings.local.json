@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:store.steampowered.com)",
+      "WebFetch(domain:gamingwiki.org)",
+      "WebFetch(domain:gamedev.net)",
+      "WebFetch(domain:www.fourquarters.team)",
+      "Bash(cp -r filestoimport/* project/guild-master/)",
+      "Bash(xcopy /E /I /Y \"filestoimport\\\\*\" \"project\\\\guild-master\\\\\" 2>nul)",
+      "Bash(xcopy *)",
+      "Bash(cp -r D:/GIT/GuildMaster/filestoimport/Story D:/GIT/GuildMaster/project/guild-master/)",
+      "Bash(cp -r D:/GIT/GuildMaster/filestoimport/addons D:/GIT/GuildMaster/project/guild-master/)",
+      "Bash(cp -r D:/GIT/GuildMaster/filestoimport/assets D:/GIT/GuildMaster/project/guild-master/)",
+      "Bash(cp -r D:/GIT/GuildMaster/filestoimport/audio D:/GIT/GuildMaster/project/guild-master/)",
+      "Bash(cp -r D:/GIT/GuildMaster/filestoimport/graphics D:/GIT/GuildMaster/project/guild-master/)",
+      "Bash(cp -r D:/GIT/GuildMaster/import3/assets/translations/dialogue/* D:/GIT/GuildMaster/project/guild-master/assets/translations/dialogue/)",
+      "Bash(cp -r D:/GIT/GuildMaster/import3/assets/translations/ui/* D:/GIT/GuildMaster/project/guild-master/assets/translations/ui/)",
+      "Bash(cp -r D:/GIT/GuildMaster/import3/scripts/core/* D:/GIT/GuildMaster/project/guild-master/scripts/core/)"
+    ]
+  }
+}

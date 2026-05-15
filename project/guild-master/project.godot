@@ -1,0 +1,77 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[addons]
+
+translations_plugin/entry_width=400
+translations_plugin/key_column_width=100
+
+[application]
+
+config/name="GuildMaster"
+run/main_scene="res://scenes/ui/splash_screen.tscn"
+config/features=PackedStringArray("4.6", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Flags="*res://scripts/core/game_flags.gd"
+PlaceRegistry="*res://scripts/systems/place_registry.gd"
+ScheduleRegistry="*res://scripts/systems/schedule_registry.gd"
+SettingsManager="*res://scripts/core/settings_manager.gd"
+SaveManager="*res://scripts/core/save_manager.gd"
+DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
+BGMManager="*res://scripts/core/bgm_manager.gd"
+Utils="*res://scripts/core/utils.gd"
+
+[dialogue_manager]
+
+runtime/balloon_path="res://Story/Dialogues/custom_balloon/balloon.tscn"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194310,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+]
+}
+ui_focus_next={
+"deadzone": 0.5,
+"events": []
+}
+ui_focus_prev={
+"deadzone": 0.5,
+"events": []
+}
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://assets/translations/dialogue/common_strings.en.translation", "res://assets/translations/dialogue/common_strings.ko.translation", "res://assets/translations/dialogue/common_strings.ja.translation", "res://assets/translations/ui/ui_common.en.translation", "res://assets/translations/ui/ui_common.ko.translation", "res://assets/translations/ui/ui_common.ja.translation")
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"

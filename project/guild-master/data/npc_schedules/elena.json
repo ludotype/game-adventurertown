@@ -1,0 +1,21 @@
+{
+  "npc_id": "elena",
+  "display_name": "엘레나",
+  "default_portrait": "res://assets/portraits/elena.png",
+  "schedules": [
+    {
+      "place_id": "town_square",
+      "weight": 10,
+      "conditions": {
+        "time_of_day": ["morning", "afternoon"]
+      }
+    },
+    {
+      "place_id": "tavern",
+      "weight": 4,
+      "conditions": {
+        "time_of_day": ["evening", "night"]
+      }
+    }
+  ]
+}

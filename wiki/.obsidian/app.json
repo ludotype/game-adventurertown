@@ -1,0 +1,19 @@
+{
+  "readableLineLength": false,
+  "strictLineBreaks": false,
+  "showLineNumber": false,
+  "attachmentFolderPath": "PPB/ATTACHMENTS",
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "current",
+  "pdfExportSettings": {
+    "includeName": true,
+    "pageSize": "A4",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 80
+  },
+  "tabSize": 4,
+  "showIndentGuide": true,
+  "newLinkFormat": "shortest",
+  "spellcheck": false
+}

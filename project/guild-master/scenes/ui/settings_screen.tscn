@@ -1,0 +1,237 @@
+[gd_scene load_steps=5 format=3 uid="uid://dp7m6f8o5x1j"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_screen.gd" id="1_script"]
+[ext_resource type="FontFile" path="res://assets/fonts/eczar/Eczar-Bold.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gauge"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="SettingsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_font")
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -400.0
+offset_right = 400.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "UI_SETTINGS"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 30
+columns = 2
+
+[node name="ModeLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_DISPLAY_MODE"
+
+[node name="ModeControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="ModePrev" type="Button" parent="VBoxContainer/GridContainer/ModeControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "<"
+
+[node name="ModeLabel" type="Label" parent="VBoxContainer/GridContainer/ModeControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "FULLSCREEN"
+horizontal_alignment = 1
+
+[node name="ModeNext" type="Button" parent="VBoxContainer/GridContainer/ModeControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = ">"
+
+[node name="ResLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_RESOLUTION"
+
+[node name="ResControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="ResPrev" type="Button" parent="VBoxContainer/GridContainer/ResControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "<"
+
+[node name="ResLabel" type="Label" parent="VBoxContainer/GridContainer/ResControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "1920x1080"
+horizontal_alignment = 1
+
+[node name="ResNext" type="Button" parent="VBoxContainer/GridContainer/ResControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = ">"
+
+[node name="VSyncLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_VSYNC"
+
+[node name="VSyncControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="VSyncPrev" type="Button" parent="VBoxContainer/GridContainer/VSyncControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "<"
+
+[node name="VSyncLabel" type="Label" parent="VBoxContainer/GridContainer/VSyncControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "ON"
+horizontal_alignment = 1
+
+[node name="VSyncNext" type="Button" parent="VBoxContainer/GridContainer/VSyncControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = ">"
+
+[node name="LangLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_LANGUAGE"
+
+[node name="LangControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="LangPrev" type="Button" parent="VBoxContainer/GridContainer/LangControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "<"
+
+[node name="LangLabel" type="Label" parent="VBoxContainer/GridContainer/LangControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+text = "ENGLISH"
+horizontal_alignment = 1
+
+[node name="LangNext" type="Button" parent="VBoxContainer/GridContainer/LangControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = ">"
+
+[node name="MusicLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_MUSIC"
+
+[node name="MusicControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="MusicGauge" type="ProgressBar" parent="VBoxContainer/GridContainer/MusicControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_gauge")
+value = 80.0
+show_percentage = false
+
+[node name="MusicDown" type="Button" parent="VBoxContainer/GridContainer/MusicControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "[-]"
+
+[node name="MusicUp" type="Button" parent="VBoxContainer/GridContainer/MusicControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "[+]"
+
+[node name="SoundLabelTitle" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "UI_SOUND"
+
+[node name="SoundControl" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="SoundGauge" type="ProgressBar" parent="VBoxContainer/GridContainer/SoundControl"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 20)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/fill = SubResource("StyleBoxFlat_gauge")
+value = 80.0
+show_percentage = false
+
+[node name="SoundDown" type="Button" parent="VBoxContainer/GridContainer/SoundControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "[-]"
+
+[node name="SoundUp" type="Button" parent="VBoxContainer/GridContainer/SoundControl"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+text = "[+]"
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 40
+text = "UI_DONE"
+
+[connection signal="pressed" from="VBoxContainer/GridContainer/ModeControl/ModePrev" to="." method="_on_mode_prev_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/ModeControl/ModeNext" to="." method="_on_mode_next_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/ResControl/ResPrev" to="." method="_on_res_prev_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/ResControl/ResNext" to="." method="_on_res_next_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/VSyncControl/VSyncPrev" to="." method="_on_vsync_toggle_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/VSyncControl/VSyncNext" to="." method="_on_vsync_toggle_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/LangControl/LangPrev" to="." method="_on_lang_toggle_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/LangControl/LangNext" to="." method="_on_lang_toggle_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/MusicControl/MusicDown" to="." method="_on_music_down_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/MusicControl/MusicUp" to="." method="_on_music_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/SoundControl/SoundDown" to="." method="_on_sound_down_pressed"]
+[connection signal="pressed" from="VBoxContainer/GridContainer/SoundControl/SoundUp" to="." method="_on_sound_up_pressed"]
+[connection signal="pressed" from="VBoxContainer/BackButton" to="." method="_on_back_button_pressed"]

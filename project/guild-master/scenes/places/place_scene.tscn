@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8yvxg3ulq3a"]
+
+[ext_resource type="Script" path="res://scripts/game/place_scene.gd" id="1_place"]
+
+[node name="PlaceScene" type="Node2D"]
+script = ExtResource("1_place")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="NPCOverlay" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="NPCPortrait" type="TextureRect" parent="NPCOverlay"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -520.0
+offset_top = -780.0
+offset_right = -120.0
+offset_bottom = -180.0
+grow_horizontal = 0
+grow_vertical = 0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NPCNameLabel" type="Label" parent="NPCOverlay"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -500.0
+offset_top = -160.0
+offset_right = -140.0
+offset_bottom = -120.0
+grow_horizontal = 0
+grow_vertical = 0
+horizontal_alignment = 1
+vertical_alignment = 1

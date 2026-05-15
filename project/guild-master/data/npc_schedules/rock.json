@@ -1,0 +1,21 @@
+{
+  "npc_id": "rock",
+  "display_name": "록",
+  "default_portrait": "res://assets/portraits/rock.png",
+  "schedules": [
+    {
+      "place_id": "town_square",
+      "weight": 5,
+      "conditions": {
+        "time_of_day": ["afternoon"]
+      }
+    },
+    {
+      "place_id": "tavern",
+      "weight": 12,
+      "conditions": {
+        "time_of_day": ["evening", "night"]
+      }
+    }
+  ]
+}
