@@ -4,11 +4,24 @@
   "available_when": { "flag_eq": ["rested_today", false] },
   "events": [
     {
-      "id": "rest_inn_room",
+      "id": "rest_haunted",
+      "priority": 100,
+      "when": { "has_condition": "haunted" },
+      "actions": [
+        { "type": "trigger_mandatory", "trigger_on": "rest_attempt" },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "set_flag", "key": "rested_today", "value": true },
+        { "type": "log", "message": "잠시 눈을 붙였지만, 끔찍한 환영이 뇌리를 맴돌아 제대로 쉴 수 없었다." }
+      ]
+    },
+    {
+      "id": "rest_normal",
       "priority": 0,
       "actions": [
-        { "type": "log", "message": "여관방에서 잠시 몸을 쉬었다." },
-        { "type": "set_flag", "key": "rested_today", "value": true }
+        { "type": "change_metric", "key": "player.hp", "amount": 10 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "set_flag", "key": "rested_today", "value": true },
+        { "type": "log", "message": "여관방에서 잠시 몸을 쉬었다. HP가 회복되었다." }
       ]
     }
   ]

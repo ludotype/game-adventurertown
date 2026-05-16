@@ -1,0 +1,31 @@
+{
+  "interaction_id": "look_at_ruins",
+  "label": "유적을 멀리서 관찰한다",
+  "events": [
+    {
+      "id": "look_at_ruins",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "outcome_check",
+          "attribute": "observation",
+          "difficulty": 2,
+          "outcomes": {
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.clue_token", "amount": 1 },
+                { "type": "set_flag", "key": "observed_ruins", "value": true }
+              ],
+              "message": "유적 입구에서 푸른빛이 새어 나오는 것을 봤다. 뭔가 이상하다."
+            },
+            "failure": {
+              "actions": [
+                { "type": "log", "message": "그냥 폐허로 보인다. 별 특징은 없는 것 같다." }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

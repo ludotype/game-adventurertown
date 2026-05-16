@@ -1,0 +1,49 @@
+{
+  "interaction_id": "gamble",
+  "label": "도박을 한다",
+  "available_when": { "metric_gte": ["player.gold", 10] },
+  "events": [
+    {
+      "id": "gamble_tavern",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -10 },
+        {
+          "type": "outcome_check",
+          "attribute": "luck",
+          "difficulty": 2,
+          "outcomes": {
+            "critical_success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.gold", "amount": 50 },
+                { "type": "set_flag", "key": "gamble_big_win", "value": true }
+              ],
+              "message": "엄청난 대박! 상상도 못한 큰돈을 따냈다!"
+            },
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.gold", "amount": 30 }
+              ],
+              "message": "큰돈을 따냈다!"
+            },
+            "failure": {
+              "actions": [
+                { "type": "change_metric", "key": "player.gold", "amount": -20 },
+                { "type": "add_condition", "condition_id": "debt", "duration": 5 }
+              ],
+              "message": "빚을 졌다. 사채업자가 당신을 기억할 것이다."
+            },
+            "critical_failure": {
+              "actions": [
+                { "type": "change_metric", "key": "player.gold", "amount": -30 },
+                { "type": "add_condition", "condition_id": "debt", "duration": 5 },
+                { "type": "add_condition", "condition_id": "hunted", "duration": 3 }
+              ],
+              "message": "짝패들에게 들켰다. 뒷골목을 조심하자."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "interaction_id": "listen_at_door",
+  "label": "문 너머 소리를 듣는다",
+  "events": [
+    {
+      "id": "listen_at_door",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "outcome_check",
+          "attribute": "observation",
+          "difficulty": 2,
+          "outcomes": {
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.clue_token", "amount": 1 },
+                { "type": "set_flag", "key": "heard_luise_conversation", "value": true }
+              ],
+              "message": "루이제가 누군가와 속삭이는 소리가 들린다... '그 사람이 오면, 꼭 알려줘야 해.'"
+            },
+            "failure": {
+              "actions": [
+                { "type": "log", "message": "아무 소리도 들리지 않는다." }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

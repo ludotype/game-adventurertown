@@ -1,0 +1,8 @@
+{
+  "place_id": "clinic",
+  "display_name": "치료소",
+  "background_path": "res://assets/bg/clinic.png",
+  "bgm": "town_day",
+  "empty_weight": 100,
+  "connections": ["town_square"]
+}

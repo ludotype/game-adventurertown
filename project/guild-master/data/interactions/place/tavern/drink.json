@@ -1,0 +1,29 @@
+{
+  "interaction_id": "drink",
+  "label": "술 한 잔",
+  "available_when": { "metric_gte": ["player.gold", 3] },
+  "events": [
+    {
+      "id": "drink_tavern_morning",
+      "priority": 50,
+      "when": { "time_block": ["morning", "noon"] },
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -3 },
+        { "type": "change_metric", "key": "player.mental", "amount": -2 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "아침부터 술을 마셨다. 머리가 멍해진다." }
+      ]
+    },
+    {
+      "id": "drink_tavern_normal",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -3 },
+        { "type": "change_metric", "key": "player.mental", "amount": 2 },
+        { "type": "change_metric", "key": "player.hp", "amount": 3 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "술 한 잔 하니 긴장이 풀린다." }
+      ]
+    }
+  ]
+}

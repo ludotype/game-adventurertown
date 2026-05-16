@@ -22,10 +22,12 @@ var _blocked_places: Dictionary = {}  # place_id -> reason
 var _doom: int = 0
 var _global_doom: Dictionary = {}
 var _doom_thresholds_triggered: Dictionary = {}
+var _mandatory_events: Dictionary = {}
 
 
 func _ready() -> void:
 	_load_global_doom()
+	_load_mandatory_events()
 	_reset_state()
 	if has_node("/root/TimeSystem"):
 		TimeSystem.day_started.connect(_on_day_started)
@@ -52,6 +54,35 @@ func _load_global_doom() -> void:
 		var data = json.get_data()
 		if typeof(data) == TYPE_DICTIONARY:
 			_global_doom = data.get("doom_track", {})
+
+
+func _load_mandatory_events() -> void:
+	var dir := DirAccess.open("res://data/mandatory_events/")
+	if dir == null:
+		push_warning("CrisisManager: mandatory_events directory not found")
+		return
+
+	dir.list_dir_begin()
+	var file_name := dir.get_next()
+	while file_name != "":
+		if file_name.ends_with(".json") and not dir.current_is_dir():
+			var path := "res://data/mandatory_events/" + file_name
+			var file := FileAccess.open(path, FileAccess.READ)
+			if file != null:
+				var json := JSON.new()
+				var error := json.parse(file.get_as_text())
+				file.close()
+				if error == OK:
+					var data = json.get_data()
+					if typeof(data) == TYPE_DICTIONARY and data.has("event_id"):
+						_mandatory_events[data["event_id"]] = data
+					else:
+						push_warning("CrisisManager: missing event_id in " + path)
+				else:
+					push_warning("CrisisManager: JSON parse error in " + path)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+	print("CrisisManager: loaded ", _mandatory_events.size(), " mandatory events")
 
 
 func reset_state() -> void:
@@ -230,6 +261,19 @@ func apply_ongoing_effects(trigger_on: String, context: Dictionary = {}) -> void
 			var action: Dictionary = effect_dict.get("action", {})
 			if not action.is_empty():
 				ActionRunner.run(action, context)
+
+
+func apply_mandatory_events(trigger_on: String, context: Dictionary = {}) -> void:
+	for event_id in _mandatory_events.keys():
+		var data: Dictionary = _mandatory_events[event_id]
+		if data.get("trigger_on", "") != trigger_on:
+			continue
+		if data.has("when") and not ConditionEvaluator.evaluate(data.get("when"), context):
+			continue
+		var actions: Array = data.get("actions", [])
+		for action in actions:
+			ActionRunner.run(action, context)
+		print("CrisisManager: applied mandatory event ", event_id, " on ", trigger_on)
 
 
 func block_place(place_id: String, reason: String = "") -> void:

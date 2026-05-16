@@ -56,6 +56,8 @@ func _enter_place(target_place_id: String) -> void:
 
 	_spawner.place_id = place_id
 	_spawn_current_place_npc()
+	if has_node("/root/CrisisManager") and CrisisManager.has_method("apply_mandatory_events"):
+		CrisisManager.apply_mandatory_events("place_entered", _get_action_context())
 	_refresh_action_buttons()
 
 

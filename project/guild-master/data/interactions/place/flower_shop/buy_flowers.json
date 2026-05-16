@@ -1,0 +1,16 @@
+{
+  "interaction_id": "buy_flowers",
+  "label": "꽃다발 구매",
+  "available_when": { "metric_gte": ["player.gold", 10] },
+  "events": [
+    {
+      "id": "buy_flowers",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -10 },
+        { "type": "add_item", "item_id": "flower_bouquet", "amount": 1 },
+        { "type": "log", "message": "예쁜 꽃다발을 샀다. 루이제에게 선물하면 좋아할 것 같다." }
+      ]
+    }
+  ]
+}

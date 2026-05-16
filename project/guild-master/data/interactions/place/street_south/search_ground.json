@@ -1,0 +1,31 @@
+{
+  "interaction_id": "search_ground",
+  "label": "바닥을 수색한다",
+  "events": [
+    {
+      "id": "search_ground",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "outcome_check",
+          "attribute": "luck",
+          "difficulty": 1,
+          "outcomes": {
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.gold", "amount": 5 },
+                { "type": "set_flag", "key": "found_coin_street_south", "value": true }
+              ],
+              "message": "돌 틈에서 동전 몇 개를 발견했다."
+            },
+            "failure": {
+              "actions": [
+                { "type": "log", "message": "아무것도 찾지 못했다." }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

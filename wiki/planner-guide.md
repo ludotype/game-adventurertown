@@ -104,6 +104,51 @@
 | `unequip_item` | `item_id` | 장비 아이템을 해제합니다. |
 | `open_ui` | `ui_name` | UI 창을 엽니다. (`inventory` 지원) |
 | `random_loot` | `table_id` | 지정된 전리품 테이블에서 랜덤 아이템을 획득합니다. |
+| `outcome_check` | `attribute`, `difficulty`, `outcomes` | 속성 체크를 4분기로 수행합니다. (`critical_success` / `success` / `failure` / `critical_failure`) |
+| `trigger_mandatory` | `trigger_on` | 특정 trigger를 발동시켜 `data/mandatory_events/`의 강제 이벤트를 검사합니다. |
+
+### `outcome_check` 작성 예시
+
+`outcome_check`는 속성 체크 결과를 **4분기**로 나눠서 서로 다른 행동을 실행합니다.
+
+```json
+{
+  "type": "outcome_check",
+  "attribute": "luck",
+  "difficulty": 2,
+  "outcomes": {
+    "critical_success": {
+      "actions": [{ "type": "change_metric", "key": "player.gold", "amount": 50 }],
+      "message": "대박! 상상도 못한 큰돈을 따냈다!"
+    },
+    "success": {
+      "actions": [{ "type": "change_metric", "key": "player.gold", "amount": 30 }],
+      "message": "큰돈을 따냈다!"
+    },
+    "failure": {
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -20 },
+        { "type": "add_condition", "condition_id": "debt", "duration": 5 }
+      ],
+      "message": "빚을 졌다. 사채업자가 당신을 기억할 것이다."
+    },
+    "critical_failure": {
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -30 },
+        { "type": "add_condition", "condition_id": "debt", "duration": 5 },
+        { "type": "add_condition", "condition_id": "hunted", "duration": 3 }
+      ],
+      "message": "짝패들에게 들켰다. 뒷골목을 조심하자."
+    }
+  }
+}
+```
+
+판정 공식은 `1d6 + attribute >= difficulty * 3`입니다.
+- **대성공**: 성공치가 3 이상 높음
+- **성공**: 기준치 이상
+- **실패**: 기준치 미만
+- **대실패**: 기준치보다 3 이상 낮음
 
 ### 현재 지원하는 조건 타입
 
@@ -129,6 +174,7 @@
 | `doom_gte` | `{ "doom_gte": 10 }` | 전역 둠 트래커가 지정값 이상인지 확인합니다. |
 | `has_condition` | `{ "has_condition": "haunted" }` | 플레이어가 특정 상태 카드를 보유 중인지 확인합니다. |
 | `place_blocked` | `{ "place_blocked": "tavern" }` | 특정 장소가 봉쇄 상태인지 확인합니다. |
+| `has_item` | `{ "has_item": "holy_symbol" }` 또는 `{ "has_item": ["holy_symbol", 2] }` | 인벤토리에 특정 아이템(지정 개수 이상)이 있는지 확인합니다. |
 
 ### 시간 시스템
 
@@ -172,6 +218,7 @@ late_night  00:00 ~ 05:00
   "label": "잠자고 하루 넘기기",
   "type": "sequence",
   "actions": [
+    { "type": "trigger_mandatory", "trigger_on": "rest_attempt" },
     { "type": "sleep_until_next_day" },
     { "type": "set_flag", "key": "rested_today", "value": false },
     { "type": "log", "message": "새로운 아침이 밝았다." }
@@ -491,7 +538,59 @@ data/interactions/
 
 ---
 
-## 5. 확률 계산 방식 (가중치 시스템)
+## 5. 강제 이벤트 (`data/mandatory_events/`)
+
+강제 이벤트는 플레이어의 의사와 무관하게 **특정 조건이 맞으면 자동으로 실행**되는 이벤트입니다.
+
+`data/mandatory_events/` 폴더에 JSON 파일을 넣으면 `CrisisManager`가 자동으로 스캔합니다.
+
+### 필드 설명
+
+| 필드 | 설명 |
+|------|------|
+| `event_id` | 이벤트 고유 ID |
+| `trigger_on` | 발동 시점 (`day_started`, `place_entered`, `rest_attempt`, `condition_removed`) |
+| `when` | 실행 조건 (선택사항). `has_condition` 등을 사용합니다. |
+| `priority` | 여러 이벤트가 동시에 발동할 때의 우선순위 (높을수록 먼저) |
+| `actions` | 실행할 ActionRunner 행동 목록 |
+
+### 발동 시점
+
+| trigger_on | 언제 발동되는가 |
+|-----------|----------------|
+| `day_started` | 하루가 시작될 때 (자정, `CrisisManager`가 처리) |
+| `place_entered` | 플레이어가 장소에 들어갈 때 (`PlaceScene`이 처리) |
+| `rest_attempt` | 잠자기/휴식을 시도할 때 (`sleep.json`의 `trigger_mandatory` action으로 처리) |
+| `condition_removed` | 상태 카드가 사라질 때 (`ConditionManager`가 처리) |
+
+### 예시: 추적자 기습
+
+```json
+{
+  "event_id": "ambush",
+  "trigger_on": "place_entered",
+  "when": { "has_condition": "hunted" },
+  "priority": 80,
+  "actions": [
+    { "type": "log", "message": "뒷골목에서 누군가가 당신을 덮친다!" },
+    {
+      "type": "attribute_check",
+      "attribute": "observation",
+      "difficulty": 2,
+      "pass_message": "적의 기습을 미리 눈치채고 피했다.",
+      "fail_actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": -15 },
+        { "type": "add_condition", "condition_id": "injured", "duration": 4 },
+        { "type": "remove_condition", "condition_id": "hunted" }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## 6. 확률 계산 방식 (가중치 시스템)
 
 ### 계산 공식
 
@@ -515,7 +614,7 @@ data/interactions/
 
 ---
 
-## 6. `empty_weight` 활용 가이드
+## 7. `empty_weight` 활용 가이드
 
 `empty_weight`는 **이 장소가 얼마나 한산한지**를 조절하는 값입니다.
 
@@ -530,7 +629,7 @@ data/interactions/
 
 ---
 
-## 7. 작업 흐름
+## 8. 작업 흐름
 
 ### 새로운 NPC 추가하기
 
@@ -559,7 +658,7 @@ data/interactions/
 
 ---
 
-## 8. 파일 위치 요약
+## 9. 파일 위치 요약
 
 ```
 project/guild-master/
@@ -571,6 +670,7 @@ project/guild-master/
 ├── data/conditions/      ← 상태 카드 정의
 ├── data/items/           ← 아이템 정의
 ├── data/loot_tables/     ← 전리품 테이블 정의
+├── data/mandatory_events/ ← 강제 이벤트 정의 (상태 이상으로 발동)
 ├── scenes/places/        ← 장소 씬 (place_scene.tscn 1개로 모든 장소 처리)
 ├── scripts/systems/      ← 시스템 코드 (직접 수정 불필요)
 ├── scripts/state/        ← 날짜/시간, MetricStore, InventoryManager 등 (직접 수정 불필요)
@@ -596,7 +696,7 @@ project/guild-master/
 
 ---
 
-## 9. 화면 UI 구조 (place_scene.tscn)
+## 11. 화면 UI 구조 (place_scene.tscn)
 
 장소 씬은 다음 4영역으로 구성됩니다. 모두 데이터에 의해 자동 갱신됩니다.
 

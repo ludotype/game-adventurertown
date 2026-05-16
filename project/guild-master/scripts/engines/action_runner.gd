@@ -81,6 +81,10 @@ func run(action, context: Dictionary = {}, depth: int = 0) -> bool:
 			ok = _run_open_ui(action_dict)
 		"random_loot":
 			ok = _run_random_loot(action_dict)
+		"outcome_check":
+			ok = _run_outcome_check(action_dict, context)
+		"trigger_mandatory":
+			ok = _run_trigger_mandatory(action_dict, context)
 		_:
 			ok = _fail(action_dict, "unknown action type: " + action_type)
 
@@ -403,6 +407,55 @@ func _run_random_loot(action: Dictionary) -> bool:
 			InventoryManager.add_item(item_id, count)
 	if not message.is_empty():
 		print("Loot: ", message)
+	return true
+
+
+func _run_outcome_check(action: Dictionary, context: Dictionary) -> bool:
+	var attribute := String(action.get("attribute", "will"))
+	var difficulty: int = action.get("difficulty", 1)
+	var attr_key := "player." + attribute
+	var attr_value: int = MetricStore.get_metric(attr_key, 0)
+	var roll := randi_range(1, 6)
+	var total := roll + attr_value
+	var threshold := difficulty * 3
+	var diff := total - threshold
+
+	var outcome_key := ""
+	if diff >= 3:
+		outcome_key = "critical_success"
+	elif diff >= 0:
+		outcome_key = "success"
+	elif diff > -3:
+		outcome_key = "failure"
+	else:
+		outcome_key = "critical_failure"
+
+	var outcomes: Dictionary = action.get("outcomes", {})
+	var outcome: Dictionary = outcomes.get(outcome_key, {})
+
+	if outcome.is_empty():
+		if outcome_key == "critical_success":
+			outcome = outcomes.get("success", {})
+		elif outcome_key == "critical_failure":
+			outcome = outcomes.get("failure", {})
+
+	var actions: Array = outcome.get("actions", [])
+	for child_action in actions:
+		run(child_action, context)
+
+	if outcome.has("message"):
+		run({ "type": "log", "message": outcome["message"] }, context)
+
+	return true
+
+
+func _run_trigger_mandatory(action: Dictionary, context: Dictionary) -> bool:
+	var trigger_on := String(action.get("trigger_on", ""))
+	if trigger_on.is_empty():
+		return _fail(action, "trigger_mandatory requires trigger_on")
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("apply_mandatory_events"):
+		return _fail(action, "CrisisManager autoload is missing")
+	CrisisManager.apply_mandatory_events(trigger_on, context)
 	return true
 
 

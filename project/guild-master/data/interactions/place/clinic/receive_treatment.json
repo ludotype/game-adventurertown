@@ -1,0 +1,34 @@
+{
+  "interaction_id": "receive_treatment",
+  "label": "치료받기",
+  "available_when": {
+    "any_of": [
+      { "has_condition": "injured" },
+      { "metric_lt": ["player.hp", 100] }
+    ]
+  },
+  "events": [
+    {
+      "id": "receive_treatment_injured",
+      "priority": 10,
+      "when": { "has_condition": "injured" },
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -20 },
+        { "type": "remove_condition", "condition_id": "injured" },
+        { "type": "change_metric", "key": "player.hp", "amount": 30 },
+        { "type": "advance_time", "time_units": 2 },
+        { "type": "log", "message": "치료사가 상처를 깨끗이 치료해 주었다. 몸이 한결 가벼워졌다." }
+      ]
+    },
+    {
+      "id": "receive_treatment_normal",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -10 },
+        { "type": "change_metric", "key": "player.hp", "amount": 20 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "간단한 치료를 받았다. 기운이 돈다." }
+      ]
+    }
+  ]
+}

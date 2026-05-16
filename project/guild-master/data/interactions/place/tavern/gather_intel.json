@@ -1,0 +1,34 @@
+{
+  "interaction_id": "gather_intel",
+  "label": "정보 수집 (술값 내고)",
+  "available_when": { "metric_gte": ["player.gold", 5] },
+  "events": [
+    {
+      "id": "gather_intel_tavern",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -5 },
+        {
+          "type": "outcome_check",
+          "attribute": "observation",
+          "difficulty": 1,
+          "outcomes": {
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.clue_token", "amount": 1 },
+                { "type": "set_flag", "key": "tavern_intel_gained", "value": true }
+              ],
+              "message": "술집 손님들의 수다 속에서 유용한 정보를 얻었다."
+            },
+            "failure": {
+              "actions": [
+                { "type": "change_metric", "key": "player.mental", "amount": -1 }
+              ],
+              "message": "술값만 날렸다. 들은 얘기는 대부분 허풍이었다."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

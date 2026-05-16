@@ -1,0 +1,17 @@
+{
+  "interaction_id": "repair_weapon",
+  "label": "무기 수리",
+  "available_when": { "metric_gte": ["player.gold", 15] },
+  "events": [
+    {
+      "id": "repair_weapon",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -15 },
+        { "type": "change_metric", "key": "player.attack", "amount": 3 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "무기상이 녹슨 검날을 갈아냈다. 공격력이 상승했다." }
+      ]
+    }
+  ]
+}

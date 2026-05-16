@@ -1,0 +1,7 @@
+{
+  "item_id": "flower_bouquet",
+  "display_name": "꽃다발",
+  "description": "예쁘게 포장된 꽃다발. 선물용으로 적합하다.",
+  "category": "material",
+  "max_stack": 5
+}

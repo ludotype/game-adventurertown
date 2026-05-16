@@ -1,0 +1,16 @@
+{
+  "interaction_id": "request_aid",
+  "label": "구호를 요청한다",
+  "available_when": { "metric_lt": ["player.hp", 30] },
+  "events": [
+    {
+      "id": "request_aid",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": 10 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "경비대원이 간단한 응급처치를 해주었다." }
+      ]
+    }
+  ]
+}

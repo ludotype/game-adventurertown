@@ -1,0 +1,28 @@
+{
+  "condition_id": "injured",
+  "display_name": "부상",
+  "description": "신체에 중상을 입었다. 움직이기 힘들다.",
+  "tags": ["physical"],
+  "max_stack": 1,
+  "duration": 4,
+  "reckoning": {
+    "trigger": "daily_midnight",
+    "action": {
+      "type": "attribute_check",
+      "attribute": "constitution",
+      "difficulty": 1,
+      "pass_actions": [
+        { "type": "log", "message": "상처가 아물어가고 있다." }
+      ],
+      "fail_actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": -5 },
+        { "type": "log", "message": "부상이 악화되었다." }
+      ]
+    }
+  },
+  "on_remove": {
+    "actions": [
+      { "type": "log", "message": "부상이 완전히 아물었다." }
+    ]
+  }
+}

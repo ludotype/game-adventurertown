@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_clinic",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "치료소에는 약초 향이 가득하고, 침대 위에는 깨끗한 붕대가 놓여 있다." }
+      ]
+    }
+  ]
+}

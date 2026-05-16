@@ -1,0 +1,17 @@
+{
+  "interaction_id": "sharpen_weapon",
+  "label": "무기 강화 (일시적)",
+  "available_when": { "metric_gte": ["player.gold", 5] },
+  "events": [
+    {
+      "id": "sharpen_weapon",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.gold", "amount": -5 },
+        { "type": "change_metric", "key": "player.attack", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "칼날에 기름을 발라 날카롭게 다듬었다. 잠시 동안 공격력이 상승한다." }
+      ]
+    }
+  ]
+}

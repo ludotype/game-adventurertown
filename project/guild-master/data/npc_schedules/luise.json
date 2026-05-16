@@ -1,0 +1,22 @@
+{
+  "npc_id": "luise",
+  "display_name": "루이제",
+  "default_portrait": "res://assets/portraits/luise.png",
+  "default_dialogue": "luise_default",
+  "schedules": [
+    {
+      "place_id": "lobby",
+      "weight": 80,
+      "conditions": {
+        "time_of_day": ["morning", "afternoon"]
+      }
+    },
+    {
+      "place_id": "tavern",
+      "weight": 60,
+      "conditions": {
+        "time_of_day": ["evening", "night"]
+      }
+    }
+  ]
+}

@@ -85,6 +85,10 @@ func _load_schedule_file(path: String) -> void:
 
 	var data: Dictionary = json.get_data()
 	var schedules: Array = data.get("schedules", [])
+	if schedules.is_empty() and data.has("schedule"):
+		var single_schedule = data.get("schedule", {})
+		if single_schedule is Dictionary:
+			schedules = [single_schedule]
 
 	for sched in schedules:
 		if sched is not Dictionary:

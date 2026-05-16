@@ -1,0 +1,32 @@
+{
+  "interaction_id": "gather_intel",
+  "label": "정보 수집",
+  "events": [
+    {
+      "id": "gather_intel_guard_hq",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "outcome_check",
+          "attribute": "observation",
+          "difficulty": 1,
+          "outcomes": {
+            "success": {
+              "actions": [
+                { "type": "change_metric", "key": "player.clue_token", "amount": 1 },
+                { "type": "set_flag", "key": "guard_hq_intel_gained", "value": true }
+              ],
+              "message": "순찰 일지에서 최근 마을의 이상 징후를 확인했다."
+            },
+            "failure": {
+              "actions": [
+                { "type": "log", "message": "별다른 정보는 얻지 못했다." }
+              ],
+              "message": "경비대원들이 바빠 보인다. 대화할 틈이 없다."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

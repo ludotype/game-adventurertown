@@ -1,0 +1,20 @@
+{
+  "event_id": "night_intruder",
+  "trigger_on": "rest_attempt",
+  "when": { "has_condition": "hunted" },
+  "priority": 90,
+  "actions": [
+    { "type": "log", "message": "어둠 속에서 누군가가 방문을 두드린다..." },
+    {
+      "type": "attribute_check",
+      "attribute": "combat",
+      "difficulty": 2,
+      "pass_message": "침입자를 격퇴하고 밤을 지새웠다.",
+      "fail_actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": -10 },
+        { "type": "change_metric", "key": "player.mental", "amount": -5 },
+        { "type": "log", "message": "침입자에게 당했다. 밤새 잠을 이루지 못했다." }
+      ]
+    }
+  ]
+}

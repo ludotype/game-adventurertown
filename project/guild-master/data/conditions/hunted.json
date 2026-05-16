@@ -1,0 +1,13 @@
+{
+  "condition_id": "hunted",
+  "display_name": "추적당함",
+  "description": "누군가가 당신을 쫓고 있다. 밤에는 조심해야 한다.",
+  "tags": ["social"],
+  "max_stack": 1,
+  "duration": 3,
+  "on_remove": {
+    "actions": [
+      { "type": "log", "message": "추적자들이 당신을 놓아주었다." }
+    ]
+  }
+}

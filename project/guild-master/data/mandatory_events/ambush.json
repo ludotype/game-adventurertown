@@ -1,0 +1,20 @@
+{
+  "event_id": "ambush",
+  "trigger_on": "place_entered",
+  "when": { "has_condition": "hunted" },
+  "priority": 80,
+  "actions": [
+    { "type": "log", "message": "뒷골목에서 누군가가 당신을 덮친다!" },
+    {
+      "type": "attribute_check",
+      "attribute": "observation",
+      "difficulty": 2,
+      "pass_message": "적의 기습을 미리 눈치채고 피했다.",
+      "fail_actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": -15 },
+        { "type": "add_condition", "condition_id": "injured", "duration": 4 },
+        { "type": "remove_condition", "condition_id": "hunted" }
+      ]
+    }
+  ]
+}

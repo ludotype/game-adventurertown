@@ -1,0 +1,15 @@
+{
+  "interaction_id": "talk",
+  "label": "잠깐 이야기한다",
+  "events": [
+    {
+      "id": "talk_luise",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "npc.luise.affection", "amount": 1 },
+        { "type": "advance_time", "time_units": 1 },
+        { "type": "log", "message": "루이제와 잠깐 이야기를 나눴다. 그녀의 표정이 조금 밝아진 것 같다." }
+      ]
+    }
+  ]
+}

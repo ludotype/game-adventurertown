@@ -1,0 +1,24 @@
+{
+  "condition_id": "debt",
+  "display_name": "빚",
+  "description": "사채업자에게 돈을 졌다. 시간이 지날수록 상황은 악화될 것이다.",
+  "tags": ["social"],
+  "max_stack": 1,
+  "duration": 5,
+  "on_remove": {
+    "actions": [
+      {
+        "type": "if",
+        "when": { "metric_gte": ["player.gold", 50] },
+        "then": [
+          { "type": "change_metric", "key": "player.gold", "amount": -50 },
+          { "type": "log", "message": "빚을 갚았다. 한숨 돌린다." }
+        ],
+        "else": [
+          { "type": "add_condition", "condition_id": "hunted", "duration": 3 },
+          { "type": "log", "message": "빚을 갚지 못했다. 누군가가 당신을 쫓기 시작했다." }
+        ]
+      }
+    ]
+  }
+}

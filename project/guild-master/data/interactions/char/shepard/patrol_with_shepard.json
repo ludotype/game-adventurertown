@@ -1,0 +1,16 @@
+{
+  "interaction_id": "patrol_with_shepard",
+  "label": "순찰대 동행",
+  "events": [
+    {
+      "id": "patrol_with_shepard",
+      "priority": 0,
+      "actions": [
+        { "type": "change_metric", "key": "player.hp", "amount": 15 },
+        { "type": "change_metric", "key": "npc.shepard.trust", "amount": 1 },
+        { "type": "advance_time", "time_units": 3 },
+        { "type": "log", "message": "셰퍼드와 함께 마을 주변을 순찰했다. 신체가 단련되고, 서로에 대한 신뢰가 깊어졌다." }
+      ]
+    }
+  ]
+}

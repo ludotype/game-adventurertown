@@ -1,0 +1,17 @@
+{
+  "interaction_id": "resolve_hunted",
+  "label": "추적자에 대해 조언을 구한다",
+  "available_when": { "has_condition": "hunted" },
+  "events": [
+    {
+      "id": "shepard_resolve_hunted",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "셰퍼드가 순찰대를 파견해 추적자들을 쫓아냈다." },
+        { "type": "remove_condition", "condition_id": "hunted" },
+        { "type": "set_flag", "key": "shepard_helped_hunted", "value": true },
+        { "type": "change_metric", "key": "npc.shepard.trust", "amount": 1 }
+      ]
+    }
+  ]
+}
