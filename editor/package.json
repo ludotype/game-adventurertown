@@ -1,0 +1,13 @@
+{
+  "name": "guildmaster-event-editor",
+  "version": "1.0.0",
+  "description": "External JSON editor for GuildMaster game data",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1"
+  }
+}

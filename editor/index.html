@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src * data: blob:;">
+  <title>GuildMaster Data Editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Menu Bar -->
+    <div id="menubar">
+      <div class="menu-item" data-menu="file">
+        <span class="menu-label">File</span>
+        <div class="menu-dropdown">
+          <div class="menu-action" data-action="open-folder">Open Data Folder<span class="menu-shortcut">Ctrl+O</span></div>
+          <div class="menu-sub" id="menu-recent-sub">
+            <span>Recent Folders</span><span class="menu-arrow">▸</span>
+            <div class="menu-submenu" id="menu-recent-submenu"></div>
+          </div>
+          <div class="menu-sep"></div>
+          <div class="menu-action" data-action="save">Save<span class="menu-shortcut">Ctrl+S</span></div>
+          <div class="menu-sep"></div>
+          <div class="menu-action" data-action="quit">Quit<span class="menu-shortcut">Ctrl+Q</span></div>
+        </div>
+      </div>
+      <span style="flex:1;-webkit-app-region:drag"></span>
+      <span id="file-label"></span>
+    </div>
+
+    <!-- App Body -->
+    <div id="app-body">
+      <!-- Tree Panel -->
+      <div id="tree-panel">
+        <div class="panel-header">
+          <span>Folders</span>
+        </div>
+        <div id="tree-content"></div>
+      </div>
+
+      <!-- List Panel -->
+      <div id="list-panel">
+        <div class="panel-header">
+          <span>Files</span>
+        </div>
+        <div id="list-content"></div>
+      </div>
+
+      <!-- Editor Area -->
+      <div id="editor-area">
+        <div id="editor-tabs"></div>
+        <div id="editor-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
