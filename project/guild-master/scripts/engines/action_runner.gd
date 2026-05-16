@@ -384,10 +384,10 @@ func _run_open_ui(action: Dictionary) -> bool:
 			return _fail(action, "unknown ui_name: " + ui_name)
 	if not ResourceLoader.exists(scene_path):
 		return _fail(action, "UI scene not found: " + scene_path)
-	var scene := load(scene_path)
+	var scene = load(scene_path)
 	if scene == null:
 		return _fail(action, "failed to load UI scene: " + scene_path)
-	var instance := scene.instantiate()
+	var instance = scene.instantiate()
 	get_tree().root.add_child(instance)
 	return true
 

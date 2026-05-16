@@ -59,7 +59,8 @@ func advance_minutes(minutes: int) -> void:
 		day += 1
 		day_started.emit(day)
 
-	hour = int(total_minutes / 60)
+	@warning_ignore("integer_division")
+	hour = total_minutes / 60
 	minute = total_minutes % 60
 	_emit_time_advanced()
 

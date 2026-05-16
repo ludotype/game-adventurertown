@@ -86,7 +86,7 @@ func add_condition(condition_id: String, duration: int = -1, stack: int = 1) -> 
 
 	var max_stack: int = def.get("max_stack", 1)
 	if _active_conditions.has(condition_id):
-		var current := _active_conditions[condition_id]
+		var current: Dictionary = _active_conditions[condition_id]
 		var new_stack: int = mini(current.get("stack", 1) + stack, max_stack)
 		current["stack"] = new_stack
 		if duration > 0:

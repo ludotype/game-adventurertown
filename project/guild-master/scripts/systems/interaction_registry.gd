@@ -55,8 +55,14 @@ func get_available_place_actions(place_id: String, context: Dictionary) -> Array
 	var result: Array = []
 	for interaction_id in merged.keys():
 		result.append(merged[interaction_id])
-	result.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return String(a.get("label", "")) < String(b.get("label", ""))
+	result.sort_custom(func(a: Dictionary, b: Dictionary) -> int:
+		var a_label := String(a.get("label", ""))
+		var b_label := String(b.get("label", ""))
+		if a_label < b_label:
+			return -1
+		elif a_label > b_label:
+			return 1
+		return 0
 	)
 	return result
 
