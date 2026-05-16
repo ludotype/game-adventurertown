@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_flower_shop",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "꽃향이 가게 안을 가득 채우고, 물을 준 지 얼마 안 된 듯 흙 냄새도 섞여 있다." }
+      ]
+    }
+  ]
+}

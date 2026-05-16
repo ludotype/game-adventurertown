@@ -1,0 +1,8 @@
+{
+  "place_id": "flower_shop",
+  "display_name": "꽃집",
+  "background_path": "res://assets/bg/flower_shop.png",
+  "bgm": "town_day",
+  "empty_weight": 6,
+  "connections": ["street_north"]
+}

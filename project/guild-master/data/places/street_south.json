@@ -4,5 +4,5 @@
   "background_path": "res://assets/bg/street_south.png",
   "bgm": "town_day",
   "empty_weight": 10,
-  "connections": ["lobby", "town_square"]
+  "connections": ["lobby", "town_square", "weapon_shop"]
 }

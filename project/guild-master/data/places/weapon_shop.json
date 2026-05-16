@@ -1,0 +1,8 @@
+{
+  "place_id": "weapon_shop",
+  "display_name": "무기상",
+  "background_path": "res://assets/bg/weapon_shop.png",
+  "bgm": "town_day",
+  "empty_weight": 6,
+  "connections": ["street_south"]
+}

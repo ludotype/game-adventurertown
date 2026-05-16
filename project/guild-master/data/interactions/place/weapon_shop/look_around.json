@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_weapon_shop",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "진열된 무기와 방어구가 은은한 기름 냄새와 함께 눈에 들어온다." }
+      ]
+    }
+  ]
+}
