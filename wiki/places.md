@@ -8,7 +8,7 @@
 ## 현재 지도 구조
 
 ```
-[여관방] — [복도] — [여관 로비] — [남쪽 거리] — [중앙 광장]
+[여관방] — [복도] — [여관 로비] — [남쪽 거리] — [중앙 광장] — [치료소]
                                             |            |
                                          [무기상]    [북쪽 거리] — [선술집]
                                                        |            |
@@ -30,7 +30,7 @@
 | `empty_weight` | 100 | — |
 | `connections` | `hallway` | — |
 | 배치 NPC | 없음 (플레이어 전용) | — |
-| 행동 | 잠자기, 소지품 확인, 둘러보기 | — |
+| 행동 | 쉬기 (HP 회복, `haunted` 시 악몽), 잠자고 하루 넘기기, 소지품 확인, 둘러보기 | — |
 
 ### 1.2 복도 (`hallway`)
 
@@ -41,7 +41,7 @@
 | `empty_weight` | 100 | — |
 | `connections` | `inn_room`, `lobby` | — |
 | 배치 NPC | 없음 | — |
-| 행동 | 둘러보기, 잠시 기다리기 | — |
+| 행동 | 둘러보기, 잠시 기다리기, 문 너머 소리 듣기 | — |
 
 ### 1.3 여관 로비 (`lobby`)
 
@@ -49,10 +49,10 @@
 |------|----------|----------|
 | `background_path` | `res://assets/bg/lobby.png` | ✅ 배경 일러스트 |
 | `bgm` | (지정 없음) | □ BGM (선택) |
-| `empty_weight` | 0 | — |
+| `empty_weight` | 6 | — |
 | `connections` | `hallway`, `street_south` | — |
-| 배치 NPC | 루이제 (아침 업무 중) | 루이제 스탠딩 CG, 표정 변화 |
-| 행동 | 둘러보기 | — |
+| 배치 NPC | 루이제 (아침/오후) | 루이제 스탠딩 CG, 표정 변화 |
+| 행동 | 둘러보기, 루이제와 이야기한다 | — |
 
 ### 1.4 남쪽 거리 (`street_south`)
 
@@ -63,7 +63,7 @@
 | `empty_weight` | 100 | — |
 | `connections` | `lobby`, `town_square`, `weapon_shop` | — |
 | 배치 NPC | 무기상 주인 (예정) | □ NPC 초상화 |
-| 행동 | 둘러보기 | — |
+| 행동 | 둘러보기, 바닥을 수색한다 | — |
 
 ### 1.5 중앙 광장 (`town_square`)
 
@@ -72,7 +72,7 @@
 | `background_path` | `res://assets/bg/town_square.png` | ✅ 배경 일러스트 |
 | `bgm` | `town_day` | ✅ BGM |
 | `empty_weight` | 8 | — |
-| `connections` | `street_south`, `street_north`, `street_west` | — |
+| `connections` | `street_south`, `street_north`, `street_west`, `clinic` | — |
 | 배치 NPC | 엘레나, 꽃집 주인, 기타 마을 NPC | □ 엘레나 초상화, □ 꽃집 주인 초상화 |
 | 행동 | 둘러보기 | — |
 
@@ -85,7 +85,7 @@
 | `empty_weight` | 10 | — |
 | `connections` | `town_square`, `tavern`, `flower_shop`, `dungeon_01` | — |
 | 배치 NPC | 없음 | — |
-| 행동 | 둘러보기, 고대 유적으로 들어간다 | — |
+| 행동 | 둘러보기, 고대 유적으로 들어간다, 유적을 멀리서 관찰한다 | — |
 
 ### 1.7 서쪽 거리 (`street_west`) — **신규 추가**
 
@@ -107,7 +107,7 @@
 | `empty_weight` | 2 | — |
 | `connections` | `street_north` | — |
 | 배치 NPC | 루이제 (저녁/밤), 기타 NPC | 루이제 스탠딩 CG |
-| 행동 | 둘러보기 | — |
+| 행동 | 둘러보기, 도박, 정보 수집 (술값 내고), 술 한 잔 | — |
 | **특이사항** | 위기 "nightmare_town" 파멸 시 `block_place`로 봉쇄됨 | □ 봉쇄 상태 배경 (선택) |
 
 ### 1.9 무기상 (`weapon_shop`)
@@ -119,7 +119,7 @@
 | `empty_weight` | 0 | — |
 | `connections` | `street_south` | — |
 | 배치 NPC | 무기상 주인 | □ NPC 초상화 |
-| 행동 | 둘러보기 | — |
+| 행동 | 둘러보기, 무기 수리, 무기 강화 (일시적) | — |
 
 ### 1.10 꽃집 (`flower_shop`)
 
@@ -130,7 +130,7 @@
 | `empty_weight` | 0 | — |
 | `connections` | `street_north` | — |
 | 배치 NPC | 꽃집 주인 | □ NPC 초상화 |
-| 행동 | 둘러보기 | — |
+| 행동 | 둘러보기, 꽃다발 구매 | — |
 
 ### 1.11 경비대 본부 (`guard_hq`) — **신규 추가**
 
@@ -141,7 +141,18 @@
 | `empty_weight` | 0 | — |
 | `connections` | `street_west` | — |
 | 배치 NPC | 셰퍼드 (아침/오후/밤) | ❌ **셰퍼드 초상화 (필요)** |
-| 행동 | 둘러보기, 잠시 기다리기 | — |
+| 행동 | 둘러보기, 잠시 기다리기, 정보 수집, 구호 요청, 순찰대 동행, 추적자 조언 | — |
+
+### 1.12 치료소 (`clinic`) — **신규 추가**
+
+| 항목 | 현재 상태 | 필요 에셋 |
+|------|----------|----------|
+| `background_path` | `res://assets/bg/clinic.png` | ❌ **배경 일러스트 (필요)** |
+| `bgm` | `town_day` | ✅ BGM (중앙 광장과 공유 가능) |
+| `empty_weight` | 100 | — |
+| `connections` | `town_square` | — |
+| 배치 NPC | 없음 | — |
+| 행동 | 둘러보기, 치료받기 (`injured` 회복, HP 회복) | — |
 
 ---
 
@@ -189,6 +200,7 @@
 - [ ] `assets/bg/street_west.png` — **신규 필요**
 - [ ] `assets/bg/guard_hq.png` — **신규 필요**
 - [ ] `assets/bg/dungeon_01.png` — **신규 필요**
+- [ ] `assets/bg/clinic.png` — **신규 필요**
 - [ ] `assets/bg/dungeon_02.png` — 향후
 - [ ] `assets/bg/dungeon_03.png` — 향후
 
@@ -207,6 +219,7 @@
 - [ ] `assets/icons/potion.png`
 - [ ] `assets/icons/rusty_sword.png`
 - [ ] `assets/icons/condition_haunted.png`
+- [ ] `assets/icons/flower_bouquet.png` — **신규 필요**
 
 ### BGM
 
@@ -218,5 +231,5 @@
 
 ---
 
-**문서 버전**: 1.0
+**문서 버전**: 1.1
 **최종 업데이트**: 2026-05-16
