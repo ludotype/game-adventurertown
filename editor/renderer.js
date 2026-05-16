@@ -21,6 +21,7 @@ function init() {
   }
   initMenuBar();
   initKeyboard();
+  initTheme();
 
   if (dataRoot) {
     loadFolder(dataRoot);
@@ -57,6 +58,7 @@ function initMenuBar() {
       if (action === 'open-folder') openFolderDialog();
       else if (action === 'save') saveAll();
       else if (action === 'quit') window.electronAPI.quit?.() || window.close();
+      else if (action === 'toggle-theme') toggleTheme();
       closeAllMenus();
     });
   });
@@ -824,4 +826,19 @@ function escapeHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/* ==================== Theme ==================== */
+function initTheme() {
+  const saved = localStorage.getItem('gm_theme');
+  if (saved === 'light') {
+    document.body.classList.add('light-mode');
+  }
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  localStorage.setItem('gm_theme', isLight ? 'light' : 'dark');
+  const label = document.querySelector('.menu-action[data-action="toggle-theme"]');
+  if (label) label.childNodes[0].textContent = isLight ? 'Toggle Light Mode' : 'Toggle Dark Mode';
 }

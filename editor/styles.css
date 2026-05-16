@@ -25,6 +25,25 @@
   --panel-shadow: 0 2px 12px rgba(74,144,217,0.10), 0 1px 4px rgba(0,0,0,0.20);
 }
 
+body.light-mode {
+  --bg-primary: #f2f4f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e8ecf4;
+  --bg-hover: #dce3f0;
+  --bg-active: #4a90d9;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a6a8a;
+  --text-highlight: #000000;
+  --border-color: #d0d8e8;
+  --accent: #4a90d9;
+  --accent-hover: #3a7bc8;
+  --accent-light: #e8f0fc;
+  --pink: #f06292;
+  --pink-light: #fce4ec;
+  --yellow: #ffca28;
+  --panel-shadow: 0 2px 12px rgba(74,144,217,0.10), 0 1px 4px rgba(0,0,0,0.08);
+}
+
 html, body {
   width: 100%;
   height: 100%;
