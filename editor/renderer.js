@@ -380,8 +380,25 @@ function clearDirty(tabId) {
 }
 
 /* ==================== Form Builder ==================== */
+function isShortField(val) {
+  if (typeof val === 'boolean') return true;
+  if (typeof val === 'number') return true;
+  if (typeof val === 'string') {
+    return (val || '').length <= 60;
+  }
+  return false;
+}
+
 function buildForm(data, container, markDirtyFn) {
   container.innerHTML = '';
+  if (typeof data !== 'object' || data === null) {
+    container.innerHTML = '<div class="empty-state">Only JSON objects can be edited</div>';
+    return;
+  }
+  renderObjectFields(data, container, markDirtyFn, 0);
+}
+
+function renderObjectFields(data, container, markDirtyFn, depth) {
   const keys = Object.keys(data);
   if (keys.length === 0) {
     container.innerHTML = '<div class="empty-state">Empty JSON object</div>';
@@ -399,15 +416,6 @@ function buildForm(data, container, markDirtyFn) {
     }
   });
   const ordered = [...simple, ...complex];
-
-  function isShortField(key, val) {
-    if (typeof val === 'boolean') return true;
-    if (typeof val === 'number') return true;
-    if (typeof val === 'string') {
-      return (val || '').length <= 60;
-    }
-    return false;
-  }
 
   let shortQueue = [];
   function flushQueue() {
@@ -433,10 +441,65 @@ function buildForm(data, container, markDirtyFn) {
     const val = data[key];
     if (Array.isArray(val) || (typeof val === 'object' && val !== null)) {
       flushQueue();
-      builder.textarea(key, () => JSON.stringify(data[key], null, '\t'), (v) => {
-        try { data[key] = JSON.parse(v); } catch (e) {}
+
+      const group = document.createElement('div');
+      group.className = 'form-group nested-group';
+
+      const bar = document.createElement('div');
+      bar.className = 'nested-label-bar';
+
+      const lbl = document.createElement('span');
+      lbl.className = 'nested-label';
+      lbl.textContent = key;
+
+      const toggle = document.createElement('button');
+      toggle.className = 'nested-toggle';
+      toggle.type = 'button';
+      toggle.textContent = 'Raw JSON';
+
+      bar.appendChild(lbl);
+      bar.appendChild(toggle);
+      group.appendChild(bar);
+
+      const content = document.createElement('div');
+      content.className = 'nested-content';
+      group.appendChild(content);
+
+      const raw = document.createElement('textarea');
+      raw.className = 'form-input nested-raw';
+      raw.rows = 6;
+      raw.value = JSON.stringify(val, null, '\t');
+      raw.style.display = 'none';
+      group.appendChild(raw);
+
+      let isRaw = false;
+      toggle.addEventListener('click', () => {
+        if (isRaw) {
+          try {
+            const parsed = JSON.parse(raw.value);
+            data[key] = parsed;
+            content.innerHTML = '';
+            buildNestedForm(data[key], content, markDirtyFn, depth + 1, key);
+            content.style.display = '';
+            raw.style.display = 'none';
+            toggle.textContent = 'Raw JSON';
+            isRaw = false;
+            markDirtyFn();
+          } catch (e) {
+            alert('Invalid JSON: ' + e.message);
+          }
+        } else {
+          raw.value = JSON.stringify(data[key], null, '\t');
+          content.style.display = 'none';
+          raw.style.display = '';
+          toggle.textContent = 'Form View';
+          isRaw = true;
+        }
       });
-    } else if (isShortField(key, val)) {
+
+      container.appendChild(group);
+      buildNestedForm(val, content, markDirtyFn, depth + 1, key);
+    } else if (isShortField(val)) {
       shortQueue.push({ key, val });
       if (shortQueue.length >= 2) flushQueue();
     } else {
@@ -445,6 +508,162 @@ function buildForm(data, container, markDirtyFn) {
     }
   });
   flushQueue();
+}
+
+function buildNestedForm(data, container, markDirtyFn, depth = 0, label = null) {
+  container.innerHTML = '';
+
+  if (Array.isArray(data)) {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'array-toolbar';
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'array-btn';
+    addBtn.textContent = '+ Add item';
+    addBtn.addEventListener('click', () => {
+      let defaultItem = {};
+      if (data.length > 0) {
+        const first = data[0];
+        if (typeof first === 'string') defaultItem = '';
+        else if (typeof first === 'number') defaultItem = 0;
+        else if (typeof first === 'boolean') defaultItem = false;
+      }
+      data.push(defaultItem);
+      markDirtyFn();
+      buildNestedForm(data, container, markDirtyFn, depth, label);
+    });
+    toolbar.appendChild(addBtn);
+    container.appendChild(toolbar);
+
+    if (data.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.textContent = 'Empty array — click + Add item';
+      container.appendChild(empty);
+    }
+
+    data.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'nested-card array-item-card';
+      card.draggable = true;
+
+      const header = document.createElement('div');
+      header.className = 'nested-header array-item-header';
+
+      const dragHandle = document.createElement('span');
+      dragHandle.className = 'drag-handle';
+      dragHandle.textContent = '⋮⋮';
+
+      const badge = document.createElement('span');
+      badge.className = 'array-index';
+      badge.textContent = `[${index}]`;
+
+      const actions = document.createElement('span');
+      actions.className = 'array-actions';
+
+      const upBtn = document.createElement('button');
+      upBtn.className = 'array-btn';
+      upBtn.textContent = '▲';
+      upBtn.title = 'Move up';
+      upBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (index > 0) {
+          [data[index], data[index - 1]] = [data[index - 1], data[index]];
+          markDirtyFn();
+          buildNestedForm(data, container, markDirtyFn, depth, label);
+        }
+      });
+
+      const downBtn = document.createElement('button');
+      downBtn.className = 'array-btn';
+      downBtn.textContent = '▼';
+      downBtn.title = 'Move down';
+      downBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (index < data.length - 1) {
+          [data[index], data[index + 1]] = [data[index + 1], data[index]];
+          markDirtyFn();
+          buildNestedForm(data, container, markDirtyFn, depth, label);
+        }
+      });
+
+      const delBtn = document.createElement('button');
+      delBtn.className = 'array-btn array-btn-danger';
+      delBtn.textContent = '✕';
+      delBtn.title = 'Remove';
+      delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        data.splice(index, 1);
+        markDirtyFn();
+        buildNestedForm(data, container, markDirtyFn, depth, label);
+      });
+
+      actions.appendChild(upBtn);
+      actions.appendChild(downBtn);
+      actions.appendChild(delBtn);
+
+      header.appendChild(dragHandle);
+      header.appendChild(badge);
+      header.appendChild(actions);
+      card.appendChild(header);
+
+      const body = document.createElement('div');
+      body.className = 'nested-body';
+      card.appendChild(body);
+
+      card.addEventListener('dragstart', (e) => {
+        e.dataTransfer.setData('text/plain', String(index));
+        e.dataTransfer.effectAllowed = 'move';
+        card.style.opacity = '0.5';
+      });
+      card.addEventListener('dragend', () => {
+        card.style.opacity = '';
+      });
+
+      container.appendChild(card);
+      buildNestedForm(item, body, markDirtyFn, depth + 1, `[${index}]`);
+    });
+
+    if (!container._arrayListenersAdded) {
+      container._arrayListenersAdded = true;
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+        if (isNaN(fromIndex)) return;
+        const dropTarget = e.target.closest('.array-item-card');
+        if (!dropTarget || !container.contains(dropTarget)) return;
+        const cards = Array.from(container.querySelectorAll('.array-item-card'));
+        const toIndex = cards.indexOf(dropTarget);
+        if (toIndex === -1 || toIndex === fromIndex) return;
+        const item = data.splice(fromIndex, 1)[0];
+        data.splice(toIndex, 0, item);
+        markDirtyFn();
+        buildNestedForm(data, container, markDirtyFn, depth, label);
+      });
+    }
+
+    return;
+  }
+
+  if (typeof data === 'object' && data !== null) {
+    if (depth > 0) {
+      const section = document.createElement('div');
+      section.className = 'nested-section';
+      container.appendChild(section);
+      renderObjectFields(data, section, markDirtyFn, depth);
+    } else {
+      renderObjectFields(data, container, markDirtyFn, depth);
+    }
+    return;
+  }
+
+  // Primitive at nested level
+  const builder = new FormBuilder(container, false, markDirtyFn);
+  builder.textarea('value', () => data, (v) => {}, 3);
 }
 
 class FormBuilder {

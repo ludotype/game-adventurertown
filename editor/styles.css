@@ -464,6 +464,138 @@ html, body {
   margin-bottom: 0;
 }
 
+/* ===== Nested Forms ===== */
+.nested-group {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+}
+
+.nested-label-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.nested-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nested-toggle {
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.nested-toggle:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.nested-content {
+  /* container for nested form */
+}
+
+.nested-raw {
+  display: none;
+  min-height: 120px;
+}
+
+.nested-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  background: var(--bg-primary);
+}
+
+.nested-card .nested-header {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-color);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.nested-card .nested-body {
+  padding: 10px 12px;
+}
+
+.nested-section {
+  border-left: 2px solid var(--accent);
+  padding-left: 10px;
+  margin-left: 4px;
+}
+
+/* ===== Array Editor ===== */
+.array-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.array-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.array-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.array-btn-danger:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+.array-item-card {
+  margin-bottom: 8px;
+}
+
+.array-item-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drag-handle {
+  color: var(--text-secondary);
+  font-size: 11px;
+  user-select: none;
+  cursor: grab;
+}
+
+.array-index {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.array-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  margin-left: auto;
+}
+
 .form-label {
   min-width: 100px;
   font-size: 12px;
