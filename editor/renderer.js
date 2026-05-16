@@ -268,13 +268,16 @@ function openFile(filePath) {
   }
 
   const id = 'tab_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+  const schema = detectSchema(data);
   const tabInfo = {
     id,
     filePath,
     data: deepClone(data),
     originalData: deepClone(data),
     dirty: false,
-    container: null
+    container: null,
+    schema,
+    useRaw: false
   };
   openTabs.push(tabInfo);
   createTabUI(tabInfo);
@@ -308,7 +311,7 @@ function createTabUI(tabInfo) {
   editorContainer.appendChild(container);
   tabInfo.container = container;
 
-  buildForm(tabInfo.data, container, () => markDirty(tabInfo.id));
+  renderTabContent(tabInfo);
 }
 
 function activateTab(tabId) {
@@ -391,17 +394,19 @@ function isShortField(val) {
   return false;
 }
 
-function buildForm(data, container, markDirtyFn) {
+function buildForm(data, container, markDirtyFn, preferredOrder = null) {
   container.innerHTML = '';
   if (typeof data !== 'object' || data === null) {
     container.innerHTML = '<div class="empty-state">Only JSON objects can be edited</div>';
     return;
   }
-  renderObjectFields(data, container, markDirtyFn, 0);
+  renderObjectFields(data, container, markDirtyFn, 0, preferredOrder);
 }
 
-function renderObjectFields(data, container, markDirtyFn, depth) {
-  const keys = Object.keys(data);
+function renderObjectFields(data, container, markDirtyFn, depth, preferredOrder = null) {
+  const keys = preferredOrder
+    ? [...preferredOrder.filter(k => k in data), ...Object.keys(data).filter(k => !preferredOrder.includes(k))]
+    : Object.keys(data);
   if (keys.length === 0) {
     container.innerHTML = '<div class="empty-state">Empty JSON object</div>';
     return;
@@ -666,6 +671,390 @@ function buildNestedForm(data, container, markDirtyFn, depth = 0, label = null) 
   // Primitive at nested level
   const builder = new FormBuilder(container, false, markDirtyFn);
   builder.textarea('value', () => data, (v) => {}, 3);
+}
+
+/* ==================== Schema Router ==================== */
+function detectSchema(data) {
+  if (!data || typeof data !== 'object') return null;
+  if (Array.isArray(data.dialogue)) return 'dialogue';
+  if (Array.isArray(data.choices)) return 'choices';
+  if (Array.isArray(data.actions)) return 'actions';
+  if (data._type) return data._type;
+  if (data.interaction_id && Array.isArray(data.events)) return 'interaction';
+  if (data.crisis_id && Array.isArray(data.ongoing_effects)) return 'crisis';
+  if (data.condition_id && data.on_remove !== undefined) return 'condition';
+  if (data.place_id && data.connections !== undefined) return 'place';
+  return null;
+}
+
+function schemaLabel(schema) {
+  const labels = {
+    dialogue: 'Dialogue Editor',
+    choices: 'Choice Builder',
+    actions: 'Action Sequencer',
+    interaction: 'Interaction Editor',
+    crisis: 'Crisis Editor',
+    condition: 'Condition Editor',
+    place: 'Place Editor'
+  };
+  return labels[schema] || schema;
+}
+
+function renderTabContent(tabInfo) {
+  const container = tabInfo.container;
+  container.innerHTML = '';
+
+  if (tabInfo.schema && !tabInfo.useRaw) {
+    const header = document.createElement('div');
+    header.className = 'specialized-header';
+
+    const title = document.createElement('span');
+    title.className = 'specialized-title';
+    title.textContent = schemaLabel(tabInfo.schema);
+
+    const toggle = document.createElement('button');
+    toggle.className = 'nested-toggle';
+    toggle.textContent = 'Raw JSON';
+    toggle.type = 'button';
+    toggle.addEventListener('click', () => {
+      tabInfo.useRaw = true;
+      renderTabContent(tabInfo);
+    });
+
+    header.appendChild(title);
+    header.appendChild(toggle);
+    container.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'specialized-body';
+    container.appendChild(body);
+
+    buildSpecializedForm(tabInfo.schema, tabInfo.data, body, () => markDirty(tabInfo.id));
+  } else {
+    if (tabInfo.schema) {
+      const header = document.createElement('div');
+      header.className = 'specialized-header';
+
+      const title = document.createElement('span');
+      title.className = 'specialized-title';
+      title.textContent = schemaLabel(tabInfo.schema) + ' (Raw)';
+
+      const toggle = document.createElement('button');
+      toggle.className = 'nested-toggle';
+      toggle.textContent = 'Form View';
+      toggle.type = 'button';
+      toggle.addEventListener('click', () => {
+        tabInfo.useRaw = false;
+        renderTabContent(tabInfo);
+      });
+
+      header.appendChild(title);
+      header.appendChild(toggle);
+      container.appendChild(header);
+    }
+    buildForm(tabInfo.data, container, () => markDirty(tabInfo.id));
+  }
+}
+
+function buildSpecializedForm(schema, data, container, markDirtyFn) {
+  container.innerHTML = '';
+  switch (schema) {
+    case 'dialogue':
+      buildDialogueEditor(data, container, markDirtyFn);
+      break;
+    case 'choices':
+      buildChoiceEditor(data, container, markDirtyFn);
+      break;
+    case 'actions':
+      buildActionEditor(data, container, markDirtyFn);
+      break;
+    case 'interaction':
+      buildInteractionEditor(data, container, markDirtyFn);
+      break;
+    case 'crisis':
+    case 'condition':
+    case 'place':
+      buildTypedForm(schema, data, container, markDirtyFn);
+      break;
+    default:
+      buildForm(data, container, markDirtyFn);
+  }
+}
+
+function buildTypedForm(type, data, container, markDirtyFn) {
+  const orders = {
+    condition: ['condition_id', 'display_name', 'description', 'icon_path', 'tags', 'max_stack', 'reckoning', 'on_remove'],
+    place: ['place_id', 'display_name', 'background_path', 'bgm', 'empty_weight', 'connections'],
+    crisis: ['crisis_id', 'display_name', 'description', 'severity', 'tags', 'trigger', 'ongoing_effects', 'resolution', 'escalation'],
+    interaction: ['interaction_id', 'label', 'available_when', 'events']
+  };
+  const preferred = orders[type] || null;
+  buildForm(data, container, markDirtyFn, preferred);
+}
+
+function buildDialogueEditor(data, container, markDirtyFn) {
+  const arr = data.dialogue;
+  if (!Array.isArray(arr)) {
+    container.innerHTML = '<div class="empty-state">No dialogue array found</div>';
+    return;
+  }
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'array-toolbar';
+  const addBtn = document.createElement('button');
+  addBtn.className = 'array-btn';
+  addBtn.textContent = '+ Add line';
+  addBtn.addEventListener('click', () => {
+    arr.push({ speaker: '', text: '' });
+    markDirtyFn();
+    buildDialogueEditor(data, container, markDirtyFn);
+  });
+  toolbar.appendChild(addBtn);
+  container.appendChild(toolbar);
+
+  if (arr.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'Empty dialogue — click + Add line';
+    container.appendChild(empty);
+  }
+
+  arr.forEach((line, index) => {
+    const card = document.createElement('div');
+    card.className = 'nested-card array-item-card';
+
+    const header = document.createElement('div');
+    header.className = 'nested-header array-item-header';
+
+    const badge = document.createElement('span');
+    badge.className = 'array-index';
+    badge.textContent = `#${index + 1}`;
+
+    const actions = document.createElement('span');
+    actions.className = 'array-actions';
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'array-btn';
+    upBtn.textContent = '▲';
+    upBtn.addEventListener('click', () => {
+      if (index > 0) { [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]]; markDirtyFn(); buildDialogueEditor(data, container, markDirtyFn); }
+    });
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'array-btn';
+    downBtn.textContent = '▼';
+    downBtn.addEventListener('click', () => {
+      if (index < arr.length - 1) { [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]]; markDirtyFn(); buildDialogueEditor(data, container, markDirtyFn); }
+    });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'array-btn array-btn-danger';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', () => {
+      arr.splice(index, 1);
+      markDirtyFn();
+      buildDialogueEditor(data, container, markDirtyFn);
+    });
+
+    actions.appendChild(upBtn);
+    actions.appendChild(downBtn);
+    actions.appendChild(delBtn);
+    header.appendChild(badge);
+    header.appendChild(actions);
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'nested-body';
+    card.appendChild(body);
+    container.appendChild(card);
+
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    body.appendChild(row);
+
+    const rowBuilder = new FormBuilder(row, false, markDirtyFn);
+    rowBuilder.text('speaker', () => line.speaker, (v) => { line.speaker = v; });
+    rowBuilder.textarea('text', () => line.text, (v) => { line.text = v; }, 3);
+  });
+}
+
+function buildChoiceEditor(data, container, markDirtyFn) {
+  const arr = data.choices;
+  if (!Array.isArray(arr)) {
+    container.innerHTML = '<div class="empty-state">No choices array found</div>';
+    return;
+  }
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'array-toolbar';
+  const addBtn = document.createElement('button');
+  addBtn.className = 'array-btn';
+  addBtn.textContent = '+ Add choice';
+  addBtn.addEventListener('click', () => {
+    arr.push({ text: '', condition: '', next_scene: '' });
+    markDirtyFn();
+    buildChoiceEditor(data, container, markDirtyFn);
+  });
+  toolbar.appendChild(addBtn);
+  container.appendChild(toolbar);
+
+  if (arr.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'Empty choices — click + Add choice';
+    container.appendChild(empty);
+  }
+
+  arr.forEach((choice, index) => {
+    const card = document.createElement('div');
+    card.className = 'nested-card array-item-card';
+
+    const header = document.createElement('div');
+    header.className = 'nested-header array-item-header';
+
+    const badge = document.createElement('span');
+    badge.className = 'array-index';
+    badge.textContent = `#${index + 1}`;
+
+    const actions = document.createElement('span');
+    actions.className = 'array-actions';
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'array-btn';
+    upBtn.textContent = '▲';
+    upBtn.addEventListener('click', () => {
+      if (index > 0) { [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]]; markDirtyFn(); buildChoiceEditor(data, container, markDirtyFn); }
+    });
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'array-btn';
+    downBtn.textContent = '▼';
+    downBtn.addEventListener('click', () => {
+      if (index < arr.length - 1) { [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]]; markDirtyFn(); buildChoiceEditor(data, container, markDirtyFn); }
+    });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'array-btn array-btn-danger';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', () => {
+      arr.splice(index, 1);
+      markDirtyFn();
+      buildChoiceEditor(data, container, markDirtyFn);
+    });
+
+    actions.appendChild(upBtn);
+    actions.appendChild(downBtn);
+    actions.appendChild(delBtn);
+    header.appendChild(badge);
+    header.appendChild(actions);
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'nested-body';
+    card.appendChild(body);
+    container.appendChild(card);
+
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    body.appendChild(row);
+
+    const rowBuilder = new FormBuilder(row, false, markDirtyFn);
+    rowBuilder.text('text', () => choice.text, (v) => { choice.text = v; });
+    rowBuilder.text('condition', () => choice.condition, (v) => { choice.condition = v; });
+    rowBuilder.text('next_scene', () => choice.next_scene, (v) => { choice.next_scene = v; });
+  });
+}
+
+function buildActionEditor(data, container, markDirtyFn) {
+  const arr = data.actions;
+  if (!Array.isArray(arr)) {
+    container.innerHTML = '<div class="empty-state">No actions array found</div>';
+    return;
+  }
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'array-toolbar';
+  const addBtn = document.createElement('button');
+  addBtn.className = 'array-btn';
+  addBtn.textContent = '+ Add action';
+  addBtn.addEventListener('click', () => {
+    arr.push({ type: 'log' });
+    markDirtyFn();
+    buildActionEditor(data, container, markDirtyFn);
+  });
+  toolbar.appendChild(addBtn);
+  container.appendChild(toolbar);
+
+  if (arr.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'Empty actions — click + Add action';
+    container.appendChild(empty);
+  }
+
+  arr.forEach((action, index) => {
+    const card = document.createElement('div');
+    card.className = 'nested-card array-item-card';
+
+    const header = document.createElement('div');
+    header.className = 'nested-header array-item-header';
+
+    const badge = document.createElement('span');
+    badge.className = 'array-index';
+    badge.textContent = `#${index + 1}`;
+
+    const typeLabel = document.createElement('span');
+    typeLabel.className = 'action-type-label';
+    typeLabel.textContent = action.type || '—';
+
+    const actions = document.createElement('span');
+    actions.className = 'array-actions';
+
+    const upBtn = document.createElement('button');
+    upBtn.className = 'array-btn';
+    upBtn.textContent = '▲';
+    upBtn.addEventListener('click', () => {
+      if (index > 0) { [arr[index], arr[index - 1]] = [arr[index - 1], arr[index]]; markDirtyFn(); buildActionEditor(data, container, markDirtyFn); }
+    });
+
+    const downBtn = document.createElement('button');
+    downBtn.className = 'array-btn';
+    downBtn.textContent = '▼';
+    downBtn.addEventListener('click', () => {
+      if (index < arr.length - 1) { [arr[index], arr[index + 1]] = [arr[index + 1], arr[index]]; markDirtyFn(); buildActionEditor(data, container, markDirtyFn); }
+    });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'array-btn array-btn-danger';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', () => {
+      arr.splice(index, 1);
+      markDirtyFn();
+      buildActionEditor(data, container, markDirtyFn);
+    });
+
+    actions.appendChild(upBtn);
+    actions.appendChild(downBtn);
+    actions.appendChild(delBtn);
+    header.appendChild(badge);
+    header.appendChild(typeLabel);
+    header.appendChild(actions);
+    card.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'nested-body';
+    card.appendChild(body);
+    container.appendChild(card);
+
+    // Render action parameters using generic form, but put type first
+    renderObjectFields(action, body, markDirtyFn, 0, ['type']);
+  });
+}
+
+function buildInteractionEditor(data, container, markDirtyFn) {
+  // Render top-level fields with preferred order (events included)
+  const topOrder = ['interaction_id', 'label', 'available_when', 'events'];
+  renderObjectFields(data, container, markDirtyFn, 0, topOrder);
 }
 
 class FormBuilder {
