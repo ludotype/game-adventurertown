@@ -1,0 +1,8 @@
+{
+  "place_id": "street_west",
+  "display_name": "서쪽 거리",
+  "background_path": "res://assets/bg/street_west.png",
+  "bgm": "town_day",
+  "empty_weight": 12,
+  "connections": ["town_square", "guard_hq"]
+}

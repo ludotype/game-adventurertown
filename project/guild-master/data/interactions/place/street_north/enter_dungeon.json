@@ -1,0 +1,13 @@
+{
+  "interaction_id": "enter_dungeon",
+  "label": "고대 유적으로 들어간다",
+  "events": [
+    {
+      "id": "enter_dungeon",
+      "priority": 0,
+      "actions": [
+        { "type": "move", "target_place": "dungeon_01" }
+      ]
+    }
+  ]
+}

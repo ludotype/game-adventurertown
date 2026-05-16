@@ -1,0 +1,20 @@
+{
+  "doom_track": {
+    "max": 20,
+    "initial": 0,
+    "increment_sources": [
+      { "source": "crisis_doom", "amount": 2 },
+      { "source": "failed_reckoning", "amount": 1 },
+      { "source": "dungeon_death", "amount": 1 }
+    ],
+    "decrement_sources": [
+      { "source": "crisis_resolved", "amount": -1 },
+      { "source": "special_item", "item_id": "ancient_scroll", "amount": -2 }
+    ],
+    "thresholds": [
+      { "at": 10, "action": { "type": "play_bgm", "bgm_id": "tension_rising" } },
+      { "at": 15, "action": { "type": "dialogue", "dialogue_id": "doom_warning_15" } },
+      { "at": 20, "action": { "type": "game_over", "reason": "세계가 암흑에 잠겼다.", "game_over_type": "doom" } }
+    ]
+  }
+}

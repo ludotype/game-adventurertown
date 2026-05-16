@@ -1,0 +1,32 @@
+{
+  "interaction_id": "explore",
+  "label": "깊숙이 탐험",
+  "events": [
+    {
+      "id": "dungeon_explore_safe",
+      "priority": 50,
+      "weight": 60,
+      "actions": [
+        { "type": "log", "message": "덤불 사이에서 무언가 반짝인다." },
+        { "type": "random_loot", "table_id": "dungeon_01" }
+      ]
+    },
+    {
+      "id": "dungeon_explore_trap",
+      "priority": 50,
+      "weight": 20,
+      "actions": [
+        { "type": "log", "message": "함정이다! 날카로운 철창이 스쳐 지나간다." },
+        { "type": "change_metric", "key": "player.hp", "amount": -10 }
+      ]
+    },
+    {
+      "id": "dungeon_explore_nothing",
+      "priority": 50,
+      "weight": 20,
+      "actions": [
+        { "type": "log", "message": "아무것도 없다. 풀 속의 메뚜기 소리만이 메아리친다." }
+      ]
+    }
+  ]
+}

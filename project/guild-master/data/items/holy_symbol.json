@@ -1,0 +1,9 @@
+{
+  "item_id": "holy_symbol",
+  "display_name": "신성한 부적",
+  "description": "고대 신전에서 발견된 부적. 어둠을 물리치는 힘이 깃들어 있다고 전해진다.",
+  "icon_path": "res://assets/icons/holy_symbol.png",
+  "category": "material",
+  "max_stack": 1,
+  "effects": []
+}

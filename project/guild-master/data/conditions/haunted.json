@@ -1,0 +1,28 @@
+{
+  "condition_id": "haunted",
+  "display_name": "악몽에 시달림",
+  "description": "잠들 때마다 끔찍한 환영이 뇌리를 맴돈다.",
+  "icon_path": "res://assets/icons/condition_haunted.png",
+  "tags": ["mental", "reckoning"],
+  "max_stack": 3,
+  "reckoning": {
+    "trigger": "daily_midnight",
+    "action": {
+      "type": "attribute_check",
+      "attribute": "will",
+      "difficulty": 1,
+      "pass_actions": [
+        { "type": "log", "message": "악몽 속에서도 평온을 유지했다." }
+      ],
+      "fail_actions": [
+        { "type": "change_metric", "key": "player.mental", "amount": -3 },
+        { "type": "change_doom", "amount": 1 }
+      ]
+    }
+  },
+  "on_remove": {
+    "actions": [
+      { "type": "log", "message": "악몽에서 벗어났다." }
+    ]
+  }
+}

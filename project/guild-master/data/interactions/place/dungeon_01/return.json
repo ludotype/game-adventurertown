@@ -1,0 +1,13 @@
+{
+  "interaction_id": "return",
+  "label": "돌아가기",
+  "events": [
+    {
+      "id": "dungeon_return",
+      "priority": 0,
+      "actions": [
+        { "type": "move", "target_place": "street_north" }
+      ]
+    }
+  ]
+}

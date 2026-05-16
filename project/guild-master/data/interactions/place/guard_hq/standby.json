@@ -1,0 +1,13 @@
+{
+  "interaction_id": "standby",
+  "label": "잠시 기다리기",
+  "events": [
+    {
+      "id": "guard_hq_standby",
+      "priority": 0,
+      "actions": [
+        { "type": "advance_time", "time_units": 1 }
+      ]
+    }
+  ]
+}

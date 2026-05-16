@@ -52,6 +52,16 @@ func evaluate(condition, context: Dictionary = {}) -> bool:
 		return _evaluate_day_eq(condition_dict["day_eq"])
 	if condition_dict.has("day_gte"):
 		return _evaluate_day_gte(condition_dict["day_gte"])
+	if condition_dict.has("crisis_active"):
+		return _evaluate_crisis_active(condition_dict["crisis_active"])
+	if condition_dict.has("doom_gte"):
+		return _evaluate_doom_gte(condition_dict["doom_gte"])
+	if condition_dict.has("has_condition"):
+		return _evaluate_has_condition(condition_dict["has_condition"])
+	if condition_dict.has("place_blocked"):
+		return _evaluate_place_blocked(condition_dict["place_blocked"])
+	if condition_dict.has("has_item"):
+		return _evaluate_has_item(condition_dict["has_item"])
 
 	push_warning("ConditionEvaluator: unknown condition keys: " + str(condition_dict.keys()))
 	return false
@@ -197,3 +207,54 @@ func _evaluate_day_gte(args) -> bool:
 		push_warning("ConditionEvaluator: TimeSystem autoload is missing")
 		return false
 	return TimeSystem.day >= int(args)
+
+
+func _evaluate_crisis_active(args) -> bool:
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("is_crisis_active"):
+		push_warning("ConditionEvaluator: CrisisManager autoload is missing")
+		return false
+	var crisis_id := String(args)
+	return CrisisManager.is_crisis_active(crisis_id)
+
+
+func _evaluate_doom_gte(args) -> bool:
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("get_doom"):
+		push_warning("ConditionEvaluator: CrisisManager autoload is missing")
+		return false
+	return CrisisManager.get_doom() >= int(args)
+
+
+func _evaluate_has_condition(args) -> bool:
+	if not has_node("/root/ConditionManager") or not ConditionManager.has_method("has_condition"):
+		push_warning("ConditionEvaluator: ConditionManager autoload is missing")
+		return false
+	var condition_id := String(args)
+	if typeof(args) == TYPE_ARRAY and args.size() >= 1:
+		condition_id = String(args[0])
+	var required_stack: int = 1
+	if typeof(args) == TYPE_ARRAY and args.size() >= 2:
+		required_stack = int(args[1])
+	if not ConditionManager.has_condition(condition_id):
+		return false
+	return ConditionManager.get_condition_stack(condition_id) >= required_stack
+
+
+func _evaluate_place_blocked(args) -> bool:
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("is_place_blocked"):
+		push_warning("ConditionEvaluator: CrisisManager autoload is missing")
+		return false
+	var place_id := String(args)
+	return CrisisManager.is_place_blocked(place_id)
+
+
+func _evaluate_has_item(args) -> bool:
+	if not has_node("/root/InventoryManager") or not InventoryManager.has_method("has_item"):
+		push_warning("ConditionEvaluator: InventoryManager autoload is missing")
+		return false
+	var item_id := String(args)
+	var required_count: int = 1
+	if typeof(args) == TYPE_ARRAY and args.size() >= 1:
+		item_id = String(args[0])
+		if args.size() >= 2:
+			required_count = int(args[1])
+	return InventoryManager.has_item(item_id, required_count)

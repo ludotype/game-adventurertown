@@ -1,0 +1,11 @@
+{
+  "item_id": "rusty_sword",
+  "display_name": "녹슨 검",
+  "description": "오래된 검. 관리가 소홀하지만 여전히 베는 데는 문제없다.",
+  "icon_path": "res://assets/icons/rusty_sword.png",
+  "category": "weapon",
+  "max_stack": 1,
+  "effects": [
+    { "type": "buff", "metric_key": "player.attack", "amount": 3 }
+  ]
+}

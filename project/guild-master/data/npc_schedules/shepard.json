@@ -1,0 +1,12 @@
+{
+  "npc_id": "shepard",
+  "display_name": "셰퍼드 경비대장",
+  "portrait_path": "res://assets/portraits/shepard.png",
+  "default_dialogue": "shepard_default",
+  "schedule": {
+    "morning": { "place_id": "guard_hq", "weight": 90 },
+    "afternoon": { "place_id": "guard_hq", "weight": 70 },
+    "evening": { "place_id": "street_west", "weight": 60 },
+    "night": { "place_id": "guard_hq", "weight": 80 }
+  }
+}

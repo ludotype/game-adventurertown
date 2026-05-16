@@ -1,0 +1,8 @@
+{
+  "place_id": "dungeon_01",
+  "display_name": "고대 유적",
+  "background_path": "res://assets/bg/dungeon_01.png",
+  "bgm": "dungeon_ambient",
+  "empty_weight": 100,
+  "connections": ["street_north"]
+}

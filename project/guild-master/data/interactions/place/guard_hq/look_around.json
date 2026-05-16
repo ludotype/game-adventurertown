@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_guard_hq",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "경비대 본부에는 무기와 방패가 벽에 걸려있고, 지도 위에는 마을 주변의 순찰 경로가 표시되어 있다." }
+      ]
+    }
+  ]
+}

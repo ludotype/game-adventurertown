@@ -1,0 +1,9 @@
+{
+  "table_id": "dungeon_01",
+  "entries": [
+    { "item_id": "rusty_sword", "weight": 30, "min_count": 1, "max_count": 1 },
+    { "item_id": "potion", "weight": 30, "min_count": 1, "max_count": 2 },
+    { "item_id": "holy_symbol", "weight": 15, "min_count": 1, "max_count": 1 },
+    { "item_id": "", "weight": 25, "message": "아무것도 찾지 못했다." }
+  ]
+}

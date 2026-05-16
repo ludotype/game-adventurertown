@@ -84,13 +84,19 @@ func _update_details(info: Dictionary) -> void:
 				ts.get("year", 0), ts.get("month", 0), ts.get("day", 0),
 				ts.get("hour", 0), ts.get("minute", 0), ts.get("second", 0)
 			]
-		
+
 		var day_str = tr("UI_DAY_FORMAT") % info.get("day", 1)
-		var game_time_str = tr("UI_GAME_TIME") % [info.get("hour", 22), info.get("minute", 0)]
-		var rank_str = tr("UI_RANK") % str(info.get("rank", "D"))
-		var sanity_str = tr("UI_SANITY") % info.get("sanity", 100)
+		var game_time_str = tr("UI_GAME_TIME") % [info.get("hour", 7), info.get("minute", 0)]
+		var score_str = tr("UI_SCORE") % info.get("score", 0)
+		var place_id: String = info.get("place_id", "")
+		var place_name := place_id
+		if has_node("/root/PlaceRegistry") and PlaceRegistry.has_method("get_place"):
+			var pd := PlaceRegistry.get_place(place_id)
+			if not pd.is_empty():
+				place_name = pd.get("display_name", place_id)
+		var place_str = tr("UI_PLACE") % place_name
 		var saved_at_str = tr("UI_SAVED_AT") % time_str
-		
+
 		details_label.text = "[center][b]%s[/b]
 %s
 
@@ -98,7 +104,7 @@ func _update_details(info: Dictionary) -> void:
 %s
 
 [color=gray][font_size=14]%s[/font_size][/color][/center]" % [
-			day_str, game_time_str, rank_str, sanity_str, saved_at_str
+			day_str, game_time_str, score_str, place_str, saved_at_str
 		]
 
 func _on_overwrite_pressed() -> void:

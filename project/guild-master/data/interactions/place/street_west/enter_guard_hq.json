@@ -1,0 +1,13 @@
+{
+  "interaction_id": "enter_guard_hq",
+  "label": "경비대 본부로 들어간다",
+  "events": [
+    {
+      "id": "enter_guard_hq",
+      "priority": 0,
+      "actions": [
+        { "type": "move", "target_place": "guard_hq" }
+      ]
+    }
+  ]
+}

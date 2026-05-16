@@ -55,6 +55,32 @@ func run(action, context: Dictionary = {}, depth: int = 0) -> bool:
 			ok = _run_sequence(action_dict, context, depth)
 		"if":
 			ok = _run_if(action_dict, context, depth)
+		"game_over":
+			ok = _run_game_over(action_dict)
+		"attribute_check":
+			ok = _run_attribute_check(action_dict, context)
+		"add_condition":
+			ok = _run_add_condition(action_dict)
+		"remove_condition":
+			ok = _run_remove_condition(action_dict)
+		"change_doom":
+			ok = _run_change_doom(action_dict)
+		"block_place":
+			ok = _run_block_place(action_dict)
+		"unblock_place":
+			ok = _run_unblock_place(action_dict)
+		"add_item":
+			ok = _run_add_item(action_dict)
+		"remove_item":
+			ok = _run_remove_item(action_dict)
+		"equip_item":
+			ok = _run_equip_item(action_dict)
+		"unequip_item":
+			ok = _run_unequip_item(action_dict)
+		"open_ui":
+			ok = _run_open_ui(action_dict)
+		"random_loot":
+			ok = _run_random_loot(action_dict)
 		_:
 			ok = _fail(action_dict, "unknown action type: " + action_type)
 
@@ -215,6 +241,169 @@ func _find_dialogue_resource_path(dialogue_id: String) -> String:
 		if ResourceLoader.exists(path):
 			return path
 	return ""
+
+
+func _run_game_over(action: Dictionary) -> bool:
+	var reason := String(action.get("reason", ""))
+	var game_over_type := String(action.get("game_over_type", action.get("type", "normal")))
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("trigger_game_over"):
+		return _fail(action, "CrisisManager autoload is missing")
+	CrisisManager.trigger_game_over(reason, game_over_type)
+	return true
+
+
+func _run_attribute_check(action: Dictionary, context: Dictionary) -> bool:
+	var attribute := String(action.get("attribute", "will"))
+	var difficulty: int = action.get("difficulty", 1)
+	var attr_key := "player." + attribute
+	var attr_value: int = MetricStore.get_metric(attr_key, 0)
+	var roll := randi_range(1, 6)
+	var total := roll + attr_value
+	var threshold := difficulty * 3
+	var passed := total >= threshold
+
+	if passed:
+		var pass_actions: Array = action.get("pass_actions", [])
+		for pa in pass_actions:
+			run(pa, context)
+		if action.has("pass_message"):
+			run({ "type": "log", "message": action["pass_message"] }, context)
+	else:
+		var fail_actions: Array = action.get("fail_actions", [])
+		for fa in fail_actions:
+			run(fa, context)
+	return true
+
+
+func _run_add_condition(action: Dictionary) -> bool:
+	var condition_id := String(action.get("condition_id", ""))
+	if condition_id.is_empty():
+		return _fail(action, "add_condition requires condition_id")
+	if not has_node("/root/ConditionManager") or not ConditionManager.has_method("add_condition"):
+		return _fail(action, "ConditionManager autoload is missing")
+	var duration: int = action.get("duration", -1)
+	var stack: int = action.get("stack", 1)
+	ConditionManager.add_condition(condition_id, duration, stack)
+	return true
+
+
+func _run_remove_condition(action: Dictionary) -> bool:
+	var condition_id := String(action.get("condition_id", ""))
+	if condition_id.is_empty():
+		return _fail(action, "remove_condition requires condition_id")
+	if not has_node("/root/ConditionManager") or not ConditionManager.has_method("remove_condition"):
+		return _fail(action, "ConditionManager autoload is missing")
+	ConditionManager.remove_condition(condition_id)
+	return true
+
+
+func _run_change_doom(action: Dictionary) -> bool:
+	var amount: int = action.get("amount", 0)
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("change_doom"):
+		return _fail(action, "CrisisManager autoload is missing")
+	CrisisManager.change_doom(amount)
+	return true
+
+
+func _run_block_place(action: Dictionary) -> bool:
+	var place_id := String(action.get("place_id", ""))
+	if place_id.is_empty():
+		return _fail(action, "block_place requires place_id")
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("block_place"):
+		return _fail(action, "CrisisManager autoload is missing")
+	var reason := String(action.get("reason", ""))
+	CrisisManager.block_place(place_id, reason)
+	return true
+
+
+func _run_unblock_place(action: Dictionary) -> bool:
+	var place_id := String(action.get("place_id", ""))
+	if place_id.is_empty():
+		return _fail(action, "unblock_place requires place_id")
+	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("unblock_place"):
+		return _fail(action, "CrisisManager autoload is missing")
+	CrisisManager.unblock_place(place_id)
+	return true
+
+
+func _run_add_item(action: Dictionary) -> bool:
+	var item_id := String(action.get("item_id", ""))
+	if item_id.is_empty():
+		return _fail(action, "add_item requires item_id")
+	if not has_node("/root/InventoryManager") or not InventoryManager.has_method("add_item"):
+		return _fail(action, "InventoryManager autoload is missing")
+	var amount: int = action.get("amount", 1)
+	InventoryManager.add_item(item_id, amount)
+	return true
+
+
+func _run_remove_item(action: Dictionary) -> bool:
+	var item_id := String(action.get("item_id", ""))
+	if item_id.is_empty():
+		return _fail(action, "remove_item requires item_id")
+	if not has_node("/root/InventoryManager") or not InventoryManager.has_method("remove_item"):
+		return _fail(action, "InventoryManager autoload is missing")
+	var amount: int = action.get("amount", 1)
+	InventoryManager.remove_item(item_id, amount)
+	return true
+
+
+func _run_equip_item(action: Dictionary) -> bool:
+	var item_id := String(action.get("item_id", ""))
+	if item_id.is_empty():
+		return _fail(action, "equip_item requires item_id")
+	if not has_node("/root/InventoryManager") or not InventoryManager.has_method("equip_item"):
+		return _fail(action, "InventoryManager autoload is missing")
+	InventoryManager.equip_item(item_id)
+	return true
+
+
+func _run_unequip_item(action: Dictionary) -> bool:
+	var item_id := String(action.get("item_id", ""))
+	if item_id.is_empty():
+		return _fail(action, "unequip_item requires item_id")
+	if not has_node("/root/InventoryManager") or not InventoryManager.has_method("unequip_item"):
+		return _fail(action, "InventoryManager autoload is missing")
+	InventoryManager.unequip_item(item_id)
+	return true
+
+
+func _run_open_ui(action: Dictionary) -> bool:
+	var ui_name := String(action.get("ui_name", ""))
+	if ui_name.is_empty():
+		return _fail(action, "open_ui requires ui_name")
+	var scene_path := ""
+	match ui_name:
+		"inventory":
+			scene_path = "res://scenes/ui/inventory_window.tscn"
+		_:
+			return _fail(action, "unknown ui_name: " + ui_name)
+	if not ResourceLoader.exists(scene_path):
+		return _fail(action, "UI scene not found: " + scene_path)
+	var scene := load(scene_path)
+	if scene == null:
+		return _fail(action, "failed to load UI scene: " + scene_path)
+	var instance := scene.instantiate()
+	get_tree().root.add_child(instance)
+	return true
+
+
+func _run_random_loot(action: Dictionary) -> bool:
+	var table_id := String(action.get("table_id", ""))
+	if table_id.is_empty():
+		return _fail(action, "random_loot requires table_id")
+	if not has_node("/root/LootTableRegistry") or not LootTableRegistry.has_method("roll"):
+		return _fail(action, "LootTableRegistry autoload is missing")
+	var result: Dictionary = LootTableRegistry.roll(table_id)
+	var item_id: String = result.get("item_id", "")
+	var count: int = result.get("count", 0)
+	var message: String = result.get("message", "")
+	if not item_id.is_empty() and count > 0:
+		if has_node("/root/InventoryManager") and InventoryManager.has_method("add_item"):
+			InventoryManager.add_item(item_id, count)
+	if not message.is_empty():
+		print("Loot: ", message)
+	return true
 
 
 func _fail(action: Dictionary, reason: String) -> bool:

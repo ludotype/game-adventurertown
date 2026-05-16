@@ -1,0 +1,8 @@
+{
+  "place_id": "guard_hq",
+  "display_name": "경비대 본부",
+  "background_path": "res://assets/bg/guard_hq.png",
+  "bgm": "guard_hq",
+  "empty_weight": 0,
+  "connections": ["street_west"]
+}

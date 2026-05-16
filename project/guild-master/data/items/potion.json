@@ -1,0 +1,11 @@
+{
+  "item_id": "potion",
+  "display_name": "회복 물약",
+  "description": "빨간색이 도는 물약. 상처를 아물게 한다.",
+  "icon_path": "res://assets/icons/potion.png",
+  "category": "consumable",
+  "max_stack": 10,
+  "effects": [
+    { "type": "heal", "metric_key": "player.hp", "amount": 20 }
+  ]
+}

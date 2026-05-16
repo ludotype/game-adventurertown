@@ -36,6 +36,12 @@ ConditionEvaluator="*res://scripts/engines/condition_evaluator.gd"
 ActionRunner="*res://scripts/engines/action_runner.gd"
 TimeSystem="*res://scripts/state/time_system.gd"
 MetricStore="*res://scripts/state/metric_store.gd"
+CrisisRegistry="*res://scripts/systems/crisis_registry.gd"
+ConditionManager="*res://scripts/state/condition_manager.gd"
+CrisisManager="*res://scripts/systems/crisis_manager.gd"
+ItemRegistry="*res://scripts/systems/item_registry.gd"
+InventoryManager="*res://scripts/state/inventory_manager.gd"
+LootTableRegistry="*res://scripts/systems/loot_table_registry.gd"
 
 [dialogue_manager]
 

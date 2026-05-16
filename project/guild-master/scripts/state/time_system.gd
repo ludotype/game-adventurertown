@@ -32,6 +32,13 @@ func reset_time() -> void:
 	_emit_time_advanced()
 
 
+func set_time(new_day: int, new_hour: int, new_minute: int) -> void:
+	day = maxi(1, new_day)
+	hour = clampi(new_hour, 0, 23)
+	minute = clampi(new_minute, 0, 59)
+	_emit_time_advanced()
+
+
 func advance(time_units: int = 1) -> void:
 	advance_time_units(time_units)
 

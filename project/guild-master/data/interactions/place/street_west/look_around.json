@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_street_west",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "서쪽 거리는 조용하다. 경비대 본부의 깃발이 바람에 펄럭인다." }
+      ]
+    }
+  ]
+}

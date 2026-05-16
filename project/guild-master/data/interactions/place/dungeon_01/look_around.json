@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "dungeon_look",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "고대 유적의 잔해가 어둠 속에서 음산하게 드리워져 있다. 벽에는 낡은 벽화가 남아있다." }
+      ]
+    }
+  ]
+}
