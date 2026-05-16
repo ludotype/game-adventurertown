@@ -400,21 +400,51 @@ function buildForm(data, container, markDirtyFn) {
   });
   const ordered = [...simple, ...complex];
 
+  function isShortField(key, val) {
+    if (typeof val === 'boolean') return true;
+    if (typeof val === 'number') return true;
+    if (typeof val === 'string') {
+      return (val || '').length <= 60;
+    }
+    return false;
+  }
+
+  let shortQueue = [];
+  function flushQueue() {
+    if (shortQueue.length === 0) return;
+    const row = document.createElement('div');
+    row.className = 'form-row';
+    container.appendChild(row);
+    const rowBuilder = new FormBuilder(row, false, markDirtyFn);
+    for (const { key, val } of shortQueue) {
+      if (typeof val === 'boolean') {
+        rowBuilder.checkbox(key, () => data[key], (v) => { data[key] = v; });
+      } else if (typeof val === 'number') {
+        rowBuilder.number(key, () => data[key], (v) => { data[key] = v; });
+      } else {
+        rowBuilder.text(key, () => data[key], (v) => { data[key] = v; });
+      }
+    }
+    shortQueue = [];
+  }
+
   const builder = new FormBuilder(container, false, markDirtyFn);
   ordered.forEach(key => {
     const val = data[key];
-    if (typeof val === 'boolean') {
-      builder.checkbox(key, () => data[key], (v) => { data[key] = v; });
-    } else if (typeof val === 'number') {
-      builder.number(key, () => data[key], (v) => { data[key] = v; });
-    } else if (Array.isArray(val) || (typeof val === 'object' && val !== null)) {
+    if (Array.isArray(val) || (typeof val === 'object' && val !== null)) {
+      flushQueue();
       builder.textarea(key, () => JSON.stringify(data[key], null, '\t'), (v) => {
         try { data[key] = JSON.parse(v); } catch (e) {}
       });
+    } else if (isShortField(key, val)) {
+      shortQueue.push({ key, val });
+      if (shortQueue.length >= 2) flushQueue();
     } else {
+      flushQueue();
       builder.textarea(key, () => data[key], (v) => { data[key] = v; }, 10);
     }
   });
+  flushQueue();
 }
 
 class FormBuilder {
@@ -425,7 +455,8 @@ class FormBuilder {
   }
   text(label, getter, setter, placeholder = '') {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:block;margin-bottom:8px;';
+    wrap.className = 'form-group';
+    wrap.style.cssText = 'display:block;';
     const lbl = document.createElement('span');
     lbl.className = 'form-label';
     lbl.style.display = 'block';
@@ -448,7 +479,8 @@ class FormBuilder {
   }
   number(label, getter, setter, opts = {}) {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:block;margin-bottom:8px;';
+    wrap.className = 'form-group';
+    wrap.style.cssText = 'display:block;';
     const lbl = document.createElement('span');
     lbl.className = 'form-label';
     lbl.style.display = 'block';
@@ -474,7 +506,8 @@ class FormBuilder {
   }
   checkbox(label, getter, setter) {
     const wrap = document.createElement('label');
-    wrap.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;margin-bottom:8px;';
+    wrap.className = 'form-group';
+    wrap.style.cssText = 'display:flex;align-items:center;gap:6px;cursor:pointer;';
     const cb = document.createElement('input');
     cb.type = 'checkbox';
     cb.checked = !!getter();
@@ -493,7 +526,8 @@ class FormBuilder {
   }
   textarea(label, getter, setter, rows = 6) {
     const wrap = document.createElement('div');
-    wrap.style.cssText = 'display:block;margin-bottom:8px;';
+    wrap.className = 'form-group';
+    wrap.style.cssText = 'display:block;';
     const lbl = document.createElement('span');
     lbl.className = 'form-label';
     lbl.style.display = 'block';

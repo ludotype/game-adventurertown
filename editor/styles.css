@@ -448,12 +448,20 @@ html, body {
   overflow-y: auto;
 }
 
+.form-group {
+  margin-bottom: 14px;
+}
+
 .form-row {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 30px;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .form-label {
