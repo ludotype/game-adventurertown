@@ -115,15 +115,17 @@ EXTERNAL advance_time(units)
     숨을 꾹 참고 무사히 통과했다.
     ~ advance_time(1)
     -> next_event
-- result >= 7:
-    가스실을 통과했지만 기침이 멈추지 않는다.
-    ~ change_metric("player.hp", -5)
-    ~ change_metric("player.sanity", -2)
-    -> next_event
 - else:
-    지독한 독가스에 정신을 잃을 뻔했다.
-    ~ change_metric("player.hp", -10)
-    -> retreat
+    { result >= 7:
+        가스실을 통과했지만 기침이 멈추지 않는다.
+        ~ change_metric("player.hp", -5)
+        ~ change_metric("player.sanity", -2)
+        -> next_event
+    - else:
+        지독한 독가스에 정신을 잃을 뻔했다.
+        ~ change_metric("player.hp", -10)
+        -> retreat
+    }
 }
 ```
 
@@ -139,7 +141,21 @@ VAR has_gas_mask = false
     -> next_event
 - else:
     ~ temp result = roll_2d6(0)
-    { result >= 10: ... }
+    { result >= 10:
+        숨을 꾹 참고 무사히 통과했다.
+        ~ advance_time(1)
+        -> next_event
+    - else:
+        { result >= 7:
+            가스를 들이마셔 기침이 멈추지 않는다.
+            ~ change_metric("player.hp", -5)
+            -> next_event
+        - else:
+            지독한 독가스에 정신을 잃을 뻔했다.
+            ~ change_metric("player.hp", -10)
+            -> retreat
+        }
+    }
 }
 ```
 
