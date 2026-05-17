@@ -1,0 +1,79 @@
+EXTERNAL set_flag(key, value)
+EXTERNAL set_metric(key, value)
+EXTERNAL change_metric(key, amount)
+EXTERNAL advance_time(time_units)
+EXTERNAL advance_minutes(minutes)
+EXTERNAL sleep_until_next_day()
+EXTERNAL add_item(item_id, amount)
+EXTERNAL remove_item(item_id, amount)
+EXTERNAL equip_item(item_id)
+EXTERNAL unequip_item(item_id)
+EXTERNAL move(target_place)
+EXTERNAL log(message)
+EXTERNAL add_condition(condition_id, duration, stack)
+EXTERNAL remove_condition(condition_id)
+EXTERNAL change_doom(amount)
+EXTERNAL block_place(place_id, reason)
+EXTERNAL unblock_place(place_id)
+EXTERNAL trigger_game_over(reason, game_over_type)
+EXTERNAL open_ui(ui_name)
+EXTERNAL random_loot(table_id)
+EXTERNAL trigger_mandatory(trigger_on)
+EXTERNAL start_dialogue(dialogue_id)
+EXTERNAL set_nickname(character_name, nickname)
+EXTERNAL play_sfx(sound_name)
+
+VAR elevator_emergency_firsttime = 0
+VAR topic_elevator_cctv_broken = 0
+
+-> cctv
+=== cctv ===
+// TODO: convert conditional block starting: if Flags.topic_elevator_cctv_broken == 0
+// if Flags.topic_elevator_cctv_broken == 0
+// 	It's the security camera. It looks like it's broken. [ID:elv_int_cctv_01]
+// 	set Flags.topic_elevator_cctv_broken = 1
+// else
+// 	% I'll ask Morigan about it. [ID:elv_int_cctv_02]
+// 	% yeah, still broken. [ID:elv_int_cctv_03]
+// 	% I can't fix it myself. [ID:elv_int_cctv_04]
+-> END
+
+=== closed_door ===
+% gotta open the door. # id=elv_int_door_01
+% the door is closed. # id=elv_int_door_02
+% I can't fit through a closed door. # id=elv_int_door_03
+-> END
+
+=== emergency_button ===
+// TODO: convert conditional block starting: if Flags.elevator_emergency_firsttime == 0
+// if Flags.elevator_emergency_firsttime == 0
+// 	It's the emergency button. It's connected to the front desk. [ID:elv_int_emg_01]
+// 	I hope I won't have to use it. [ID:elv_int_emg_02]
+// 	set Flags.elevator_emergency_firsttime = 1
+// else
+// 	% The emergency button. [ID:elv_int_emg_03]
+// 	% I'm not in an emergency. [ID:elv_int_emg_04]
+// 	% There's no point in pressing it now. [ID:elv_int_emg_05]
+-> END
+
+=== floor_button ===
+// TODO: convert conditional block starting: if ElevatorManager.is_moving
+// if ElevatorManager.is_moving
+// 	The elevator is currently moving. [ID:elv_int_floor_moving]
+// 	=> END
+
+// - B1 (Basement) [if ElevatorManager.current_floor != -1] [ID:elv_int_floor_b1]
+// 	do ElevatorManager.move_to_floor(-1)
+// 	Moving to the Basement. [ID:elv_int_floor_go_b1]
+// - 1F (Lobby) [if ElevatorManager.current_floor != 1] [ID:elv_int_floor_1f]
+// 	do ElevatorManager.move_to_floor(1)
+// 	Moving to the Lobby. [ID:elv_int_floor_go_1f]
+// - 2F (Guest Rooms) [if ElevatorManager.current_floor != 2] [ID:elv_int_floor_2f]
+// 	do ElevatorManager.move_to_floor(2)
+// 	Moving to the 2nd Floor. [ID:elv_int_floor_go_2f]
+// - 3F (Guest Rooms) [if ElevatorManager.current_floor != 3] [ID:elv_int_floor_3f]
+// 	do ElevatorManager.move_to_floor(3)
+// 	Moving to the 3rd Floor. [ID:elv_int_floor_go_3f]
+// - Cancel [ID:elv_int_floor_cancel]
+// 	=> END
+-> END
