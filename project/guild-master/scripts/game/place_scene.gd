@@ -1,20 +1,17 @@
 extends Node2D
 
 ## PlaceScene
-## 장소 씬의 기본 템플릿. 배경, NPC 오버레이, 이동 커맨드, 행동 선택지를 표시합니다.
-## connections는 data/places/*.json, 행동 버튼은 data/interactions/ 에서 데이터 기반으로 정의됩니다.
+## 장소 씬의 모듈러 템플릿. 배경, NPC 패널, 이동 패널, 행동 패널을 모듈 단위로 표시합니다.
+## 각 UI 모듈은 독립 씬이므로 인스펙터에서 위치/크기/폰트를 자유롭게 조정할 수 있습니다.
 
 @export var place_id: String = "inn_room"
 @export var default_time_of_day: String = "morning"
 
 @onready var background_sprite: Sprite2D = $BackgroundSprite
-@onready var npc_overlay: Control = $UILayer/UIRoot/NPCOverlay
-@onready var npc_portrait: TextureRect = $UILayer/UIRoot/NPCOverlay/NPCPortrait
-@onready var npc_name_label: Label = $UILayer/UIRoot/NPCOverlay/NPCNameLabel
-@onready var place_name_label: Label = $UILayer/UIRoot/PlaceNameLabel
-@onready var time_label: Label = $UILayer/UIRoot/TimeLabel
-@onready var action_list: VBoxContainer = $UILayer/UIRoot/RightPanel/RightMargin/ActionContainer/ActionList
-@onready var move_list: HBoxContainer = $UILayer/UIRoot/BottomPanel/BottomMargin/MoveContainer/MoveList
+@onready var info_header: InfoHeader = $UILayer/UIRoot/InfoHeader
+@onready var npc_panel: NPCPanel = $UILayer/UIRoot/NPCPanel
+@onready var action_panel: ActionPanel = $UILayer/UIRoot/ActionPanel
+@onready var move_panel: MovePanel = $UILayer/UIRoot/MovePanel
 
 var _spawner: Node
 var _current_npc_data: Dictionary = {}
@@ -34,8 +31,12 @@ func _ready() -> void:
 		ActionRunner.metric_changed.connect(_on_action_metric_changed)
 	if has_node("/root/TimeSystem") and not TimeSystem.time_advanced.is_connected(_on_time_advanced):
 		TimeSystem.time_advanced.connect(_on_time_advanced)
-	if not npc_overlay.gui_input.is_connected(_on_npc_overlay_gui_input):
-		npc_overlay.gui_input.connect(_on_npc_overlay_gui_input)
+	if not npc_panel.clicked.is_connected(_on_npc_panel_clicked):
+		npc_panel.clicked.connect(_on_npc_panel_clicked)
+	if not move_panel.move_pressed.is_connected(_on_move_pressed):
+		move_panel.move_pressed.connect(_on_move_pressed)
+	if not action_panel.action_pressed.is_connected(_on_action_pressed):
+		action_panel.action_pressed.connect(_on_action_pressed)
 
 	_enter_place(place_id)
 
@@ -66,7 +67,7 @@ func _load_place() -> void:
 	if place_data.is_empty():
 		return
 
-	place_name_label.text = place_data.get("display_name", place_id)
+	info_header.set_place_name(place_data.get("display_name", place_id))
 
 	var bg_path: String = place_data.get("background_path", "")
 	if not bg_path.is_empty() and ResourceLoader.exists(bg_path):
@@ -88,14 +89,13 @@ func _spawn_current_place_npc() -> void:
 
 func _refresh_time_label() -> void:
 	if has_node("/root/TimeSystem"):
-		time_label.text = TimeSystem.get_display_text()
+		info_header.set_time(TimeSystem.get_display_text())
 	else:
-		time_label.text = default_time_of_day
+		info_header.set_time(default_time_of_day)
 
 
 func _refresh_move_buttons() -> void:
-	for child in move_list.get_children():
-		child.queue_free()
+	move_panel.clear()
 
 	var place_data := PlaceRegistry.get_place(place_id)
 	var connections: Array = place_data.get("connections", [])
@@ -107,16 +107,11 @@ func _refresh_move_buttons() -> void:
 			continue
 
 		var target_data := PlaceRegistry.get_place(target_id)
-		var button := Button.new()
-		button.text = target_data.get("display_name", target_id)
-		button.custom_minimum_size = Vector2(180, 64)
-		button.pressed.connect(_on_move_pressed.bind(target_id))
-		move_list.add_child(button)
+		move_panel.add_destination(target_data.get("display_name", target_id), target_id)
 
 
 func _refresh_action_buttons() -> void:
-	for child in action_list.get_children():
-		child.queue_free()
+	action_panel.clear()
 
 	if not has_node("/root/InteractionRegistry"):
 		return
@@ -124,12 +119,12 @@ func _refresh_action_buttons() -> void:
 	var context := _get_action_context()
 	var place_interactions: Array = InteractionRegistry.get_available_place_actions(place_id, context)
 	if not place_interactions.is_empty():
-		_add_section_label("장소 행동")
+		action_panel.add_section("장소 행동")
 		for definition in place_interactions:
 			var interaction_id := String(definition.get("interaction_id", ""))
 			var label := String(definition.get("label", interaction_id))
 			var scope := String(definition.get("scope", "common"))
-			_add_action_button(label, _on_interaction_pressed.bind(scope, interaction_id, ""))
+			action_panel.add_action(label, interaction_id, scope, "")
 
 	var npc_id := String(_current_npc_data.get("npc_id", ""))
 	if npc_id.is_empty():
@@ -140,27 +135,11 @@ func _refresh_action_buttons() -> void:
 	if npc_interactions.is_empty():
 		return
 
-	_add_section_label(String(_current_npc_data.get("display_name", npc_id)))
+	action_panel.add_section(String(_current_npc_data.get("display_name", npc_id)))
 	for definition in npc_interactions:
 		var interaction_id := String(definition.get("interaction_id", ""))
 		var label := String(definition.get("label", interaction_id))
-		_add_action_button(label, _on_interaction_pressed.bind("char", interaction_id, npc_id))
-
-
-func _add_section_label(text: String) -> void:
-	var label := Label.new()
-	label.text = text
-	label.add_theme_font_size_override("font_size", 18)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	action_list.add_child(label)
-
-
-func _add_action_button(text, callable: Callable) -> void:
-	var button := Button.new()
-	button.text = String(text)
-	button.custom_minimum_size = Vector2(0, 56)
-	button.pressed.connect(callable)
-	action_list.add_child(button)
+		action_panel.add_action(label, interaction_id, "char", npc_id)
 
 
 func _on_move_pressed(target_place_id: String) -> void:
@@ -173,7 +152,7 @@ func _on_move_pressed(target_place_id: String) -> void:
 		_enter_place(target_place_id)
 
 
-func _on_interaction_pressed(scope: String, interaction_id: String, npc_id: String) -> void:
+func _on_action_pressed(interaction_id: String, scope: String, npc_id: String) -> void:
 	if not has_node("/root/InteractionRegistry") or not has_node("/root/ActionRunner"):
 		return
 
@@ -251,14 +230,7 @@ func _get_action_context(target_npc_id: String = "") -> Dictionary:
 
 func _on_npc_spawned(npc_data: Dictionary) -> void:
 	_current_npc_data = npc_data
-	npc_overlay.visible = true
-	npc_name_label.text = npc_data.get("display_name", "")
-
-	var portrait_path: String = npc_data.get("portrait_path", "")
-	if not portrait_path.is_empty() and ResourceLoader.exists(portrait_path):
-		npc_portrait.texture = load(portrait_path)
-	else:
-		npc_portrait.texture = null
+	npc_panel.set_npc(npc_data)
 
 	print("PlaceScene: NPC spawned - ", npc_data.get("npc_id"),
 		" (probability: ", "%.1f" % (npc_data.get("probability", 0.0) * 100.0), "%)")
@@ -266,25 +238,20 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 
 func _on_empty_spawned() -> void:
 	_current_npc_data.clear()
-	npc_overlay.visible = false
-	npc_name_label.text = ""
-	npc_portrait.texture = null
+	npc_panel.clear()
 	print("PlaceScene: no NPC spawned (empty) @ ", place_id)
 
 
-func _on_npc_overlay_gui_input(event: InputEvent) -> void:
-	if not npc_overlay.visible:
+func _on_npc_panel_clicked() -> void:
+	var dialogue_id := String(_current_npc_data.get("dialogue_id", ""))
+	if dialogue_id.is_empty():
+		push_warning("PlaceScene: NPC has no dialogue_id: " + String(_current_npc_data.get("npc_id", "")))
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var dialogue_id := String(_current_npc_data.get("dialogue_id", ""))
-		if dialogue_id.is_empty():
-			push_warning("PlaceScene: NPC has no dialogue_id: " + String(_current_npc_data.get("npc_id", "")))
-			return
-		if has_node("/root/ActionRunner"):
-			ActionRunner.run({
-				"type": "dialogue",
-				"dialogue_id": dialogue_id
-			}, _get_action_context(String(_current_npc_data.get("npc_id", ""))))
+	if has_node("/root/ActionRunner"):
+		ActionRunner.run({
+			"type": "dialogue",
+			"dialogue_id": dialogue_id
+		}, _get_action_context(String(_current_npc_data.get("npc_id", ""))))
 
 
 func _get_current_story_flags() -> Array:
