@@ -1,61 +1,124 @@
 {
-  "crisis_id": "nightmare_town",
-  "display_name": "마을에 악몽이 찾아오다",
-  "description": "어둠이 마을을 덮치기 시작했다...",
-  "severity": "minor",
-  "tags": ["mental", "town_wide"],
-  "trigger": {
-    "cycle": "weekly",
-    "day_interval": 7,
-    "probability": 0.3,
-    "max_active": 3,
-    "exclude_if": { "flag_eq": ["crisis.nightmare_town.resolved", true] }
-  },
-  "ongoing_effects": [
-    {
-      "effect_id": "nightmare_rest_penalty",
-      "trigger_on": "rest_attempt",
-      "when": { "time_block": "night" },
-      "action": {
-        "type": "attribute_check",
-        "attribute": "will",
-        "difficulty": 2,
-        "pass_message": "의지력으로 악몽을 견뎌냈다.",
-        "fail_actions": [
-          { "type": "change_metric", "key": "player.mental", "amount": -5 },
-          { "type": "add_condition", "condition_id": "haunted", "duration": 3 },
-          { "type": "log", "message": "악몽 때문에 휴식을 취하지 못했다." }
-        ]
-      }
-    }
-  ],
-  "resolution": {
-    "conditions": {
-      "all_of": [
-        { "flag_eq": ["investigated_nightmare", true] },
-        { "has_item": ["holy_symbol", 1] }
-      ]
-    },
-    "actions": [
-      { "type": "set_flag", "key": "crisis.nightmare_town.resolved", "value": true },
-      { "type": "remove_condition", "condition_id": "haunted" },
-      { "type": "change_metric", "key": "npc.luise.trust", "amount": 5 },
-      { "type": "dialogue", "dialogue_id": "nightmare_resolved" }
-    ]
-  },
-  "escalation": {
-    "doom_days": 14,
-    "warning_days": 10,
-    "warning_dialogue": "nightmare_warning",
-    "per_day_effects": [
-      { "type": "change_metric", "key": "player.mental", "amount": -1 }
-    ],
-    "doom_type": "compound",
-    "doom_actions": [
-      { "type": "set_flag", "key": "crisis.nightmare_town.doomed", "value": true },
-      { "type": "block_place", "place_id": "tavern" },
-      { "type": "dialogue", "dialogue_id": "nightmare_doom" },
-      { "type": "game_over", "reason": "마을이 영원한 악몽에 잠겼다.", "game_over_type": "normal" }
-    ]
-  }
+	"crisis_id": "nightmare_town",
+	"display_name": "마을에 악몽이 찾아오다",
+	"description": "어둠이 마을을 덮치기 시작했다...",
+	"severity": "minor",
+	"tags": [
+		"mental",
+		"town_wide"
+	],
+	"trigger": {
+		"cycle": "weekly",
+		"day_interval": 7,
+		"probability": 0.3,
+		"max_active": 3,
+		"exclude_if": {
+			"flag_eq": [
+				"crisis.nightmare_town.resolved",
+				true
+			]
+		}
+	},
+	"ongoing_effects": [
+		{
+			"effect_id": "nightmare_rest_penalty",
+			"trigger_on": "rest_attempt",
+			"when": {
+				"time_block": "night"
+			},
+			"action": {
+				"type": "attribute_check",
+				"attribute": "will",
+				"difficulty": 2,
+				"pass_message": "의지력으로 악몽을 견뎌냈다.",
+				"fail_actions": [
+					{
+						"type": "change_metric",
+						"key": "player.mental",
+						"amount": -5
+					},
+					{
+						"type": "add_condition",
+						"condition_id": "haunted",
+						"duration": 3
+					},
+					{
+						"type": "log",
+						"message": "악몽 때문에 휴식을 취하지 못했다."
+					}
+				]
+			}
+		}
+	],
+	"resolution": {
+		"conditions": {
+			"all_of": [
+				{
+					"flag_eq": [
+						"investigated_nightmare",
+						true
+					]
+				},
+				{
+					"has_item": [
+						"holy_symbol",
+						1
+					]
+				}
+			]
+		},
+		"actions": [
+			{
+				"type": "set_flag",
+				"key": "crisis.nightmare_town.resolved",
+				"value": true
+			},
+			{
+				"type": "remove_condition",
+				"condition_id": "haunted"
+			},
+			{
+				"type": "change_metric",
+				"key": "npc.luise.trust",
+				"amount": 5
+			},
+			{
+				"type": "dialogue",
+				"dialogue_id": "nightmare_resolved"
+			}
+		]
+	},
+	"escalation": {
+		"doom_days": 14,
+		"warning_days": 10,
+		"warning_dialogue": "nightmare_warning",
+		"per_day_effects": [
+			{
+				"type": "change_metric",
+				"key": "player.mental",
+				"amount": -1
+			}
+		],
+		"doom_type": "compound",
+		"doom_actions": [
+			{
+				"type": "set_flag",
+				"key": "crisis.nightmare_town.doomed",
+				"value": true
+			},
+			{
+				"type": "block_place",
+				"place_id": "tavern"
+			},
+			{
+				"type": "dialogue",
+				"dialogue_id": "nightmare_doom"
+			},
+			{
+				"type": "game_over",
+				"reason": "마을이 영원한 악몽에 잠겼다.",
+				"game_over_type": "normal"
+			}
+		]
+	}
 }

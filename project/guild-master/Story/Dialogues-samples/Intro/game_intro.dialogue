@@ -1,8 +1,0 @@
-~ start
-... [wait=1]
-Game Intro Sequence: [i]Welcome to Hotel morigan.[/i] [wait=1]
-You are the new night auditor. [wait=1]
-Don't forget the rules. [wait=1]
-... [wait=1]
-=> END
-
