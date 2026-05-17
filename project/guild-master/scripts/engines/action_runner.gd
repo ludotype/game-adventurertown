@@ -12,6 +12,7 @@ signal time_changed()
 signal metric_changed(key: String, value)
 
 const MAX_DEPTH := 32
+const INK_BALLOON_SCENE := "res://Story/InkBalloon/ink_balloon.tscn"
 const DIALOGUE_SEARCH_DIRS: PackedStringArray = [
 	"res://data/dialogues/",
 	"res://Story/Dialogues-samples/",
@@ -115,6 +116,18 @@ func _run_dialogue(action: Dictionary) -> bool:
 	if dialogue_id.is_empty():
 		return _fail(action, "dialogue action requires dialogue_id")
 
+	# Try Ink story first
+	var ink_path := _find_ink_resource_path(dialogue_id)
+	if not ink_path.is_empty():
+		var balloon_scene := load(INK_BALLOON_SCENE)
+		if balloon_scene == null:
+			return _fail(action, "failed to load InkBalloon scene")
+		var balloon = balloon_scene.instantiate()
+		get_tree().root.add_child(balloon)
+		balloon.start(ink_path)
+		return true
+
+	# Fall back to Dialogue Manager
 	var resource_path := _find_dialogue_resource_path(dialogue_id)
 	if resource_path.is_empty():
 		return _fail(action, "dialogue resource not found: " + dialogue_id)
@@ -239,6 +252,21 @@ func _find_dialogue_resource_path(dialogue_id: String) -> String:
 	var file_name := dialogue_id
 	if not file_name.ends_with(".dialogue"):
 		file_name += ".dialogue"
+
+	for base_dir: String in DIALOGUE_SEARCH_DIRS:
+		var path: String = base_dir + file_name
+		if ResourceLoader.exists(path):
+			return path
+	return ""
+
+
+func _find_ink_resource_path(dialogue_id: String) -> String:
+	if dialogue_id.begins_with("res://") and ResourceLoader.exists(dialogue_id):
+		return dialogue_id
+
+	var file_name := dialogue_id
+	if not file_name.ends_with(".ink.json"):
+		file_name += ".ink.json"
 
 	for base_dir: String in DIALOGUE_SEARCH_DIRS:
 		var path: String = base_dir + file_name
