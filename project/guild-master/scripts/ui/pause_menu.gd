@@ -13,8 +13,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		# 인게임(ActionScene) 상태일 때만 일시정지 메뉴 허용
 		var current_scene = get_tree().current_scene
-		if current_scene and "action_scene.tscn" in current_scene.scene_file_path:
-			toggle_pause()
+		if current_scene:
+			var path := current_scene.scene_file_path
+			var is_gameplay := "action_scene.tscn" in path or "place_scene.tscn" in path or "game_scene.tscn" in path
+			if is_gameplay:
+				toggle_pause()
 
 func toggle_pause() -> void:
 	var tree = get_tree()

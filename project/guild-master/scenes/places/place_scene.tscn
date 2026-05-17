@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8yvxg3ulq3a"]
+[gd_scene load_steps=8 format=3 uid="uid://c8yvxg3ulq3a"]
 
 [ext_resource type="Script" path="res://scripts/game/place_scene.gd" id="1_place"]
 [ext_resource type="PackedScene" uid="uid://d2yxq1v2kqg6d" path="res://scenes/ui/info_header.tscn" id="2_infoh"]
 [ext_resource type="PackedScene" uid="uid://c1xnxj2w7yq1e" path="res://scenes/ui/npc_panel.tscn" id="3_npcp"]
 [ext_resource type="PackedScene" uid="uid://a3v8k1m2n5q7p" path="res://scenes/ui/action_panel.tscn" id="4_actpn"]
 [ext_resource type="PackedScene" uid="uid://x9k2m4n7q1p3r" path="res://scenes/ui/move_panel.tscn" id="5_movep"]
+[ext_resource type="PackedScene" uid="uid://m3n8k2p1q7r4s" path="res://scenes/ui/esc_button.tscn" id="6_escbtn"]
 
 [node name="PlaceScene" type="Node2D"]
 script = ExtResource("1_place")
@@ -21,6 +22,13 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
+
+[node name="ESCButton" parent="UILayer/UIRoot" instance=ExtResource("6_escbtn")]
+layout_mode = 1
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 68.0
+offset_bottom = 68.0
 
 [node name="InfoHeader" parent="UILayer/UIRoot" instance=ExtResource("2_infoh")]
 layout_mode = 1
