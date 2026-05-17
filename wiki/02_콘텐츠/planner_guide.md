@@ -379,7 +379,7 @@ npc.lusie.affection
 | `npc_id` | NPC 고유 ID |
 | `display_name` | 게임 화면에 표시될 이름 |
 | `default_portrait` | 장소 화면에 표시될 NPC 초상화 파일 경로 |
-| `default_dialogue` | NPC를 클릭했을 때 실행할 기본 대화 ID (`data/dialogues/{id}.dialogue`) |
+| `default_dialogue` | NPC를 클릭했을 때 실행할 기본 대화 ID (`data/dialogues/{id}.ink`) |
 | `schedules` | 등장 규칙 배열 (하나의 NPC가 여러 장소에 등장 가능) |
 | `schedules[].place_id` | 등장할 장소 ID |
 | `schedules[].weight` | 이 장소에서의 추첨 가중치 |
@@ -395,24 +395,29 @@ npc.lusie.affection
 기본 대화 파일은 다음 위치에 둡니다.
 
 ```
-project/guild-master/data/dialogues/{dialogue_id}.dialogue
+project/guild-master/data/dialogues/{dialogue_id}.ink
 ```
+
+`.ink` 파일을 수정한 후에는 반드시 `inklecate`로 `.ink.json`를 컴파일해야 게임에 반영됩니다.
 
 최소 대화 예시는 다음과 같습니다.
 
-```dialogue
-~ start
+```ink
+EXTERNAL advance_time(time_units)
 
-엘레나: "좋은 아침이에요."
+-> start
+=== start ===
 
-- "잠시 이야기한다"
-	do ActionRunner.run({"type": "advance_time", "time_units": 1})
-	엘레나: "짧은 대화였지만, 시간은 흘렀어요."
+좋은 아침이에요. # speaker=엘레나
 
-- "그만 간다"
-	엘레나: "필요하면 다시 말을 걸어 주세요."
+* 잠시 이야기한다
+  ~ advance_time(1)
+  짧은 대화였지만, 시간은 흘렀어요. # speaker=엘레나
 
-=> END
+* 그만 간다
+  필요하면 다시 말을 걸어 주세요. # speaker=엘레나
+
+-> END
 ```
 
 ---
@@ -724,3 +729,13 @@ splash_screen.tscn  →  title_screen.tscn  →  game_scene.tscn  (여관방)
 - `game_scene.tscn`은 `place_scene.tscn` 인스턴스를 하나 품고 있는 컨테이너입니다.
 - 시작 장소를 바꾸려면 `game_scene.tscn`을 에디터에서 열고 PlaceScene 노드의 `place_id` 인스펙터 값을 수정하세요.
 - 시간대(`default_time_of_day`)도 동일한 방식으로 변경 가능합니다.
+
+---
+
+## 관련 문서
+
+- 콘텐츠 폴더: [[02_콘텐츠/README]]
+- Ink 대화 시스템: [[ink_guide]]
+- 아키텍처 원칙: [[architecture]]
+- 게임 루프: [[game_loop]]
+- 컨텐츠 전달함: [[content-inbox/README]]

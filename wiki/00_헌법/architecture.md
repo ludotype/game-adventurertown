@@ -468,3 +468,13 @@ Princess Maker · Stardew Valley · Persona의 커뮤니티 링크 · Harvest Mo
 | 2026-05-16 | Phase 3 착수 | InteractionRegistry, common/char interaction, NPC 클릭 대화, data/dialogues 샘플 추가 |
 | 2026-05-16 | MetricStore 추가 | key 기반 범용 상태 저장소, metric 조건/액션, 문서화 추가 |
 | 2026-05-16 | 컨셉 정리 | 길드 관리/자동전투 컨셉 제거, 1인칭 연애 어드벤처 방향으로 예시/용어 전면 정리 |
+
+---
+
+## 관련 문서
+
+- 헌법 폴더: [[00_헌법/README]]
+- 게임 컨셉: [[game_concept]]
+- 게임 루프: [[game_loop]]
+- 기획자 가이드: [[planner_guide]]
+- Ink 대화 시스템: [[ink_guide]]

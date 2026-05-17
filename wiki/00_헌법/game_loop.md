@@ -145,4 +145,4 @@
 
 **문서 버전**: 2.0
 **최종 업데이트**: 2026-05-16
-**관련 문서**: `Game_Concept.md`, `architecture.md`, `planner-guide.md`
+**관련 문서**: [[game_concept]], [[architecture]], [[planner_guide]]
