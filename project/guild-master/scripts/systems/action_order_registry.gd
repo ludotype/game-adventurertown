@@ -119,7 +119,6 @@ func _merge_entries(existing: Dictionary, scanned: Dictionary) -> Dictionary:
 		if not used_scanned.has(id):
 			entries.append({
 				"id": id,
-				"label": "",
 				"tags": ["new"]
 			})
 			used_scanned[id] = true
@@ -128,6 +127,8 @@ func _merge_entries(existing: Dictionary, scanned: Dictionary) -> Dictionary:
 
 
 func _save_order_file(data: Dictionary) -> void:
+	if not OS.has_feature("editor"):
+		return
 	var file := FileAccess.open(ORDER_FILE, FileAccess.WRITE)
 	if file == null:
 		push_warning("ActionOrderRegistry: failed to write " + ORDER_FILE)
