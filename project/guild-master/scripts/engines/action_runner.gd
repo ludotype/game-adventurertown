@@ -116,34 +116,17 @@ func _run_dialogue(action: Dictionary) -> bool:
 	if dialogue_id.is_empty():
 		return _fail(action, "dialogue action requires dialogue_id")
 
-	# Try Ink story first
+	# Load Ink story
 	var ink_path := _find_ink_resource_path(dialogue_id)
-	if not ink_path.is_empty():
-		var balloon_scene := load(INK_BALLOON_SCENE)
-		if balloon_scene == null:
-			return _fail(action, "failed to load InkBalloon scene")
-		var balloon = balloon_scene.instantiate()
-		get_tree().root.add_child(balloon)
-		balloon.start(ink_path)
-		return true
+	if ink_path.is_empty():
+		return _fail(action, "ink story not found: " + dialogue_id)
 
-	# Fall back to Dialogue Manager
-	var resource_path := _find_dialogue_resource_path(dialogue_id)
-	if resource_path.is_empty():
-		return _fail(action, "dialogue resource not found: " + dialogue_id)
-
-	var resource := load(resource_path)
-	if resource == null:
-		return _fail(action, "failed to load dialogue resource: " + resource_path)
-	if not has_node("/root/DialogueManager") or not DialogueManager.has_method("show_dialogue_balloon"):
-		return _fail(action, "DialogueManager is missing")
-
-	var title := String(action.get("title", ""))
-	if title.is_empty():
-		var first_title = resource.get("first_title")
-		if first_title != null:
-			title = String(first_title)
-	DialogueManager.show_dialogue_balloon(resource, title)
+	var balloon_scene := load(INK_BALLOON_SCENE)
+	if balloon_scene == null:
+		return _fail(action, "failed to load InkBalloon scene")
+	var balloon = balloon_scene.instantiate()
+	get_tree().root.add_child(balloon)
+	balloon.start(ink_path)
 	return true
 
 
@@ -243,21 +226,6 @@ func _run_if(action: Dictionary, context: Dictionary, depth: int) -> bool:
 				return false
 		return true
 	return run(branch, context, depth + 1)
-
-
-func _find_dialogue_resource_path(dialogue_id: String) -> String:
-	if dialogue_id.begins_with("res://") and ResourceLoader.exists(dialogue_id):
-		return dialogue_id
-
-	var file_name := dialogue_id
-	if not file_name.ends_with(".dialogue"):
-		file_name += ".dialogue"
-
-	for base_dir: String in DIALOGUE_SEARCH_DIRS:
-		var path: String = base_dir + file_name
-		if ResourceLoader.exists(path):
-			return path
-	return ""
 
 
 func _find_ink_resource_path(dialogue_id: String) -> String:
