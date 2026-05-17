@@ -42,6 +42,7 @@ CrisisManager="*res://scripts/systems/crisis_manager.gd"
 ItemRegistry="*res://scripts/systems/item_registry.gd"
 InventoryManager="*res://scripts/state/inventory_manager.gd"
 LootTableRegistry="*res://scripts/systems/loot_table_registry.gd"
+InkActionBridge="*res://scripts/story/ink_action_bridge.gd"
 
 [dialogue_manager]
 
