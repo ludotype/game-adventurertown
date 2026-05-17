@@ -1,0 +1,13 @@
+{
+  "interaction_id": "look_around",
+  "label": "둘러보기",
+  "events": [
+    {
+      "id": "look_around_west_gate",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "서문은 낡았지만 튼튼하게 지어졌다. 문 너머로 어둠이 깔린 길이 이어진다." }
+      ]
+    }
+  ]
+}

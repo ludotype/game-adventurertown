@@ -1,0 +1,14 @@
+{
+  "interaction_id": "go_to_dungeon",
+  "label": "던전으로 간다",
+  "events": [
+    {
+      "id": "go_to_dungeon_from_west_gate",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "서문을 지나 어두운 길을 따라 걸었다..." },
+        { "type": "move", "target_place": "dungeon_01" }
+      ]
+    }
+  ]
+}

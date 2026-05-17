@@ -1,0 +1,8 @@
+{
+  "place_id": "west_gate",
+  "display_name": "서문",
+  "background_path": "res://assets/bg/west_gate.png",
+  "bgm": "town_day",
+  "empty_weight": 0,
+  "connections": ["street_west"]
+}
