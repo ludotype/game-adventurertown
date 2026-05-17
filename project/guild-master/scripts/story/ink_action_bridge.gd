@@ -32,6 +32,7 @@ func bind_all(ink_player: InkPlayer) -> void:
 	ink_player.bind_external_function("random_loot",    self, "_ext_random_loot",    false)
 	ink_player.bind_external_function("trigger_mandatory", self, "_ext_trigger_mandatory", false)
 	ink_player.bind_external_function("start_dialogue", self, "_ext_start_dialogue", false)
+	ink_player.bind_external_function("roll_2d6", self, "_ext_roll_2d6", false)
 
 
 func _ext_set_flag(key: String, value: bool) -> void:
@@ -120,3 +121,9 @@ func _ext_trigger_mandatory(trigger_on: String) -> void:
 
 func _ext_start_dialogue(dialogue_id: String) -> void:
 	ActionRunner.run({"type": "dialogue", "dialogue_id": dialogue_id})
+
+
+func _ext_roll_2d6(bonus: int = 0) -> int:
+	var d1 := randi_range(1, 6)
+	var d2 := randi_range(1, 6)
+	return d1 + d2 + bonus
