@@ -23,6 +23,8 @@ func get_available_common(context: Dictionary) -> Array:
 		var definition: Dictionary = _common_interactions[interaction_id]
 		if _is_interaction_available(definition, context):
 			result.append(definition)
+	if has_node("/root/ActionOrderRegistry"):
+		return ActionOrderRegistry.get_sorted(result)
 	return result
 
 
@@ -55,15 +57,8 @@ func get_available_place_actions(place_id: String, context: Dictionary) -> Array
 	var result: Array = []
 	for interaction_id in merged.keys():
 		result.append(merged[interaction_id])
-	result.sort_custom(func(a: Dictionary, b: Dictionary) -> int:
-		var a_label := String(a.get("label", ""))
-		var b_label := String(b.get("label", ""))
-		if a_label < b_label:
-			return -1
-		elif a_label > b_label:
-			return 1
-		return 0
-	)
+	if has_node("/root/ActionOrderRegistry"):
+		return ActionOrderRegistry.get_sorted(result)
 	return result
 
 
@@ -76,6 +71,8 @@ func get_available_for_npc(npc_id: String, context: Dictionary) -> Array:
 		var definition: Dictionary = _char_interactions[npc_id][interaction_id]
 		if _is_interaction_available(definition, context):
 			result.append(definition)
+	if has_node("/root/ActionOrderRegistry"):
+		return ActionOrderRegistry.get_sorted(result)
 	return result
 
 
