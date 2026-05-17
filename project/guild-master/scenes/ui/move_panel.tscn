@@ -41,3 +41,4 @@ text = "이동"
 [node name="MoveList" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+alignment = 1
