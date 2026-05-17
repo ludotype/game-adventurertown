@@ -1,0 +1,531 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://Story/InkBalloon/ink_balloon.gd" id="1_36de5"]
+[ext_resource type="Texture2D" path="res://Story/Dialogues/custom_balloon/assets/sprite/dialogue_window_1.png" id="2_mkjcr"]
+[ext_resource type="AudioStream" path="res://audio/ui/dialogue/hop_1.mp3" id="2_xdk5r"]
+[ext_resource type="Texture2D" path="res://Story/Dialogues/custom_balloon/assets/sprite/dialogue_separator_1.png" id="4_7oly8"]
+[ext_resource type="Script" path="res://Story/Dialogues/custom_balloon/balloon_animation_player.gd" id="5_2cpvu"]
+[ext_resource type="AnimationLibrary" path="res://Story/Dialogues/custom_balloon/scg_animation.tres" id="8_0cpmv"]
+[ext_resource type="Texture2D" path="res://graphics/scg/morigan_default.png" id="11_Morigan"]
+[ext_resource type="Texture2D" path="res://graphics/scg/emotes/question.png" id="12_f25uh"]
+[ext_resource type="FontFile" path="res://assets/fonts/paperlogy/Paperlogy-6SemiBold.ttf" id="14_paper_6sb"]
+[ext_resource type="FontFile" path="res://assets/fonts/paperlogy/Paperlogy-5Medium.ttf" id="15_paper_5m"]
+[ext_resource type="FontFile" path="res://assets/fonts/paperlogy/Paperlogy-9Black.ttf" id="16_paper_9b"]
+[ext_resource type="FontFile" path="res://assets/fonts/paperlogy/Paperlogy-7Bold.ttf" id="17_paper_7b"]
+
+[sub_resource type="Animation" id="Animation_f68ex"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4nsxm"]
+_data = {
+"RESET": SubResource("Animation_f68ex")
+}
+
+[sub_resource type="FontVariation" id="FontVariation_dialogue_res"]
+base_font = ExtResource("15_paper_5m")
+
+[sub_resource type="FontVariation" id="FontVariation_jt4ij"]
+base_font = SubResource("FontVariation_dialogue_res")
+variation_opentype = {
+2003265652: 500
+}
+
+[sub_resource type="FontVariation" id="FontVariation_name_res"]
+base_font = ExtResource("16_paper_9b")
+
+[sub_resource type="FontVariation" id="FontVariation_nick_res"]
+base_font = ExtResource("17_paper_7b")
+
+[sub_resource type="LabelSettings" id="LabelSettings_nick"]
+font = SubResource("FontVariation_nick_res")
+font_size = 30
+font_color = Color(0.741176, 0.741176, 0.741176, 1)
+outline_size = 14
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_res_panel"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+bg_color = Color(0.1, 0.1, 0.1, 0.8)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_res_normal"]
+
+[sub_resource type="GDScript" id="GDScript_u7b86"]
+resource_name = "response_template.gd"
+script/source = "extends Button
+
+@onready var label = $RichTextLabel
+@onready var line = $SelectionLine
+
+var response = null:
+	set(value):
+		response = value
+		_update_appearance()
+
+func _ready():
+	mouse_entered.connect(_update_appearance.bind(true))
+	mouse_exited.connect(_update_appearance.bind(false))
+	focus_entered.connect(_update_appearance.bind(true))
+	focus_exited.connect(_update_appearance.bind(false))
+	_update_appearance()
+
+func _update_appearance(_is_hovered: bool = false):
+	if not label: return
+	if not response: return
+	
+	var text_content = response.text
+	var color_tag = \"[color=white]\"
+	var wave_start = \"\"
+	var wave_end = \"\"
+
+	line.visible = false
+	if is_hovered() or has_focus():
+		color_tag = \"[color=#cc3333]\"
+		wave_start = \"[wave amp=25 freq=5]\"
+		wave_end = \"[/wave]\"
+		line.visible = true
+
+	label.text = \"[center]\" + wave_start + color_tag + text_content + \"[/color]\" + wave_end + \"[/center]\"
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selection_line"]
+bg_color = Color(0.8, 0.2, 0.2, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="FontVariation" id="FontVariation_res_menu"]
+base_font = ExtResource("14_paper_6sb")
+
+[node name="InkBalloon" type="CanvasLayer"]
+layer = 1100
+script = ExtResource("1_36de5")
+hop_sound = ExtResource("2_xdk5r")
+sink_sound = ExtResource("2_xdk5r")
+
+[node name="Balloon" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterSCGControl" type="Control" parent="Balloon"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AnimationPivot" type="Control" parent="Balloon/CenterSCGControl"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Balloon/CenterSCGControl/AnimationPivot"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -400.0
+offset_right = 300.0
+offset_bottom = 400.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CenterSCG" type="TextureRect" parent="Balloon/CenterSCGControl/AnimationPivot/AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("11_Morigan")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/CenterSCGControl/AnimationPivot/AspectRatioContainer/CenterSCG"]
+libraries = {
+"": SubResource("AnimationLibrary_4nsxm"),
+"scg": ExtResource("8_0cpmv")
+}
+script = ExtResource("5_2cpvu")
+
+[node name="DialogueBox" type="PanelContainer" parent="Balloon"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -550.0
+offset_top = -280.0
+offset_right = 550.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="BG" type="TextureRect" parent="Balloon/DialogueBox"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_mkjcr")
+expand_mode = 1
+
+[node name="Dialogue" type="MarginContainer" parent="Balloon/DialogueBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 20
+
+[node name="FFIndicator" type="Label" parent="Balloon/DialogueBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(1, 0.843137, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = " FAST FORWARD "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Balloon/DialogueBox/Dialogue"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="TextureRect" type="TextureRect" parent="Balloon/DialogueBox/Dialogue/VBoxContainer"]
+custom_minimum_size = Vector2(400, 1)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+texture = ExtResource("4_7oly8")
+expand_mode = 1
+
+[node name="Margin" type="Control" parent="Balloon/DialogueBox/Dialogue/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Balloon/DialogueBox/Dialogue/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = 4
+theme_override_constants/outline_size = 12
+theme_override_fonts/normal_font = SubResource("FontVariation_jt4ij")
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+text = "[center]Dialogue text goes here..."
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="NextIndicator" type="Control" parent="Balloon/DialogueBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+mouse_filter = 2
+
+[node name="Icon" type="TextureRect" parent="Balloon/DialogueBox/NextIndicator"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameBox" type="VBoxContainer" parent="Balloon"]
+unique_name_in_owner = true
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -550.0
+offset_top = -327.0
+offset_right = 550.0
+offset_bottom = -215.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="CharacterLabel" type="RichTextLabel" parent="Balloon/NameBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 0.262745, 0.262745, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 12
+theme_override_fonts/normal_font = SubResource("FontVariation_name_res")
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center]Morigan[/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+shortcut_keys_enabled = false
+
+[node name="CharacterNicknameLabel" type="Label" parent="Balloon/NameBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Owner"
+label_settings = SubResource("LabelSettings_nick")
+horizontal_alignment = 1
+
+[node name="Responses" type="PanelContainer" parent="Balloon"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 250.0
+offset_top = -550.0
+offset_right = 690.0
+offset_bottom = -290.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_res_panel")
+
+[node name="ResponsesMenu" type="VBoxContainer" parent="Balloon/Responses"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 15
+
+[node name="ResponseTemplate" type="Button" parent="Balloon/Responses/ResponsesMenu"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_res_normal")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_res_normal")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_res_normal")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_res_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_res_normal")
+script = SubResource("GDScript_u7b86")
+
+[node name="SelectionLine" type="Panel" parent="Balloon/Responses/ResponsesMenu/ResponseTemplate"]
+visible = false
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = -20.0
+offset_right = -80.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_selection_line")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Balloon/Responses/ResponsesMenu/ResponseTemplate"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/normal_font = SubResource("FontVariation_res_menu")
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Response example[/center]"
+fit_content = true
+scroll_active = false
+shortcut_keys_enabled = false
+
+[node name="LeftSCGControl" type="Control" parent="Balloon"]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="AnimationPivot" type="Control" parent="Balloon/LeftSCGControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Balloon/LeftSCGControl/AnimationPivot"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -800.0
+offset_right = 600.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="LeftSCG" type="TextureRect" parent="Balloon/LeftSCGControl/AnimationPivot/AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+mouse_filter = 2
+texture = ExtResource("11_Morigan")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/LeftSCGControl/AnimationPivot/AspectRatioContainer/LeftSCG"]
+libraries = {
+"scg": ExtResource("8_0cpmv")
+}
+script = ExtResource("5_2cpvu")
+
+[node name="LeftEMOTE" type="TextureRect" parent="Balloon/LeftSCGControl/AnimationPivot/AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+mouse_filter = 2
+texture = ExtResource("12_f25uh")
+expand_mode = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/LeftSCGControl/AnimationPivot/AspectRatioContainer/LeftEMOTE"]
+libraries = {
+"scg": ExtResource("8_0cpmv")
+}
+script = ExtResource("5_2cpvu")
+
+[node name="RightSCGControl" type="Control" parent="Balloon"]
+visible = false
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="AnimationPivot" type="Control" parent="Balloon/RightSCGControl"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="Balloon/RightSCGControl/AnimationPivot"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -800.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="RightSCG" type="TextureRect" parent="Balloon/RightSCGControl/AnimationPivot/AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+mouse_filter = 2
+texture = ExtResource("11_Morigan")
+flip_h = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Balloon/RightSCGControl/AnimationPivot/AspectRatioContainer/RightSCG"]
+libraries = {
+"scg": ExtResource("8_0cpmv")
+}
+script = ExtResource("5_2cpvu")
+
+[node name="Sound" type="Node" parent="."]
+
+[connection signal="gui_input" from="Balloon" to="." method="_on_balloon_gui_input"]
