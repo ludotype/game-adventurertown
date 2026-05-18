@@ -1,4 +1,167 @@
 {
-	"version": 1,
-	"entries": []
+	"entries": [
+		{
+			"id": "look_around",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "playmusic",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "standby",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "wait",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "receive_treatment",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "explore",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "return",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "buy_flowers",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "gather_intel",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "request_aid",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "listen_at_door",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "check_inventory",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "rest",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "sleep",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "enter_dungeon",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "look_at_ruins",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "search_ground",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "enter_guard_hq",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "drink",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "gamble",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "repair_weapon",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "sharpen_weapon",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "go_to_dungeon",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "talk",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "touch",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "patrol_with_shepard",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "resolve_hunted",
+			"tags": [
+				"new"
+			]
+		}
+	],
+	"version": 1
 }

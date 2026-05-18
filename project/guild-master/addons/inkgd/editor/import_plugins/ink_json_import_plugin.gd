@@ -69,8 +69,14 @@ func _import(source_file, save_path, options, _platform_variants, _gen_files):
 	var test_json_conv = JSON.new()
 	test_json_conv.parse(raw_json)
 	var json = test_json_conv.get_data()
-	if !json.has("inkVersion"):
-		return ERR_FILE_UNRECOGNIZED
+	if json == null or !json.has("inkVersion"):
+		# Not an ink story JSON; save a dummy resource to avoid import failure
+		# (the importer matches all .json files, including plain data JSONs)
+		return ResourceSaver.save(
+				Resource.new(),
+				"%s.%s" % [save_path, _get_save_extension()],
+				ResourceSaver.FLAG_COMPRESS
+		)
 
 	var resource = InkResource.new()
 	resource.json = raw_json
