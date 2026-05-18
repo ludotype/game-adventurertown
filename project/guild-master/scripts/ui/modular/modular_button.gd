@@ -30,10 +30,10 @@ func _apply_style() -> void:
 	hover.corner_radius_bottom_right = corner_radius
 	add_theme_stylebox_override("hover", hover)
 
-	var pressed := StyleBoxFlat.new()
-	pressed.bg_color = placeholder_color.darkened(0.1)
-	pressed.corner_radius_top_left = corner_radius
-	pressed.corner_radius_top_right = corner_radius
-	pressed.corner_radius_bottom_left = corner_radius
-	pressed.corner_radius_bottom_right = corner_radius
-	add_theme_stylebox_override("pressed", pressed)
+	var pressed_style := StyleBoxFlat.new()
+	pressed_style.bg_color = placeholder_color.darkened(0.1)
+	pressed_style.corner_radius_top_left = corner_radius
+	pressed_style.corner_radius_top_right = corner_radius
+	pressed_style.corner_radius_bottom_left = corner_radius
+	pressed_style.corner_radius_bottom_right = corner_radius
+	add_theme_stylebox_override("pressed", pressed_style)

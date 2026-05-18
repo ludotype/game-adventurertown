@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func _apply_style() -> void:
 	_button.custom_minimum_size = button_size
-	_button.size = button_size
+	_button.set_deferred("size", button_size)
 
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = placeholder_color

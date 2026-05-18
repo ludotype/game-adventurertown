@@ -27,9 +27,9 @@ func _apply_style() -> void:
 		_time.add_theme_font_size_override("font_size", time_font_size)
 		_time.add_theme_color_override("font_color", text_color)
 
-func set_place_name(name: String) -> void:
+func set_place_name(place_name: String) -> void:
 	if _title:
-		_title.text = name
+		_title.text = place_name
 
 func set_time(text: String) -> void:
 	if _time:
