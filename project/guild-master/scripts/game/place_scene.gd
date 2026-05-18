@@ -11,7 +11,7 @@ extends Node2D
 @onready var info_header: InfoHeader = $UILayer/UIRoot/InfoHeader
 @onready var npc_panel: NPCPanel = $UILayer/UIRoot/NPCPanel
 @onready var action_panel: ActionPanel = $UILayer/UIRoot/ActionPanel
-@onready var move_panel: MovePanel = $UILayer/UIRoot/MovePanel
+@onready var dialogue_bar: DialogueBar = $UILayer/UIRoot/DialogueBar
 
 var _spawner: Node
 var _current_npc_data: Dictionary = {}
@@ -31,12 +31,14 @@ func _ready() -> void:
 		ActionRunner.metric_changed.connect(_on_action_metric_changed)
 	if has_node("/root/TimeSystem") and not TimeSystem.time_advanced.is_connected(_on_time_advanced):
 		TimeSystem.time_advanced.connect(_on_time_advanced)
+	if has_node("/root/MetricStore") and not MetricStore.metric_changed.is_connected(_on_metric_changed):
+		MetricStore.metric_changed.connect(_on_metric_changed)
 	if not npc_panel.clicked.is_connected(_on_npc_panel_clicked):
 		npc_panel.clicked.connect(_on_npc_panel_clicked)
-	if not move_panel.move_pressed.is_connected(_on_move_pressed):
-		move_panel.move_pressed.connect(_on_move_pressed)
 	if not action_panel.action_pressed.is_connected(_on_action_pressed):
 		action_panel.action_pressed.connect(_on_action_pressed)
+	if not action_panel.move_pressed.is_connected(_on_move_pressed):
+		action_panel.move_pressed.connect(_on_move_pressed)
 
 	_enter_place(place_id)
 
@@ -53,7 +55,6 @@ func _enter_place(target_place_id: String) -> void:
 	place_id = target_place_id
 	_load_place()
 	_refresh_time_label()
-	_refresh_move_buttons()
 
 	_spawner.place_id = place_id
 	_spawn_current_place_npc()
@@ -68,6 +69,7 @@ func _load_place() -> void:
 		return
 
 	info_header.set_place_name(place_data.get("display_name", place_id))
+	info_header.set_metrics(_get_player_metrics())
 
 	var bg_path: String = place_data.get("background_path", "")
 	if not bg_path.is_empty() and ResourceLoader.exists(bg_path):
@@ -94,22 +96,6 @@ func _refresh_time_label() -> void:
 		info_header.set_time(default_time_of_day)
 
 
-func _refresh_move_buttons() -> void:
-	move_panel.clear()
-
-	var place_data := PlaceRegistry.get_place(place_id)
-	var connections: Array = place_data.get("connections", [])
-
-	for raw_id in connections:
-		var target_id := String(raw_id)
-		if not PlaceRegistry.has_place(target_id):
-			push_warning("PlaceScene: connection to unknown place_id: " + target_id)
-			continue
-
-		var target_data := PlaceRegistry.get_place(target_id)
-		move_panel.add_destination(target_data.get("display_name", target_id), target_id)
-
-
 func _refresh_action_buttons() -> void:
 	action_panel.clear()
 
@@ -127,19 +113,35 @@ func _refresh_action_buttons() -> void:
 			action_panel.add_action(label, interaction_id, scope, "")
 
 	var npc_id := String(_current_npc_data.get("npc_id", ""))
-	if npc_id.is_empty():
+	if not npc_id.is_empty():
+		var npc_context := _get_action_context(npc_id)
+		var npc_interactions: Array = InteractionRegistry.get_available_for_npc(npc_id, npc_context)
+		if not npc_interactions.is_empty():
+			action_panel.add_section(String(_current_npc_data.get("display_name", npc_id)))
+			for definition in npc_interactions:
+				var interaction_id := String(definition.get("interaction_id", ""))
+				var label := String(definition.get("label", interaction_id))
+				action_panel.add_action(label, interaction_id, "char", npc_id)
+
+	_refresh_movement_section()
+
+
+func _refresh_movement_section() -> void:
+	var place_data := PlaceRegistry.get_place(place_id)
+	if place_data.is_empty():
+		return
+	var connections: Array = place_data.get("connections", [])
+	if connections.is_empty():
 		return
 
-	var npc_context := _get_action_context(npc_id)
-	var npc_interactions: Array = InteractionRegistry.get_available_for_npc(npc_id, npc_context)
-	if npc_interactions.is_empty():
-		return
-
-	action_panel.add_section(String(_current_npc_data.get("display_name", npc_id)))
-	for definition in npc_interactions:
-		var interaction_id := String(definition.get("interaction_id", ""))
-		var label := String(definition.get("label", interaction_id))
-		action_panel.add_action(label, interaction_id, "char", npc_id)
+	action_panel.add_separator()
+	for raw_id in connections:
+		var target_id := String(raw_id)
+		if not PlaceRegistry.has_place(target_id):
+			push_warning("PlaceScene: connection to unknown place_id: " + target_id)
+			continue
+		var target_data := PlaceRegistry.get_place(target_id)
+		action_panel.add_movement(target_data.get("display_name", target_id), target_id)
 
 
 func _on_move_pressed(target_place_id: String) -> void:
@@ -232,6 +234,13 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 	_current_npc_data = npc_data
 	npc_panel.set_npc(npc_data)
 
+	var greeting := String(npc_data.get("greeting", ""))
+	var display_name := String(npc_data.get("display_name", ""))
+	if not greeting.is_empty() and dialogue_bar:
+		dialogue_bar.show_dialogue(display_name, greeting)
+	elif dialogue_bar:
+		dialogue_bar.clear()
+
 	print("PlaceScene: NPC spawned - ", npc_data.get("npc_id"),
 		" (probability: ", "%.1f" % (npc_data.get("probability", 0.0) * 100.0), "%)")
 
@@ -239,6 +248,8 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 func _on_empty_spawned() -> void:
 	_current_npc_data.clear()
 	npc_panel.clear()
+	if dialogue_bar:
+		dialogue_bar.clear()
 	print("PlaceScene: no NPC spawned (empty) @ ", place_id)
 
 
@@ -258,3 +269,27 @@ func _get_current_story_flags() -> Array:
 	if has_node("/root/Flags") and Flags.has_method("get_active_flags"):
 		return Flags.get_active_flags()
 	return []
+
+
+func _get_player_metrics() -> Dictionary:
+	var metrics := {}
+	if not has_node("/root/MetricStore"):
+		return metrics
+	var known_keys: Array[String] = [
+		"player.funds", "player.gold", "player.money",
+		"player.hp", "player.health",
+		"player.sanity", "player.san", "player.mental",
+		"player.strength", "player.str",
+		"player.intelligence", "player.int",
+		"player.dexterity", "player.dex",
+		"player.will", "player.willpower"
+	]
+	for key in known_keys:
+		if MetricStore.has_metric(key):
+			metrics[key] = MetricStore.get_metric(key)
+	return metrics
+
+
+func _on_metric_changed(key: String, _value) -> void:
+	if key.begins_with("player."):
+		info_header.set_metrics(_get_player_metrics())

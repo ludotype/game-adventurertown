@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://main_theme"]
+
+[ext_resource type="FontFile" path="res://assets/fonts/eczar/Eczar-Bold.ttf" id="1_font"]
+
+[resource]
+default_font = ExtResource("1_font")
+default_font_size = 18

@@ -6,17 +6,16 @@
 layout_mode = 3
 anchors_preset = 0
 offset_right = 664.0
-offset_bottom = 126.0
+offset_bottom = 60.0
 script = ExtResource("1_infoh")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.1, 0.12, 0.8)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -25,20 +24,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 16
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="PlaceNameLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="LeftMetrics" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "장소 이름"
+size_flags_horizontal = 3
+alignment = 1
 
-[node name="TimeLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="RightInfo" type="HBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Day 1 07:00"
+alignment = 2

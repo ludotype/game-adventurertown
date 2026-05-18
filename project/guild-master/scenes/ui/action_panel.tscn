@@ -9,14 +9,13 @@ offset_right = 310.0
 offset_bottom = 540.0
 script = ExtResource("1_actpn")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.12, 0.12, 0.15, 0.9)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -36,7 +35,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "행동"
+text = "ACTIONS"
 horizontal_alignment = 1
 
 [node name="Sections" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]

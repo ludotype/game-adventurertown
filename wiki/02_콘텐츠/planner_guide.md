@@ -701,23 +701,83 @@ project/guild-master/
 
 ---
 
-## 11. 화면 UI 구조 (place_scene.tscn)
+## 11. 화면 UI 구조 (place_scene.tscn) — v1.2 Retro Text Adventure
 
-장소 씬은 다음 4영역으로 구성됩니다. 모두 데이터에 의해 자동 갱신됩니다.
+장소 씬은 **고전 텍스트 어드벤처(PC-98/88 스타일)**를 현대적으로 재해석한 UI로 구성됩니다. 모든 UI는 데이터에 의해 자동 갱신됩니다.
 
-| 영역 | 위치 | 내용 |
-|------|------|------|
-| 배경 | 화면 전체 | `background_path`의 이미지 |
-| 장소 이름 | 좌상단 | `display_name` |
-| 날짜/시간 | 좌상단 장소 이름 아래 | 현재 `Day`와 시간대 |
-| NPC 오버레이 | 우측 중앙 | 추첨된 NPC 초상화 + 이름 (없을 시 숨김) |
-| 행동 패널 | 우측 (세로) | `interactions` JSON 스캔 → 버튼 (라벨 가나다순) |
-| 이동 패널 | 하단 (가로) | `connections` 배열 → 버튼 (좌→우) |
+### 화면 구성도
+
+```
++--------------------------------------------------------+
+|  [ESC]  [Top Metric Bar — iron frame, text-only]         |
+|  Funds HP SAN ... | Day X HH:MM  장소이름              |
++------------------+--------------------------------------+
+|                  |                                      |
+|  [Center Viewport]    |  [Right Sidebar — text actions]        |
+|  (Background +     |  ACTIONS                             |
+|   Character CG)    |  Standby  Action  Inventory          |
+|                  |  --------                            |
+|                  |  LUISE                               |
+|                  |  Talk  Touch  Gift                   |
+|                  |  --------                            |
+|                  |  Main Street  South Gate             |
++------------------+--------------------------------------+
+|  [Bottom Dialogue Bar — text-only]                       |
+|  [NPC이름]: "대사 내용..."                               |
++--------------------------------------------------------+
+```
+
+| 영역 | 위치 | 내용 | 스타일 |
+|------|------|------|--------|
+| 배경 | 화면 중앙 | `background_path`의 이미지 | 전체 화면 |
+| 상단 메트릭 바 | 화면 최상단 | Funds, HP, SAN 등 플레이어 지표 + 시간/장소 | 철제 프레임, 텍스트 전용 |
+| NPC 오버레이 | 좌하단 (뷰포트 위) | 추첨된 NPC 초상화 + 이름 (없을 시 숨김) | 작은 프레임 |
+| 우측 행동 사이드바 | 화면 우측 | `interactions` JSON 스캔 → **텍스트 클릭 레이블** | 구분선으로 섹션 분리 |
+| 하단 대화창 | 화면 최하단 | NPC 등장 시 인사말 또는 대사 표시 | 가죽/철제 프레임 |
+
+### 텍스트 상호작용 (Hover / Click)
+
+모든 행동과 이동은 **그래픽 버튼이 아닌 클릭 가능한 텍스트**로 표시됩니다.
+
+- **Normal**: 옅은 아이보리색 (`#EAE6DF`)
+- **Hover (마우스 오버)**: 크림슨 레드 (`#A91D22`) + 밑줄
+- **Click**: `clicked` 이벤트 발생
+
+폰트는 고해상도 판타지 세리프체 **Eczar**를 사용합니다.
+
+### 우측 사이드바 구성
+
+우측 사이드바는 위에서 아래로 다음 섹션으로 구분됩니다.
+
+1. **ACTIONS** (헤더)
+2. **장소 행동** — `data/interactions/common/` + `place/{place_id}/` 에서 스캔
+3. `--------` (구분선)
+4. **NPC 이름** — 현재 등장한 NPC의 `display_name`
+5. **NPC 행동** — `data/interactions/char/{npc_id}/` 에서 스캔
+6. `--------` (구분선)
+7. **이동** — `connections` 배열의 장소들을 텍스트로 촘촘히 배치 (타이틀 없음)
+
+> 이전 버전에서는 이동 버튼이 하단에 별도 패널로 있었으나, v1.2부터 우측 사이드바 하단에 통합되었습니다.
+
+### 하단 대화창 (DialogueBar)
+
+NPC가 등장하면 자동으로 해당 NPC의 `greeting` 필드 값이 표시됩니다.
+
+```json
+{
+  "npc_id": "luise",
+  "display_name": "루이제",
+  "greeting": "어머, 오늘도 다치고 온 거예요...?",
+  ...
+}
+```
+
+`greeting`이 비어있으면 대화창이 표시되지 않습니다. NPC가 없으면 대화창이 자동으로 숨겨집니다.
 
 ### MVP 시작점
 
 - `place_scene.tscn`의 기본 `place_id`는 **`inn_room` (여관방)** 으로 설정되어 있습니다.
-- 단독 실행(F6) 시 여관방에서 시작하며, 하단 "복도" 버튼으로 이동할 수 있습니다.
+- 단독 실행(F6) 시 여관방에서 시작하며, 우측 사이드바 하단의 "복도" 텍스트를 클릭하여 이동할 수 있습니다.
 
 ### 게임 진입 흐름 (F5, 전체 실행)
 
@@ -729,6 +789,32 @@ splash_screen.tscn  →  title_screen.tscn  →  game_scene.tscn  (여관방)
 - `game_scene.tscn`은 `place_scene.tscn` 인스턴스를 하나 품고 있는 컨테이너입니다.
 - 시작 장소를 바꾸려면 `game_scene.tscn`을 에디터에서 열고 PlaceScene 노드의 `place_id` 인스펙터 값을 수정하세요.
 - 시간대(`default_time_of_day`)도 동일한 방식으로 변경 가능합니다.
+
+---
+
+## 12. 상단 메트릭 바 — 표시되는 지표
+
+메트릭 바는 `MetricStore`에서 `player.*` 키를 읽어 자동으로 표시합니다. 아래 키를 사용하면 한글 라벨로 변환됩니다.
+
+| Metric 키 | 표시 이름 | 설명 |
+|-----------|----------|------|
+| `player.funds` / `player.gold` / `player.money` | Funds | 소지금 |
+| `player.hp` / `player.health` | HP | 체력 |
+| `player.sanity` / `player.san` / `player.mental` | SAN | 정신력 |
+| `player.strength` / `player.str` | STR | 근력 |
+| `player.intelligence` / `player.int` | INT | 지능 |
+| `player.dexterity` / `player.dex` | DEX | 민첩 |
+| `player.will` / `player.willpower` | WILL | 의지 |
+
+### 사용 예시
+
+```json
+{ "type": "change_metric", "key": "player.funds", "amount": 100 }
+{ "type": "set_metric", "key": "player.hp", "value": 100 }
+{ "type": "change_metric", "key": "player.sanity", "amount": -5 }
+```
+
+위 행동을 실행하면 상단 메트릭 바의 Funds, HP, SAN 값이 실시간으로 갱신됩니다.
 
 ---
 
