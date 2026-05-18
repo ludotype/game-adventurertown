@@ -16,7 +16,8 @@
       "Bash(cp -r D:/GIT/GuildMaster/filestoimport/graphics D:/GIT/GuildMaster/project/guild-master/)",
       "Bash(cp -r D:/GIT/GuildMaster/import3/assets/translations/dialogue/* D:/GIT/GuildMaster/project/guild-master/assets/translations/dialogue/)",
       "Bash(cp -r D:/GIT/GuildMaster/import3/assets/translations/ui/* D:/GIT/GuildMaster/project/guild-master/assets/translations/ui/)",
-      "Bash(cp -r D:/GIT/GuildMaster/import3/scripts/core/* D:/GIT/GuildMaster/project/guild-master/scripts/core/)"
+      "Bash(cp -r D:/GIT/GuildMaster/import3/scripts/core/* D:/GIT/GuildMaster/project/guild-master/scripts/core/)",
+      "PowerShell(New-Item *)"
     ]
   }
 }

@@ -75,7 +75,6 @@ ui_focus_prev={
 [internationalization]
 
 locale/translations=PackedStringArray("res://assets/translations/dialogue/common_strings.en.translation", "res://assets/translations/dialogue/common_strings.ko.translation", "res://assets/translations/dialogue/common_strings.ja.translation", "res://assets/translations/ui/ui_common.en.translation", "res://assets/translations/ui/ui_common.ko.translation", "res://assets/translations/ui/ui_common.ja.translation")
-locale/translations_pot_files=PackedStringArray()
 
 [physics]
 

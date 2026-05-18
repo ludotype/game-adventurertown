@@ -93,7 +93,11 @@
     "//시나리오",
     "//01_Entities",
     "//00_Core_Logic",
-    "//05_Modding"
+    "//05_Modding",
+    "//img",
+    "//00_헌법",
+    "//02_콘텐츠",
+    "//01_시스템"
   ],
   "expandFolderOnClick": true,
   "spacesFolder": "Tags",
@@ -131,7 +135,7 @@
   "enableDefaultSpaces": true,
   "showSpacePinIcon": true,
   "experimental": false,
-  "systemName": "01-GM-Design",
+  "systemName": "Home",
   "defaultSpaceTemplate": "",
   "selectedKit": "default",
   "actionMaxSteps": 100,
