@@ -1,0 +1,19 @@
+{
+  "interaction_id": "gift",
+  "available_when": {
+    "all_of": [
+      { "target_npc": "elena" },
+      { "metric_gte": ["npc.elena.affection", 2] }
+    ]
+  },
+  "events": [
+    {
+      "id": "elena_gift_default",
+      "priority": 0,
+      "actions": [
+        { "type": "log", "message": "엘레나에게 작은 선물을 건넸다." },
+        { "type": "change_metric", "key": "npc.elena.affection", "amount": 1 }
+      ]
+    }
+  ]
+}

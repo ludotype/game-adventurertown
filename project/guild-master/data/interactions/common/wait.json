@@ -1,6 +1,6 @@
 {
   "interaction_id": "wait",
-  "label": "잠시 기다리기",
+  "label": "기다린다",
   "events": [
     {
       "id": "wait_default",

@@ -1,6 +1,7 @@
 {
   "place_id": "inn_room",
   "display_name": "여관방",
+  "description": "낡지만 정갈한 여관 방이다. 작은 창문으로 따스한 햇살이 들어와 이불 위를 비춘다.",
   "background_path": "res://assets/bg/inn_room.png",
   "bgm": "inn_calm",
   "empty_weight": 100,

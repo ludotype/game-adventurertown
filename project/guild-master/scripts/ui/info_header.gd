@@ -3,15 +3,15 @@ extends Control
 
 signal time_clicked()
 
-@export var bg_color: Color = Color("#1a1a1e")
-@export var border_color: Color = Color("#3a3a40")
+@export var bg_color: Color = Color(0x252529ff)
+@export var border_color: Color = Color(0x3a3a40ff)
 @export var title_font_size: int = 22
 @export var metric_font_size: int = 18
 @export var time_font_size: int = 20
-@export var text_color: Color = Color("#EAE6DF")
-@export var dim_text_color: Color = Color("#c0bcb5")
+@export var text_color: Color = Color(0xEAE6DFff)
+@export var dim_text_color: Color = Color(0xc0bcb5ff)
 
-@onready var _bg: ColorRect = $Background
+@onready var _bg: Panel = $Background
 @onready var _left_metrics: HBoxContainer = $MarginContainer/HBoxContainer/LeftMetrics
 @onready var _right_info: HBoxContainer = $MarginContainer/HBoxContainer/RightInfo
 
@@ -21,8 +21,7 @@ var _time_label: Label
 
 func _ready() -> void:
 	_apply_style()
-	# Defer label creation until children are ready
-	call_deferred(_setup_labels.call)
+	_setup_labels()
 
 func _setup_labels() -> void:
 	if _right_info == null:
@@ -66,8 +65,6 @@ func _apply_style() -> void:
 		border.corner_radius_bottom_left = 4
 		border.corner_radius_bottom_right = 4
 		_bg.add_theme_stylebox_override("panel", border)
-	elif _bg is ColorRect:
-		_bg.color = bg_color
 
 func set_place_name(place_name: String) -> void:
 	if _place_label:
@@ -80,11 +77,9 @@ func set_time(text: String) -> void:
 func set_metrics(metrics: Dictionary) -> void:
 	if _left_metrics == null:
 		return
-	# Clear old metric labels
-	for key in _metric_labels.keys():
-		var lbl = _metric_labels[key]
-		if is_instance_valid(lbl):
-			lbl.queue_free()
+	# Clear all children including separators
+	for child in _left_metrics.get_children():
+		child.queue_free()
 	_metric_labels.clear()
 
 	var ordered_keys := metrics.keys()

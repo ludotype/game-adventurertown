@@ -1,6 +1,6 @@
 {
   "interaction_id": "look_around",
-  "label": "둘러보기",
+  "label": "둘러본다",
   "events": [
     {
       "id": "look_around_default",

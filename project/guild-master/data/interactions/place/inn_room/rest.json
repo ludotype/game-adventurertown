@@ -1,7 +1,6 @@
 {
   "interaction_id": "rest",
-  "label": "쉬기",
-  "available_when": { "flag_eq": ["rested_today", false] },
+  "label": "쉰다",
   "events": [
     {
       "id": "rest_haunted",
@@ -9,19 +8,37 @@
       "when": { "has_condition": "haunted" },
       "actions": [
         { "type": "trigger_mandatory", "trigger_on": "rest_attempt" },
-        { "type": "advance_time", "time_units": 1 },
-        { "type": "set_flag", "key": "rested_today", "value": true },
+        { "type": "advance_time", "time_units": 2 },
         { "type": "log", "message": "잠시 눈을 붙였지만, 끔찍한 환영이 뇌리를 맴돌아 제대로 쉴 수 없었다." }
       ]
     },
     {
-      "id": "rest_normal",
-      "priority": 0,
+      "id": "rest_refresh",
+      "priority": 30,
+      "when": { "metric_lte": ["player.hp", 50] },
       "actions": [
+        { "type": "log", "message": "침대에 누워 한숨 돌렸다. 몸이 조금 가벼워진다." },
         { "type": "change_metric", "key": "player.hp", "amount": 10 },
-        { "type": "advance_time", "time_units": 1 },
-        { "type": "set_flag", "key": "rested_today", "value": true },
-        { "type": "log", "message": "여관방에서 잠시 몸을 쉬었다. HP가 회복되었다." }
+        { "type": "advance_time", "time_units": 2 }
+      ]
+    },
+    {
+      "id": "rest_bored",
+      "priority": 20,
+      "weight": 2,
+      "when": { "metric_gte": ["player.sanity", 80] },
+      "actions": [
+        { "type": "log", "message": "잠시 쉬었지만 따분해서 금방 일어났다." },
+        { "type": "advance_time", "time_units": 2 }
+      ]
+    },
+    {
+      "id": "rest_default",
+      "priority": 0,
+      "weight": 3,
+      "actions": [
+        { "type": "log", "message": "침대에 누워 눈을 감았다. 조용한 시간이 흘러간다." },
+        { "type": "advance_time", "time_units": 2 }
       ]
     }
   ]

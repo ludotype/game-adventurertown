@@ -27,7 +27,7 @@ func _load_all_places() -> void:
 		file_name = dir.get_next()
 	dir.list_dir_end()
 
-	print("PlaceRegistry: loaded ", _places.size(), " places")
+	print("[DEBUG] PlaceRegistry: loaded ", _places.size(), " places")
 
 
 func _load_place_file(path: String) -> void:

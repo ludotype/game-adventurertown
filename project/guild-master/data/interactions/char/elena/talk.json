@@ -1,6 +1,5 @@
 {
   "interaction_id": "talk",
-  "label": "대화",
   "available_when": { "target_npc": "elena" },
   "events": [
     {

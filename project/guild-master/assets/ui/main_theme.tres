@@ -1,7 +1,8 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://main_theme"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://main_theme"]
 
 [ext_resource type="FontFile" path="res://assets/fonts/eczar/Eczar-Bold.ttf" id="1_font"]
+[ext_resource type="FontFile" path="res://assets/fonts/paperlogy/Paperlogy-4Regular.ttf" id="2_paperlogy"]
 
 [resource]
-default_font = ExtResource("1_font")
+default_font = ExtResource("2_paperlogy")
 default_font_size = 18

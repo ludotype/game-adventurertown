@@ -1,17 +1,20 @@
 class_name DialogueBar
 extends Control
 
-@export var bg_color: Color = Color("#1a1a1e")
-@export var border_color: Color = Color("#3a3a40")
+@export var bg_color: Color = Color(0x252529ff)
+@export var border_color: Color = Color(0x3a3a40ff)
 @export var font_size: int = 20
-@export var text_color: Color = Color("#EAE6DF")
+@export var text_color: Color = Color(0xEAE6DFff)
 
 @onready var _bg: Panel = $Background
 @onready var _text: RichTextLabel = $MarginContainer/RichTextLabel
 
 func _ready() -> void:
 	_apply_style()
+	if _text:
+		_text.scroll_following = true
 	clear()
+	visible = true
 
 func _apply_style() -> void:
 	if _bg:
@@ -38,7 +41,25 @@ func show_dialogue(speaker: String, text: String) -> void:
 	_text.append_text("[b]%s[/b]: \"%s\"" % [speaker, text])
 	visible = true
 
+func append_log(text: String, speaker: String = "") -> void:
+	if _text == null:
+		return
+	if text.is_empty():
+		return
+	var needs_newline := not _text.get_parsed_text().is_empty()
+	if not speaker.is_empty():
+		if needs_newline:
+			_text.append_text("\n[b]%s[/b]: %s" % [speaker, text])
+		else:
+			_text.append_text("[b]%s[/b]: %s" % [speaker, text])
+	else:
+		if needs_newline:
+			_text.append_text("\n%s" % text)
+		else:
+			_text.append_text("%s" % text)
+	visible = true
+
 func clear() -> void:
 	if _text:
 		_text.clear()
-	visible = false
+		_text.append_text("[i]...[/i]")

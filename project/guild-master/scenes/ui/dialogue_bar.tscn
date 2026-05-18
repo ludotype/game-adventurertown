@@ -36,7 +36,7 @@ theme_override_constants/margin_bottom = 12
 [node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer"]
 layout_mode = 2
 bbcode_enabled = true
-fit_content = true
-scroll_active = false
+fit_content = false
+scroll_active = true
 theme_override_font_sizes/normal_font_size = 20
 theme_override_colors/default_color = Color(0.917647, 0.901961, 0.87451, 1)

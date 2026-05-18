@@ -11,9 +11,11 @@ const CHAR_DIR := INTERACTIONS_DIR + "char/"
 var _common_interactions: Dictionary = {}  # interaction_id -> definition
 var _place_interactions: Dictionary = {}  # place_id -> interaction_id -> definition
 var _char_interactions: Dictionary = {}  # npc_id -> interaction_id -> definition
+var _ccom_definitions: Dictionary = {}  # ccom_id -> { label }
 
 
 func _ready() -> void:
+	_load_ccom_definitions()
 	_load_all_interactions()
 
 
@@ -97,6 +99,40 @@ func resolve_npc_event(npc_id: String, interaction_id: String, context: Dictiona
 	return _resolve_event(_char_interactions[npc_id][interaction_id], context)
 
 
+func _load_ccom_definitions() -> void:
+	var path := "res://data/ccom_definitions.json"
+	if not FileAccess.file_exists(path):
+		push_warning("InteractionRegistry: ccom definitions not found: " + path)
+		return
+
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		push_warning("InteractionRegistry: failed to open ccom definitions")
+		return
+
+	var json := JSON.new()
+	var error := json.parse(file.get_as_text())
+	file.close()
+	if error != OK:
+		push_warning("InteractionRegistry: ccom JSON parse error: " + json.get_error_message())
+		return
+
+	var data = json.get_data()
+	if typeof(data) == TYPE_DICTIONARY:
+		_ccom_definitions = data
+		print("[DEBUG] InteractionRegistry: loaded ", _ccom_definitions.size(), " ccom definitions")
+	else:
+		push_warning("InteractionRegistry: ccom root must be Dictionary")
+
+
+func _get_ccom_label(ccom_id: String) -> String:
+	if _ccom_definitions.has(ccom_id):
+		var def = _ccom_definitions[ccom_id]
+		if typeof(def) == TYPE_DICTIONARY and def.has("label"):
+			return String(def["label"])
+	return ""
+
+
 func _load_all_interactions() -> void:
 	_common_interactions.clear()
 	_place_interactions.clear()
@@ -106,7 +142,7 @@ func _load_all_interactions() -> void:
 	_load_place_interactions()
 	_load_character_interactions()
 
-	print("InteractionRegistry: loaded ", _common_interactions.size(), " common, ",
+	print("[DEBUG] InteractionRegistry: loaded ", _common_interactions.size(), " common, ",
 		_place_interactions.size(), " place, ",
 		_char_interactions.size(), " character interaction groups")
 
@@ -231,6 +267,12 @@ func _load_interaction_file(path: String, scope: String, npc_id: String) -> Dict
 	definition["source_path"] = path
 	if not definition.has("events"):
 		definition["events"] = []
+
+	if scope == "char" and not definition.has("label"):
+		var ccom_label := _get_ccom_label(interaction_id)
+		if not ccom_label.is_empty():
+			definition["label"] = ccom_label
+
 	return definition
 
 

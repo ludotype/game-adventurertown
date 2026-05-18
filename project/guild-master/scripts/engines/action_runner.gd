@@ -10,6 +10,7 @@ signal action_finished(action: Dictionary)
 signal action_failed(action: Dictionary, reason: String)
 signal time_changed()
 signal metric_changed(key: String, value)
+signal log_emitted(message: String, context: Dictionary)
 
 const MAX_DEPTH := 32
 const INK_BALLOON_SCENE := "res://Story/InkBalloon/ink_balloon.tscn"
@@ -96,7 +97,7 @@ func run(action, context: Dictionary = {}, depth: int = 0) -> bool:
 
 func _run_log(action: Dictionary, context: Dictionary) -> bool:
 	var message := String(action.get("message", action.get("id", "log")))
-	print("ActionRunner: ", message, " @ ", context.get("place_id", ""))
+	log_emitted.emit(message, context)
 	return true
 
 
@@ -116,17 +117,19 @@ func _run_dialogue(action: Dictionary) -> bool:
 	if dialogue_id.is_empty():
 		return _fail(action, "dialogue action requires dialogue_id")
 
-	# Load Ink story
-	var ink_path := _find_ink_resource_path(dialogue_id)
-	if ink_path.is_empty():
-		return _fail(action, "ink story not found: " + dialogue_id)
+	var txt_path := "res://data/dialogues/" + dialogue_id + ".txt"
+	if FileAccess.file_exists(txt_path):
+		var file := FileAccess.open(txt_path, FileAccess.READ)
+		if file != null:
+			while not file.eof_reached():
+				var line := file.get_line().strip_edges()
+				if line.is_empty() or line.begins_with("#"):
+					continue
+				log_emitted.emit(line, {})
+			file.close()
+			return true
 
-	var balloon_scene := load(INK_BALLOON_SCENE)
-	if balloon_scene == null:
-		return _fail(action, "failed to load InkBalloon scene")
-	var balloon = balloon_scene.instantiate()
-	get_tree().root.add_child(balloon)
-	balloon.start(ink_path)
+	log_emitted.emit("[대화: " + dialogue_id + "]", {})
 	return true
 
 
@@ -375,7 +378,7 @@ func _run_open_ui(action: Dictionary) -> bool:
 	var scene_path := ""
 	match ui_name:
 		"inventory":
-			scene_path = "res://scenes/ui/inventory_window.tscn"
+			scene_path = "res://scenes/ui/inventory_grid_panel.tscn"
 		_:
 			return _fail(action, "unknown ui_name: " + ui_name)
 	if not ResourceLoader.exists(scene_path):
@@ -402,7 +405,7 @@ func _run_random_loot(action: Dictionary) -> bool:
 		if has_node("/root/InventoryManager") and InventoryManager.has_method("add_item"):
 			InventoryManager.add_item(item_id, count)
 	if not message.is_empty():
-		print("Loot: ", message)
+		log_emitted.emit(message, {})
 	return true
 
 

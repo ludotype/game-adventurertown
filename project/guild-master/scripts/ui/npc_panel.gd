@@ -3,10 +3,10 @@ extends Control
 
 signal clicked()
 
-@export var bg_color: Color = Color("#1a1a1e")
-@export var border_color: Color = Color("#3a3a40")
+@export var bg_color: Color = Color(0x252529ff)
+@export var border_color: Color = Color(0x3a3a40ff)
 @export var name_font_size: int = 20
-@export var text_color: Color = Color("#EAE6DF")
+@export var text_color: Color = Color(0xEAE6DFff)
 
 @onready var _bg: Panel = $Background
 @onready var _portrait: TextureRect = $MarginContainer/VBoxContainer/Portrait

@@ -1,6 +1,5 @@
 {
   "interaction_id": "touch",
-  "label": "접촉",
   "available_when": { "target_npc": "elena" },
   "events": [
     {

@@ -7,11 +7,12 @@ extends Node2D
 @export var place_id: String = "inn_room"
 @export var default_time_of_day: String = "morning"
 
-@onready var background_sprite: Sprite2D = $BackgroundSprite
+@onready var background_sprite: TextureRect = $UILayer/UIRoot/Background
 @onready var info_header: InfoHeader = $UILayer/UIRoot/InfoHeader
 @onready var npc_panel: NPCPanel = $UILayer/UIRoot/NPCPanel
 @onready var action_panel: ActionPanel = $UILayer/UIRoot/ActionPanel
 @onready var dialogue_bar: DialogueBar = $UILayer/UIRoot/DialogueBar
+@onready var inventory_grid: InventoryGridPanel = $UILayer/UIRoot/InventoryGridPanel
 
 var _spawner: Node
 var _current_npc_data: Dictionary = {}
@@ -29,17 +30,18 @@ func _ready() -> void:
 		ActionRunner.time_changed.connect(_on_action_time_changed)
 	if has_node("/root/ActionRunner") and not ActionRunner.metric_changed.is_connected(_on_action_metric_changed):
 		ActionRunner.metric_changed.connect(_on_action_metric_changed)
+	if has_node("/root/ActionRunner") and not ActionRunner.log_emitted.is_connected(_on_log_emitted):
+		ActionRunner.log_emitted.connect(_on_log_emitted)
 	if has_node("/root/TimeSystem") and not TimeSystem.time_advanced.is_connected(_on_time_advanced):
 		TimeSystem.time_advanced.connect(_on_time_advanced)
 	if has_node("/root/MetricStore") and not MetricStore.metric_changed.is_connected(_on_metric_changed):
 		MetricStore.metric_changed.connect(_on_metric_changed)
-	if not npc_panel.clicked.is_connected(_on_npc_panel_clicked):
-		npc_panel.clicked.connect(_on_npc_panel_clicked)
 	if not action_panel.action_pressed.is_connected(_on_action_pressed):
 		action_panel.action_pressed.connect(_on_action_pressed)
 	if not action_panel.move_pressed.is_connected(_on_move_pressed):
 		action_panel.move_pressed.connect(_on_move_pressed)
 
+	_init_default_metrics()
 	_enter_place(place_id)
 
 
@@ -60,6 +62,12 @@ func _enter_place(target_place_id: String) -> void:
 	_spawn_current_place_npc()
 	if has_node("/root/CrisisManager") and CrisisManager.has_method("apply_mandatory_events"):
 		CrisisManager.apply_mandatory_events("place_entered", _get_action_context())
+
+	var place_data := PlaceRegistry.get_place(place_id)
+	var desc: String = place_data.get("description", "")
+	if not desc.is_empty() and dialogue_bar:
+		dialogue_bar.append_log(desc)
+
 	_refresh_action_buttons()
 
 
@@ -99,49 +107,68 @@ func _refresh_time_label() -> void:
 func _refresh_action_buttons() -> void:
 	action_panel.clear()
 
-	if not has_node("/root/InteractionRegistry"):
-		return
-
 	var context := _get_action_context()
-	var place_interactions: Array = InteractionRegistry.get_available_place_actions(place_id, context)
-	if not place_interactions.is_empty():
-		action_panel.add_section("장소 행동")
-		for definition in place_interactions:
-			var interaction_id := String(definition.get("interaction_id", ""))
+	var all_place_actions: Array = []
+	if has_node("/root/InteractionRegistry"):
+		all_place_actions = InteractionRegistry.get_available_place_actions(place_id, context)
+
+	var allowed_general := ["wait", "look_around", "check_inventory", "playmusic"]
+	var allowed_place_only := ["rest", "sleep"]
+	var allowed_char := ["talk", "touch", "gift"]
+
+	# 1. 일반 행동 (상단)
+	action_panel.add_section("일반 행동")
+	for definition in all_place_actions:
+		var interaction_id := String(definition.get("interaction_id", ""))
+		if interaction_id in allowed_general:
 			var label := String(definition.get("label", interaction_id))
 			var scope := String(definition.get("scope", "common"))
 			action_panel.add_action(label, interaction_id, scope, "")
 
-	var npc_id := String(_current_npc_data.get("npc_id", ""))
-	if not npc_id.is_empty():
-		var npc_context := _get_action_context(npc_id)
-		var npc_interactions: Array = InteractionRegistry.get_available_for_npc(npc_id, npc_context)
-		if not npc_interactions.is_empty():
-			action_panel.add_section(String(_current_npc_data.get("display_name", npc_id)))
-			for definition in npc_interactions:
-				var interaction_id := String(definition.get("interaction_id", ""))
-				var label := String(definition.get("label", interaction_id))
-				action_panel.add_action(label, interaction_id, "char", npc_id)
-
-	_refresh_movement_section()
-
-
-func _refresh_movement_section() -> void:
-	var place_data := PlaceRegistry.get_place(place_id)
-	if place_data.is_empty():
-		return
-	var connections: Array = place_data.get("connections", [])
-	if connections.is_empty():
-		return
-
+	# 2. 장소 전용 행동
 	action_panel.add_separator()
-	for raw_id in connections:
-		var target_id := String(raw_id)
-		if not PlaceRegistry.has_place(target_id):
-			push_warning("PlaceScene: connection to unknown place_id: " + target_id)
-			continue
-		var target_data := PlaceRegistry.get_place(target_id)
-		action_panel.add_movement(target_data.get("display_name", target_id), target_id)
+	action_panel.add_section("장소 행동")
+	for definition in all_place_actions:
+		var interaction_id := String(definition.get("interaction_id", ""))
+		if interaction_id in allowed_place_only:
+			var label := String(definition.get("label", interaction_id))
+			var scope := String(definition.get("scope", "place"))
+			action_panel.add_action(label, interaction_id, scope, "")
+
+	# 3. 캐릭터 행동
+	action_panel.add_separator()
+	var npc_id := String(_current_npc_data.get("npc_id", ""))
+	var npc_display := String(_current_npc_data.get("display_name", npc_id))
+	if npc_id.is_empty():
+		action_panel.add_section("캐릭터 행동")
+	else:
+		action_panel.add_section(npc_display)
+		if has_node("/root/InteractionRegistry"):
+			var npc_context := _get_action_context(npc_id)
+			var npc_actions: Array = InteractionRegistry.get_available_for_npc(npc_id, npc_context)
+			for definition in npc_actions:
+				var interaction_id := String(definition.get("interaction_id", ""))
+				if interaction_id in allowed_char:
+					var label := String(definition.get("label", interaction_id))
+					action_panel.add_action(label, interaction_id, "char", npc_id)
+
+	# 4. 이동
+	action_panel.add_separator()
+	action_panel.add_section("이동")
+	var place_data := PlaceRegistry.get_place(place_id)
+	if not place_data.is_empty():
+		var connections: Array = place_data.get("connections", [])
+		for raw_id in connections:
+			var target_id := String(raw_id)
+			if not PlaceRegistry.has_place(target_id):
+				push_warning("PlaceScene: connection to unknown place_id: " + target_id)
+				continue
+			var target_data := PlaceRegistry.get_place(target_id)
+			action_panel.add_movement(target_data.get("display_name", target_id), target_id)
+
+
+
+
 
 
 func _on_move_pressed(target_place_id: String) -> void:
@@ -155,6 +182,10 @@ func _on_move_pressed(target_place_id: String) -> void:
 
 
 func _on_action_pressed(interaction_id: String, scope: String, npc_id: String) -> void:
+	if interaction_id == "inventory" or interaction_id == "check_inventory":
+		_open_inventory()
+		return
+
 	if not has_node("/root/InteractionRegistry") or not has_node("/root/ActionRunner"):
 		return
 
@@ -196,7 +227,6 @@ func _build_action_from_interaction_event(event: Dictionary) -> Dictionary:
 
 
 func _on_action_move_requested(target_place_id: String) -> void:
-	print("PlaceScene: move to ", target_place_id)
 	_enter_place(target_place_id)
 
 
@@ -237,12 +267,11 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 	var greeting := String(npc_data.get("greeting", ""))
 	var display_name := String(npc_data.get("display_name", ""))
 	if not greeting.is_empty() and dialogue_bar:
-		dialogue_bar.show_dialogue(display_name, greeting)
+		dialogue_bar.append_log(greeting, display_name)
 	elif dialogue_bar:
 		dialogue_bar.clear()
 
-	print("PlaceScene: NPC spawned - ", npc_data.get("npc_id"),
-		" (probability: ", "%.1f" % (npc_data.get("probability", 0.0) * 100.0), "%)")
+	_refresh_action_buttons()
 
 
 func _on_empty_spawned() -> void:
@@ -250,25 +279,33 @@ func _on_empty_spawned() -> void:
 	npc_panel.clear()
 	if dialogue_bar:
 		dialogue_bar.clear()
-	print("PlaceScene: no NPC spawned (empty) @ ", place_id)
+		# Optional: scene update text when no NPC is present
+		# dialogue_bar.append_log("이 곳에는 아무도 없다.")
 
 
-func _on_npc_panel_clicked() -> void:
-	var dialogue_id := String(_current_npc_data.get("dialogue_id", ""))
-	if dialogue_id.is_empty():
-		push_warning("PlaceScene: NPC has no dialogue_id: " + String(_current_npc_data.get("npc_id", "")))
-		return
-	if has_node("/root/ActionRunner"):
-		ActionRunner.run({
-			"type": "dialogue",
-			"dialogue_id": dialogue_id
-		}, _get_action_context(String(_current_npc_data.get("npc_id", ""))))
 
 
 func _get_current_story_flags() -> Array:
 	if has_node("/root/Flags") and Flags.has_method("get_active_flags"):
 		return Flags.get_active_flags()
 	return []
+
+
+func _init_default_metrics() -> void:
+	if not has_node("/root/MetricStore"):
+		return
+	if not MetricStore.has_metric("player.funds"):
+		MetricStore.set_metric("player.funds", 100)
+	if not MetricStore.has_metric("player.hp"):
+		MetricStore.set_metric("player.hp", 80)
+	if not MetricStore.has_metric("player.sanity"):
+		MetricStore.set_metric("player.sanity", 95)
+
+
+func _has_instrument() -> bool:
+	if not has_node("/root/InventoryManager"):
+		return false
+	return InventoryManager.has_item("instrument", 1)
 
 
 func _get_player_metrics() -> Dictionary:
@@ -293,3 +330,105 @@ func _get_player_metrics() -> Dictionary:
 func _on_metric_changed(key: String, _value) -> void:
 	if key.begins_with("player."):
 		info_header.set_metrics(_get_player_metrics())
+
+
+func _on_log_emitted(message: String, _context: Dictionary) -> void:
+	if dialogue_bar:
+		dialogue_bar.append_log(message)
+
+
+func _open_inventory() -> void:
+	if inventory_grid:
+		inventory_grid.open()
+		if not inventory_grid.item_selected.is_connected(_on_inventory_item_selected):
+			inventory_grid.item_selected.connect(_on_inventory_item_selected)
+	_refresh_inventory_sidebar()
+
+
+func _close_inventory() -> void:
+	if inventory_grid:
+		inventory_grid.close()
+	_refresh_action_buttons()
+
+
+func _on_inventory_item_selected(item_id: String) -> void:
+	_refresh_inventory_sidebar(item_id)
+
+
+func _refresh_inventory_sidebar(item_id: String = "") -> void:
+	action_panel.clear()
+	action_panel.add_back_button("돌아가기", _on_inventory_back)
+	action_panel.add_separator()
+
+	if item_id.is_empty():
+		action_panel.add_section("아이템 정보")
+		action_panel.add_custom_label("아이템을 선택하세요.", 16, Color(0xc0bcb5ff))
+		return
+
+	var def := ItemRegistry.get_item(item_id)
+	if def.is_empty():
+		action_panel.add_section("아이템 정보")
+		action_panel.add_custom_label("알 수 없는 아이템입니다.", 16, Color(0xc0bcb5ff))
+		return
+
+	action_panel.add_section(def.get("display_name", item_id))
+	var icon_path: String = def.get("icon_path", "")
+	if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
+		action_panel.add_texture_rect(load(icon_path), Vector2(64, 64))
+	action_panel.add_custom_label(def.get("description", ""), 16)
+
+	var category: String = def.get("category", "")
+	var equipped := InventoryManager.is_equipped(item_id)
+	action_panel.add_separator()
+	action_panel.add_section("행동")
+	match category:
+		"weapon", "armor":
+			action_panel.add_action_callback("해제" if equipped else "장착", _on_inventory_equip.bind(item_id))
+		"consumable":
+			action_panel.add_action_callback("사용", _on_inventory_use.bind(item_id))
+		_:
+			action_panel.add_action_callback("확인", func(): pass)
+
+
+func _on_inventory_back() -> void:
+	_close_inventory()
+
+
+func _on_inventory_use(item_id: String) -> void:
+	if not has_node("/root/InventoryManager"):
+		return
+	var def := ItemRegistry.get_item(item_id)
+	_apply_item_effects(def.get("effects", []))
+	InventoryManager.remove_item(item_id, 1)
+	inventory_grid.refresh()
+	_refresh_inventory_sidebar(inventory_grid.get_selected_item_id())
+
+
+func _on_inventory_equip(item_id: String) -> void:
+	if not has_node("/root/InventoryManager"):
+		return
+	if InventoryManager.is_equipped(item_id):
+		InventoryManager.unequip_item(item_id)
+	else:
+		InventoryManager.equip_item(item_id)
+	inventory_grid.refresh()
+	_refresh_inventory_sidebar(item_id)
+
+
+func _apply_item_effects(effects: Array) -> void:
+	for effect in effects:
+		if typeof(effect) != TYPE_DICTIONARY:
+			continue
+		var effect_dict: Dictionary = effect
+		var effect_type: String = effect_dict.get("type", "")
+		match effect_type:
+			"heal":
+				var key: String = effect_dict.get("metric_key", "player.hp")
+				var amount: int = effect_dict.get("amount", 0)
+				if has_node("/root/MetricStore"):
+					MetricStore.change_metric(key, amount)
+			"buff":
+				var key: String = effect_dict.get("metric_key", "player.attack")
+				var amount: int = effect_dict.get("amount", 0)
+				if has_node("/root/MetricStore"):
+					MetricStore.change_metric(key, amount)

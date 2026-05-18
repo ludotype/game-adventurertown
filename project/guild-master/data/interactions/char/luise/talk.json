@@ -1,6 +1,5 @@
 {
   "interaction_id": "talk",
-  "label": "잠깐 이야기한다",
   "events": [
     {
       "id": "talk_luise",

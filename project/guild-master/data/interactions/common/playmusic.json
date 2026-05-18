@@ -1,6 +1,7 @@
 {
   "interaction_id": "playmusic",
   "label": "연주한다",
+  "available_when": { "has_item": "instrument" },
   "events": [
     {
       "id": "playmusic_late_noise",

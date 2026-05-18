@@ -82,7 +82,7 @@ func _load_mandatory_events() -> void:
 					push_warning("CrisisManager: JSON parse error in " + path)
 		file_name = dir.get_next()
 	dir.list_dir_end()
-	print("CrisisManager: loaded ", _mandatory_events.size(), " mandatory events")
+	print("[DEBUG] CrisisManager: loaded ", _mandatory_events.size(), " mandatory events")
 
 
 func reset_state() -> void:
@@ -96,8 +96,13 @@ func _reset_state() -> void:
 	reset_state()
 
 
+func _emit_log(message: String) -> void:
+	if has_node("/root/ActionRunner"):
+		ActionRunner.log_emitted.emit(message, {})
+
+
 func on_mythos_phase() -> void:
-	print("CrisisManager: Mythos Phase triggered on day ", TimeSystem.day)
+	_emit_log("Mythos Phase triggered on day " + str(TimeSystem.day))
 
 	# 1. 기존 활성 위기 doom_timer 감소 및 파멸 체크
 	var doomed: Array = []
@@ -169,7 +174,7 @@ func _activate_crisis(data: Dictionary) -> void:
 	}
 	Flags.set_flag("crisis." + crisis_id + ".active", true)
 	crisis_triggered.emit(data)
-	print("CrisisManager: activated crisis ", crisis_id, " (doom_timer=", doom_days, ")")
+	_emit_log("Activated crisis " + crisis_id + " (doom_timer=" + str(doom_days) + ")")
 
 
 func _doom_crisis(crisis_id: String) -> void:
@@ -273,13 +278,13 @@ func apply_mandatory_events(trigger_on: String, context: Dictionary = {}) -> voi
 		var actions: Array = data.get("actions", [])
 		for action in actions:
 			ActionRunner.run(action, context)
-		print("CrisisManager: applied mandatory event ", event_id, " on ", trigger_on)
+		_emit_log("Applied mandatory event " + event_id + " on " + trigger_on)
 
 
 func block_place(place_id: String, reason: String = "") -> void:
 	_blocked_places[place_id] = reason
 	place_blocked.emit(place_id, reason)
-	print("CrisisManager: blocked place ", place_id, " reason=", reason)
+	_emit_log("Blocked place " + place_id + (" reason=" + reason if not reason.is_empty() else ""))
 
 
 func unblock_place(place_id: String) -> void:
@@ -298,4 +303,4 @@ func get_block_reason(place_id: String) -> String:
 
 func trigger_game_over(reason: String, game_over_type: String = "normal") -> void:
 	game_over_triggered.emit(reason, game_over_type)
-	print("CrisisManager: GAME OVER - ", reason, " (type=", game_over_type, ")")
+	_emit_log("GAME OVER - " + reason + " (type=" + game_over_type + ")")

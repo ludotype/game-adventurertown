@@ -1,7 +1,15 @@
 {
   "interaction_id": "sleep",
-  "label": "잠자고 하루 넘기기",
+  "label": "자러 간다",
   "events": [
+    {
+      "id": "sleep_too_early",
+      "priority": 100,
+      "when": { "not": { "hour_range": [20, 24] } },
+      "actions": [
+        { "type": "log", "message": "아직 자기에는 이르다." }
+      ]
+    },
     {
       "id": "sleep_inn_room",
       "priority": 0,
