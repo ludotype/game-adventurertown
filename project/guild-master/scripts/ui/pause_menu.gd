@@ -14,8 +14,8 @@ func _input(event: InputEvent) -> void:
 		# 인게임(ActionScene) 상태일 때만 일시정지 메뉴 허용
 		var current_scene = get_tree().current_scene
 		if current_scene:
-			var path := current_scene.scene_file_path
-			var is_gameplay := "action_scene.tscn" in path or "place_scene.tscn" in path or "game_scene.tscn" in path
+			var path: String = current_scene.scene_file_path
+			var is_gameplay: bool = "action_scene.tscn" in path or "place_scene.tscn" in path or "game_scene.tscn" in path
 			if is_gameplay:
 				toggle_pause()
 
@@ -71,7 +71,7 @@ func _on_settings_button_pressed() -> void:
 func _on_quit_button_pressed() -> void:
 	# GameManager에게 모든 세션 종료를 명령합니다.
 	if has_node("/root/GameManager"):
-		GameManager.cleanup_game_session()
+		get_node("/root/GameManager").cleanup_game_session()
 	
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://scenes/ui/title_screen.tscn")

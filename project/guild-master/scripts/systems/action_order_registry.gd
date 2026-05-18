@@ -157,8 +157,8 @@ func get_sorted(definitions: Array) -> Array:
 			b_id = String(b.get("interaction_id", ""))
 		else:
 			b_id = String(b)
-		var a_idx := order_map.get(a_id, 999999)
-		var b_idx := order_map.get(b_id, 999999)
+		var a_idx: int = order_map.get(a_id, 999999)
+		var b_idx: int = order_map.get(b_id, 999999)
 		if a_idx < b_idx:
 			return -1
 		elif a_idx > b_idx:

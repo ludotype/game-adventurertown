@@ -143,7 +143,7 @@ func _parse_tags(tags: Array) -> void:
 			var speaker := tag_str.substr(8)
 			character_label.visible = not speaker.is_empty()
 			character_label.text = "[center][wave amp=25 freq=2]" + tr(speaker, "dialogue") + "[/wave][/center]"
-			var nickname := Nickname.get_nickname(speaker)
+			var nickname: String = Nickname.get_nickname(speaker)
 			character_nickname_label.visible = not nickname.is_empty()
 			character_nickname_label.text = nickname
 		elif tag_str.begins_with("scgc="):
@@ -403,7 +403,7 @@ func _on_balloon_gui_input(event: InputEvent) -> void:
 	if is_ui_hidden:
 		return
 	if is_typing:
-		var mouse_was_clicked := event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed()
+		var mouse_was_clicked: bool = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed()
 		var skip_button_was_pressed := event.is_action_pressed(SKIP_ACTION)
 		if mouse_was_clicked or skip_button_was_pressed:
 			get_viewport().set_input_as_handled()
