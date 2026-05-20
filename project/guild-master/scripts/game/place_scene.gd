@@ -11,8 +11,8 @@ extends Node2D
 @onready var info_header: InfoHeader = $UILayer/UIRoot/InfoHeader
 @onready var npc_panel: NPCPanel = $UILayer/UIRoot/NPCPanel
 @onready var action_panel: ActionPanel = $UILayer/UIRoot/ActionPanel
-@onready var dialogue_bar: DialogueBar = $UILayer/UIRoot/DialogueBar
 @onready var inventory_grid: InventoryGridPanel = $UILayer/UIRoot/InventoryGridPanel
+@onready var message_log: MessageLog = $UILayer/UIRoot/MessageLog
 
 var _spawner: Node
 var _current_npc_data: Dictionary = {}
@@ -40,6 +40,8 @@ func _ready() -> void:
 		action_panel.action_pressed.connect(_on_action_pressed)
 	if not action_panel.move_pressed.is_connected(_on_move_pressed):
 		action_panel.move_pressed.connect(_on_move_pressed)
+	if not npc_panel.clicked.is_connected(_on_npc_clicked):
+		npc_panel.clicked.connect(_on_npc_clicked)
 
 	_init_default_metrics()
 	_enter_place(place_id)
@@ -65,8 +67,8 @@ func _enter_place(target_place_id: String) -> void:
 
 	var place_data := PlaceRegistry.get_place(place_id)
 	var desc: String = place_data.get("description", "")
-	if not desc.is_empty() and dialogue_bar:
-		dialogue_bar.append_log(desc)
+	if not desc.is_empty() and message_log:
+		message_log.append_message(desc)
 
 	_refresh_action_buttons()
 
@@ -266,10 +268,8 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 
 	var greeting := String(npc_data.get("greeting", ""))
 	var display_name := String(npc_data.get("display_name", ""))
-	if not greeting.is_empty() and dialogue_bar:
-		dialogue_bar.append_log(greeting, display_name)
-	elif dialogue_bar:
-		dialogue_bar.clear()
+	if not greeting.is_empty() and message_log:
+		message_log.append_message(display_name + ": " + greeting)
 
 	_refresh_action_buttons()
 
@@ -277,10 +277,11 @@ func _on_npc_spawned(npc_data: Dictionary) -> void:
 func _on_empty_spawned() -> void:
 	_current_npc_data.clear()
 	npc_panel.clear()
-	if dialogue_bar:
-		dialogue_bar.clear()
-		# Optional: scene update text when no NPC is present
-		# dialogue_bar.append_log("이 곳에는 아무도 없다.")
+	_refresh_action_buttons()
+
+
+func _on_npc_clicked() -> void:
+	_refresh_action_buttons()
 
 
 
@@ -332,9 +333,9 @@ func _on_metric_changed(key: String, _value) -> void:
 		info_header.set_metrics(_get_player_metrics())
 
 
-func _on_log_emitted(message: String, _context: Dictionary) -> void:
-	if dialogue_bar:
-		dialogue_bar.append_log(message)
+func _on_log_emitted(_message: String, _context: Dictionary) -> void:
+	if message_log:
+		message_log.append_message(_message)
 
 
 func _open_inventory() -> void:

@@ -4,68 +4,76 @@ extends Control
 signal item_selected(item_id: String)
 signal inventory_closed()
 
-@export var bg_color: Color = Color(0x252529ff)
-@export var border_color: Color = Color(0x3a3a40ff)
-@export var title_font_size: int = 22
+@export_group("Layout Settings")
+@export var padding_size: int = 16
 @export var grid_columns: int = 5
 @export var slot_size: Vector2 = Vector2(72, 72)
-@export var slot_bg_color: Color = Color(0x252529ff)
-@export var slot_border_color: Color = Color(0x3a3a40ff)
-@export var selected_slot_border_color: Color = Color(0xA91D22ff)
-@export var text_color: Color = Color(0xEAE6DFff)
+@export var grid_h_separation: int = 8
+@export var grid_v_separation: int = 8
 
-@onready var _bg: Panel = $Background
-@onready var _title: Label = $MarginContainer/VBoxContainer/Title
-@onready var _grid: GridContainer = $MarginContainer/VBoxContainer/GridContainer
-@onready var _empty_label: Label = $MarginContainer/VBoxContainer/EmptyLabel
+@export_group("Colors")
+@export var text_color: Color = Color("#e0e0e0")
+@export var slot_bg_color: Color = Color("#2a2a30")
+@export var slot_border_color: Color = Color("#3a3a40")
+@export var selected_slot_border_color: Color = Color("#a0a0a8")
+@export var hover_slot_border_color: Color = Color("#4a4a52")
+
+@export_group("Fonts")
+@export_range(10, 32, 1) var title_font_size: int = 22
+@export_range(8, 24, 1) var count_font_size: int = 12
+@export_range(8, 24, 1) var equipped_font_size: int = 12
+
+@export_group("UI References")
+@export var title_label: Label
+@export var grid_container: GridContainer
+@export var empty_label: Label
 
 var _selected_item_id: String = ""
-var _slots: Dictionary = {}  # item_id -> Control slot node
+var _slots: Dictionary = {}
 
 func _ready() -> void:
-	_apply_style()
+	_resolve_references()
+	_apply_dynamic_ui_settings()
 	_refresh_grid()
 
+func _resolve_references() -> void:
+	if title_label == null:
+		title_label = get_node_or_null("MarginContainer/VBoxContainer/Title")
+	if grid_container == null:
+		grid_container = get_node_or_null("MarginContainer/VBoxContainer/GridContainer")
+	if empty_label == null:
+		empty_label = get_node_or_null("MarginContainer/VBoxContainer/EmptyLabel")
 
-func _apply_style() -> void:
-	if _bg:
-		var border := StyleBoxFlat.new()
-		border.bg_color = bg_color
-		border.border_width_left = 2
-		border.border_width_top = 2
-		border.border_width_right = 2
-		border.border_width_bottom = 2
-		border.border_color = border_color
-		border.corner_radius_top_left = 4
-		border.corner_radius_top_right = 4
-		border.corner_radius_bottom_left = 4
-		border.corner_radius_bottom_right = 4
-		_bg.add_theme_stylebox_override("panel", border)
-	if _title:
-		_title.add_theme_font_size_override("font_size", title_font_size)
-		_title.add_theme_color_override("font_color", text_color)
-	if _grid:
-		_grid.columns = grid_columns
-		_grid.add_theme_constant_override("h_separation", 8)
-		_grid.add_theme_constant_override("v_separation", 8)
-
+func _apply_dynamic_ui_settings() -> void:
+	if title_label:
+		title_label.add_theme_font_size_override("font_size", title_font_size)
+		title_label.add_theme_color_override("font_color", text_color)
+	if grid_container:
+		grid_container.columns = grid_columns
+		grid_container.add_theme_constant_override("h_separation", grid_h_separation)
+		grid_container.add_theme_constant_override("v_separation", grid_v_separation)
 
 func _refresh_grid() -> void:
-	for child in _grid.get_children():
+	if grid_container == null:
+		return
+	for child in grid_container.get_children():
 		child.queue_free()
 	_slots.clear()
 	_selected_item_id = ""
 
 	if not has_node("/root/InventoryManager"):
-		_empty_label.visible = true
+		if empty_label:
+			empty_label.visible = true
 		return
 
 	var items := InventoryManager.get_all_items()
 	if items.is_empty():
-		_empty_label.visible = true
+		if empty_label:
+			empty_label.visible = true
 		return
 
-	_empty_label.visible = false
+	if empty_label:
+		empty_label.visible = false
 
 	for item_id in items.keys():
 		var entry: Dictionary = items[item_id]
@@ -73,9 +81,8 @@ func _refresh_grid() -> void:
 		if def.is_empty():
 			continue
 		var slot := _create_slot(item_id, entry, def)
-		_grid.add_child(slot)
+		grid_container.add_child(slot)
 		_slots[item_id] = slot
-
 
 func _create_slot(item_id: String, entry: Dictionary, def: Dictionary) -> Control:
 	var container := Control.new()
@@ -116,7 +123,7 @@ func _create_slot(item_id: String, entry: Dictionary, def: Dictionary) -> Contro
 		count_lbl.text = "x%d" % count
 		count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		count_lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
-		count_lbl.add_theme_font_size_override("font_size", 12)
+		count_lbl.add_theme_font_size_override("font_size", count_font_size)
 		count_lbl.add_theme_color_override("font_color", text_color)
 		count_lbl.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 		count_lbl.offset_left = -28
@@ -131,7 +138,7 @@ func _create_slot(item_id: String, entry: Dictionary, def: Dictionary) -> Contro
 		eq_lbl.text = "E"
 		eq_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 		eq_lbl.vertical_alignment = VERTICAL_ALIGNMENT_TOP
-		eq_lbl.add_theme_font_size_override("font_size", 12)
+		eq_lbl.add_theme_font_size_override("font_size", equipped_font_size)
 		eq_lbl.add_theme_color_override("font_color", selected_slot_border_color)
 		eq_lbl.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		eq_lbl.offset_left = 4
@@ -146,11 +153,9 @@ func _create_slot(item_id: String, entry: Dictionary, def: Dictionary) -> Contro
 
 	return container
 
-
 func _on_slot_gui_input(event: InputEvent, item_id: String) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_select_item(item_id)
-
 
 func _select_item(item_id: String) -> void:
 	_selected_item_id = item_id
@@ -164,13 +169,11 @@ func _select_item(item_id: String) -> void:
 		style.border_color = selected_slot_border_color if id == item_id else slot_border_color
 	item_selected.emit(item_id)
 
-
 func _on_slot_mouse_entered(item_id: String, slot_bg: Panel) -> void:
 	if item_id != _selected_item_id:
 		var style := slot_bg.get_theme_stylebox("panel") as StyleBoxFlat
 		if style:
-			style.border_color = Color(0x55555aff)
-
+			style.border_color = hover_slot_border_color
 
 func _on_slot_mouse_exited(item_id: String, slot_bg: Panel) -> void:
 	if item_id != _selected_item_id:
@@ -178,21 +181,17 @@ func _on_slot_mouse_exited(item_id: String, slot_bg: Panel) -> void:
 		if style:
 			style.border_color = slot_border_color
 
-
 func open() -> void:
 	visible = true
 	_refresh_grid()
-
 
 func close() -> void:
 	visible = false
 	inventory_closed.emit()
 
-
 func refresh() -> void:
 	if visible:
 		_refresh_grid()
-
 
 func get_selected_item_id() -> String:
 	return _selected_item_id

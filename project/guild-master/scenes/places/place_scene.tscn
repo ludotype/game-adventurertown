@@ -1,13 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://c8yvxg3ulq3a"]
+[gd_scene load_steps=12 format=3 uid="uid://c8yvxg3ulq3a"]
 
 [ext_resource type="Script" path="res://scripts/game/place_scene.gd" id="1_place"]
 [ext_resource type="PackedScene" uid="uid://d2yxq1v2kqg6d" path="res://scenes/ui/info_header.tscn" id="2_infoh"]
 [ext_resource type="PackedScene" uid="uid://c1xnxj2w7yq1e" path="res://scenes/ui/npc_panel.tscn" id="3_npcp"]
 [ext_resource type="PackedScene" uid="uid://a3v8k1m2n5q7p" path="res://scenes/ui/action_panel.tscn" id="4_actpn"]
 [ext_resource type="PackedScene" uid="uid://m3n8k2p1q7r4s" path="res://scenes/ui/esc_button.tscn" id="5_escbtn"]
-[ext_resource type="PackedScene" uid="uid://dialogue_bar" path="res://scenes/ui/dialogue_bar.tscn" id="6_dbar"]
+[ext_resource type="PackedScene" uid="uid://b8m7f8o5x3k" path="res://scenes/ui/pause_menu.tscn" id="6_pause"]
 [ext_resource type="Theme" path="res://assets/ui/main_theme.tres" id="7_theme"]
 [ext_resource type="PackedScene" uid="uid://cjm08txb8q403" path="res://scenes/ui/inventory_grid_panel.tscn" id="8_invgrid"]
+[ext_resource type="PackedScene" uid="uid://tkdzsk85ztt0v" path="res://scenes/ui/message_log.tscn" id="9_msglog"]
 
 [node name="PlaceScene" type="Node2D"]
 script = ExtResource("1_place")
@@ -61,20 +62,6 @@ offset_right = -20.0
 offset_bottom = 80.0
 grow_horizontal = 2
 
-[node name="NPCPanel" parent="UILayer/UIRoot" instance=ExtResource("3_npcp")]
-layout_mode = 1
-anchors_preset = 2
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 0.0
-anchor_bottom = 1.0
-offset_left = 36.0
-offset_top = -300.0
-offset_right = 336.0
-offset_bottom = -140.0
-grow_horizontal = 1
-grow_vertical = 0
-
 [node name="ActionPanel" parent="UILayer/UIRoot" instance=ExtResource("4_actpn")]
 layout_mode = 1
 anchors_preset = 11
@@ -89,18 +76,27 @@ offset_bottom = -140.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="DialogueBar" parent="UILayer/UIRoot" instance=ExtResource("6_dbar")]
+[node name="NPCPanel" parent="UILayer/UIRoot" instance=ExtResource("3_npcp")]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 1
+anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = -120.0
-offset_right = -20.0
-offset_bottom = -20.0
+offset_left = -480.0
+offset_top = 100.0
+offset_right = -360.0
+offset_bottom = 200.0
+grow_horizontal = 0
+
+[node name="MessageLog" parent="UILayer/UIRoot" instance=ExtResource("9_msglog")]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 100.0
+offset_right = 300.0
+offset_bottom = 300.0
 grow_horizontal = 2
-grow_vertical = 0
 
 [node name="InventoryGridPanel" parent="UILayer/UIRoot" instance=ExtResource("8_invgrid")]
 layout_mode = 1
@@ -115,3 +111,6 @@ offset_right = 400.0
 offset_bottom = 240.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="PauseMenu" parent="UILayer" instance=ExtResource("6_pause")]
+process_mode = 3

@@ -4,59 +4,69 @@ extends Control
 signal action_pressed(interaction_id: String, scope: String, npc_id: String)
 signal move_pressed(place_id: String)
 
-@export var bg_color: Color = Color(0x252529ff)
-@export var border_color: Color = Color(0x3a3a40ff)
-@export var title_font_size: int = 22
-@export var section_font_size: int = 18
-@export var action_font_size: int = 18
-@export var separation: int = 4
-@export var flow_separation_x: int = 20
-@export var flow_separation_y: int = 4
-@export var text_color: Color = Color(0xEAE6DFff)
-@export var section_color: Color = Color(0xc0bcb5ff)
-@export var separator_color: Color = Color(0x3a3a40ff)
+@export_group("Layout Settings")
+@export var padding_size: int = 16
+@export var section_separation: int = 12
+@export var flow_h_separation: int = 12
+@export var flow_v_separation: int = 8
 
-@onready var _bg: Panel = $Background
-@onready var _title: Label = $MarginContainer/VBoxContainer/Title
-@onready var _sections: VBoxContainer = $MarginContainer/VBoxContainer/Sections
+@export_group("Colors")
+@export var text_color: Color = Color("#e0e0e0")
+@export var section_color: Color = Color("#a0a0a8")
+@export var dim_color: Color = Color("#808088")
+@export var separator_color: Color = Color("#3a3a40")
+
+@export_group("Fonts")
+@export_range(10, 32, 1) var title_font_size: int = 22
+@export_range(10, 28, 1) var section_font_size: int = 18
+@export_range(10, 28, 1) var action_font_size: int = 18
+
+@export_group("UI References")
+@export var margin_container: MarginContainer
+@export var title_label: Label
+@export var sections_container: VBoxContainer
 
 var _current_flow: HFlowContainer = null
 
 func _ready() -> void:
-	_apply_style()
+	_resolve_references()
+	_apply_dynamic_ui_settings()
 
-func _apply_style() -> void:
-	if _bg:
-		var border := StyleBoxFlat.new()
-		border.bg_color = bg_color
-		border.border_width_left = 2
-		border.border_width_top = 2
-		border.border_width_right = 2
-		border.border_width_bottom = 2
-		border.border_color = border_color
-		border.corner_radius_top_left = 4
-		border.corner_radius_top_right = 4
-		border.corner_radius_bottom_left = 4
-		border.corner_radius_bottom_right = 4
-		_bg.add_theme_stylebox_override("panel", border)
-	if _title:
-		_title.add_theme_font_size_override("font_size", title_font_size)
-		_title.add_theme_color_override("font_color", text_color)
-	if _sections:
-		_sections.add_theme_constant_override("separation", separation)
+func _resolve_references() -> void:
+	if margin_container == null:
+		margin_container = get_node_or_null("MarginContainer")
+	if title_label == null:
+		title_label = get_node_or_null("MarginContainer/VBoxContainer/Title")
+	if sections_container == null:
+		sections_container = get_node_or_null("MarginContainer/VBoxContainer/Sections")
+
+func _apply_dynamic_ui_settings() -> void:
+	if margin_container:
+		margin_container.add_theme_constant_override("margin_left", padding_size)
+		margin_container.add_theme_constant_override("margin_right", padding_size)
+		margin_container.add_theme_constant_override("margin_top", padding_size)
+		margin_container.add_theme_constant_override("margin_bottom", padding_size)
+	if title_label:
+		title_label.add_theme_font_size_override("font_size", title_font_size)
+		title_label.add_theme_color_override("font_color", text_color)
+	if sections_container:
+		sections_container.add_theme_constant_override("separation", section_separation)
 
 func set_title(text: String) -> void:
-	if _title:
-		_title.text = text
+	if title_label:
+		title_label.text = text
 
 func clear() -> void:
-	for child in _sections.get_children():
-		child.queue_free()
+	if sections_container:
+		for child in sections_container.get_children():
+			child.queue_free()
 	_current_flow = null
 
 func add_section(text: String) -> void:
+	if sections_container == null:
+		return
 	var section := VBoxContainer.new()
-	section.add_theme_constant_override("separation", 2)
+	section.add_theme_constant_override("separation", 4)
 
 	var label := Label.new()
 	label.text = text
@@ -66,14 +76,16 @@ func add_section(text: String) -> void:
 	section.add_child(label)
 
 	var flow := HFlowContainer.new()
-	flow.add_theme_constant_override("h_separation", flow_separation_x)
-	flow.add_theme_constant_override("v_separation", flow_separation_y)
+	flow.add_theme_constant_override("h_separation", flow_h_separation)
+	flow.add_theme_constant_override("v_separation", flow_v_separation)
 	section.add_child(flow)
 
-	_sections.add_child(section)
+	sections_container.add_child(section)
 	_current_flow = flow
 
 func add_separator() -> void:
+	if sections_container == null:
+		return
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_top", 6)
 	margin.add_theme_constant_override("margin_bottom", 6)
@@ -83,7 +95,7 @@ func add_separator() -> void:
 	line.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	line.color = separator_color
 	margin.add_child(line)
-	_sections.add_child(margin)
+	sections_container.add_child(margin)
 	_current_flow = null
 
 func add_action(text: String, interaction_id: String, scope: String = "common", npc_id: String = "") -> void:
@@ -98,6 +110,9 @@ func add_action(text: String, interaction_id: String, scope: String = "common", 
 	_current_flow.add_child(lbl)
 
 func add_movement(display_name: String, place_id: String) -> void:
+	if sections_container == null:
+		push_warning("ActionPanel: sections_container is null")
+		return
 	var lbl := TextActionLabel.new()
 	lbl.set_action_text(display_name)
 	lbl.font_size = action_font_size
@@ -107,19 +122,19 @@ func add_movement(display_name: String, place_id: String) -> void:
 		_current_flow.add_child(lbl)
 	else:
 		var flow := HFlowContainer.new()
-		flow.add_theme_constant_override("h_separation", flow_separation_x)
-		flow.add_theme_constant_override("v_separation", flow_separation_y)
-		_sections.add_child(flow)
+		flow.add_theme_constant_override("h_separation", flow_h_separation)
+		flow.add_theme_constant_override("v_separation", flow_v_separation)
+		sections_container.add_child(flow)
 		_current_flow = flow
 		_current_flow.add_child(lbl)
 
-
 func add_spacer() -> void:
+	if sections_container == null:
+		return
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_sections.add_child(spacer)
+	sections_container.add_child(spacer)
 	_current_flow = null
-
 
 func add_back_button(text: String, callback: Callable) -> void:
 	var lbl := TextActionLabel.new()
@@ -127,9 +142,8 @@ func add_back_button(text: String, callback: Callable) -> void:
 	lbl.font_size = action_font_size
 	lbl.normal_color = text_color
 	lbl.clicked.connect(callback)
-	_sections.add_child(lbl)
+	sections_container.add_child(lbl)
 	_current_flow = null
-
 
 func add_custom_label(text: String, font_size_override: int = -1, color_override: Color = Color()) -> Label:
 	var lbl := Label.new()
@@ -141,18 +155,16 @@ func add_custom_label(text: String, font_size_override: int = -1, color_override
 		lbl.add_theme_color_override("font_color", color_override)
 	else:
 		lbl.add_theme_color_override("font_color", text_color)
-	_sections.add_child(lbl)
+	sections_container.add_child(lbl)
 	return lbl
-
 
 func add_texture_rect(texture: Texture2D, p_size: Vector2) -> TextureRect:
 	var tex_rect := TextureRect.new()
 	tex_rect.texture = texture
 	tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	tex_rect.custom_minimum_size = p_size
-	_sections.add_child(tex_rect)
+	sections_container.add_child(tex_rect)
 	return tex_rect
-
 
 func add_action_callback(text: String, callback: Callable) -> void:
 	if _current_flow == null:

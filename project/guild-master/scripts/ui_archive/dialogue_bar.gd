@@ -1,4 +1,4 @@
-class_name DialogueBar
+# class_name DialogueBar
 extends Control
 
 @export var bg_color: Color = Color(0x252529ff)

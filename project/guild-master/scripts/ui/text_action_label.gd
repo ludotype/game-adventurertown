@@ -3,9 +3,14 @@ extends RichTextLabel
 
 signal clicked()
 
-@export var normal_color: Color = Color(0xEAE6DFff)
-@export var hover_color: Color = Color(0xA91D22ff)
-@export var font_size: int = 18
+@export_group("Colors")
+@export var normal_color: Color = Color("#e0e0e0")
+@export var hover_color: Color = Color("#a0a0a8")
+
+@export_group("Fonts")
+@export_range(10, 32, 1) var font_size: int = 18
+
+@export_group("Behavior")
 @export var underline_on_hover: bool = true
 
 var _base_text: String = ""
@@ -23,24 +28,19 @@ func _ready() -> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 
-
 func set_action_text(p_text: String) -> void:
 	_base_text = p_text
 	_update_appearance(false)
 
-
 func _on_mouse_entered() -> void:
 	_update_appearance(true)
-
 
 func _on_mouse_exited() -> void:
 	_update_appearance(false)
 
-
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		clicked.emit()
-
 
 func _update_appearance(hovering: bool) -> void:
 	if hovering:

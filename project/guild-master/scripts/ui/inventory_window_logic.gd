@@ -1,23 +1,41 @@
 extends CanvasLayer
 
-@onready var item_list: VBoxContainer = %ItemList
-@onready var item_title: Label = %ItemTitle
-@onready var item_icon: TextureRect = %ItemIcon
-@onready var item_description: Label = %ItemDescription
-@onready var use_button: Button = %UseButton
-@onready var close_button: Button = $MainPanel/CloseButton
+@export_group("UI References")
+@export var item_list: VBoxContainer
+@export var item_title: Label
+@export var item_icon: TextureRect
+@export var item_description: Label
+@export var use_button: Button
+@export var close_button: Button
 
 var _selected_item_id: String = ""
 
 func _ready() -> void:
 	process_mode = PROCESS_MODE_ALWAYS
+	_resolve_references()
 	_refresh_list()
 	_clear_detail_panel()
-	use_button.pressed.connect(_on_use_pressed)
-	close_button.pressed.connect(_on_close_pressed)
+	if use_button:
+		use_button.pressed.connect(_on_use_pressed)
+	if close_button:
+		close_button.pressed.connect(_on_close_pressed)
 	if has_node("/root/InventoryManager"):
 		InventoryManager.item_added.connect(_on_inventory_changed)
 		InventoryManager.item_removed.connect(_on_inventory_changed)
+
+func _resolve_references() -> void:
+	if item_list == null:
+		item_list = get_node_or_null("MainPanel/MarginContainer/HBoxContainer/ItemList/ScrollContainer/VBoxContainer")
+	if item_title == null:
+		item_title = get_node_or_null("MainPanel/MarginContainer/HBoxContainer/DetailPanel/VBoxContainer/ItemTitle")
+	if item_icon == null:
+		item_icon = get_node_or_null("MainPanel/MarginContainer/HBoxContainer/DetailPanel/VBoxContainer/ItemIcon")
+	if item_description == null:
+		item_description = get_node_or_null("MainPanel/MarginContainer/HBoxContainer/DetailPanel/VBoxContainer/ItemDescription")
+	if use_button == null:
+		use_button = get_node_or_null("MainPanel/MarginContainer/HBoxContainer/DetailPanel/VBoxContainer/UseButton")
+	if close_button == null:
+		close_button = get_node_or_null("MainPanel/CloseButton")
 
 func _on_inventory_changed(_item_id: String, _count: int) -> void:
 	_refresh_list()
@@ -27,6 +45,8 @@ func _on_inventory_changed(_item_id: String, _count: int) -> void:
 		_update_detail_panel(_selected_item_id)
 
 func _refresh_list() -> void:
+	if item_list == null:
+		return
 	for child in item_list.get_children():
 		child.queue_free()
 
@@ -68,33 +88,45 @@ func _update_detail_panel(item_id: String) -> void:
 		_clear_detail_panel()
 		return
 
-	item_title.text = def.get("display_name", item_id)
-	item_description.text = def.get("description", "")
+	if item_title:
+		item_title.text = def.get("display_name", item_id)
+	if item_description:
+		item_description.text = def.get("description", "")
 
 	var icon_path: String = def.get("icon_path", "")
 	if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
-		item_icon.texture = load(icon_path)
+		if item_icon:
+			item_icon.texture = load(icon_path)
 	else:
-		item_icon.texture = null
+		if item_icon:
+			item_icon.texture = null
 
 	var category: String = def.get("category", "")
 	var equipped := InventoryManager.is_equipped(item_id)
 	match category:
 		"weapon", "armor":
-			use_button.text = "해제" if equipped else "장착"
+			if use_button:
+				use_button.text = "해제" if equipped else "장착"
 		"consumable":
-			use_button.text = "사용"
+			if use_button:
+				use_button.text = "사용"
 		_:
-			use_button.text = "확인"
-	use_button.disabled = false
+			if use_button:
+				use_button.text = "확인"
+	if use_button:
+		use_button.disabled = false
 
 func _clear_detail_panel() -> void:
 	_selected_item_id = ""
-	item_title.text = ""
-	item_description.text = "아이템을 선택하세요."
-	item_icon.texture = null
-	use_button.text = "사용"
-	use_button.disabled = true
+	if item_title:
+		item_title.text = ""
+	if item_description:
+		item_description.text = "아이템을 선택하세요."
+	if item_icon:
+		item_icon.texture = null
+	if use_button:
+		use_button.text = "사용"
+		use_button.disabled = true
 
 func _on_use_pressed() -> void:
 	if _selected_item_id.is_empty():

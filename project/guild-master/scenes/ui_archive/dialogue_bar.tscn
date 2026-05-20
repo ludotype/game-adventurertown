@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://dialogue_bar"]
+[gd_scene load_steps=2 format=3 uid="uid://bh8hrnct77epn"]
 
 [ext_resource type="Script" path="res://scripts/ui/dialogue_bar.gd" id="1_dbar"]
 

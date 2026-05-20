@@ -1,14 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://text_action_label"]
+[gd_scene load_steps=2 format=3 uid="uid://dialogue_bar"]
 
 [ext_resource type="Script" path="res://scripts/ui/text_action_label.gd" id="1_tal"]
 
 [node name="TextActionLabel" type="RichTextLabel"]
-custom_minimum_size = Vector2(80, 32)
+layout_mode = 0
+offset_right = 120.0
+offset_bottom = 28.0
+mouse_filter = 1
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
-mouse_filter = 1
-mouse_default_cursor_shape = 2
-theme_override_font_sizes/normal_font_size = 18
-text = "Action"
 script = ExtResource("1_tal")

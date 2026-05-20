@@ -1,4 +1,4 @@
-class_name MovePanel
+# class_name MovePanel
 extends Control
 
 signal move_pressed(place_id: String)

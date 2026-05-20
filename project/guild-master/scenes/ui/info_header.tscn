@@ -1,13 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2yxq1v2kqg6d"]
+[gd_scene load_steps=3 format=3 uid="uid://d2yxq1v2kqg6d"]
 
 [ext_resource type="Script" path="res://scripts/ui/info_header.gd" id="1_infoh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_infoh"]
+bg_color = Color(0.18, 0.18, 0.22, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.30, 0.30, 0.38, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_left = 4
+corner_radius_bottom_right = 4
 
 [node name="InfoHeader" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 664.0
-offset_bottom = 60.0
 script = ExtResource("1_infoh")
+margin_container = NodePath("MarginContainer")
+left_metrics = NodePath("MarginContainer/HBoxContainer/LeftMetrics")
+right_info = NodePath("MarginContainer/HBoxContainer/RightInfo")
 
 [node name="Background" type="Panel" parent="."]
 layout_mode = 1
@@ -16,6 +29,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_infoh")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -24,10 +38,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
