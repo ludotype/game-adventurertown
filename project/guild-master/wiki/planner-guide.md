@@ -197,4 +197,115 @@ BGM Tracks
 
 ---
 
-*마지막 수정: 2026-04-20*
+---
+
+## 10. 장소 데이터 (`data/places/`)
+
+### JSON 파일 형식
+
+각 장소는 `.json` 파일로 정의합니다.
+
+```json
+{
+  "place_id": "library",
+  "display_name": "도서관",
+  "description": "기본 장소 묘사 문장",
+  "descriptions": {
+    "morning": "아침 버전 묘사",
+    "night": "밤 버전 묘사"
+  },
+  "sub_npcs": [
+    { "npc_id": "student", "display_name": "a studious student", "description": "is hunched over a thick tome." }
+  ],
+  "background_path": "res://assets/bg/library.png",
+  "bgm": "library_theme",
+  "empty_weight": 8,
+  "connections": ["street_north", "street_south"]
+}
+```
+
+### 필드 설명
+
+| 필드 | 설명 | 필수 |
+|------|------|------|
+| `place_id` | 고유 ID | O |
+| `display_name` | 화면에 표시될 이름 | O |
+| `description` | 기본 정경 텍스트 | - |
+| `descriptions` | **시간대별** 정경 텍스트. `morning`, `afternoon`, `evening`, `night` 등의 키 사용 | - |
+| `sub_npcs` | 상호작용 불가능한 배경 NPC 목록 | - |
+| `background_path` | 배경 이미지 경로 | - |
+| `bgm` | 재생할 BGM 이름 | - |
+| `empty_weight` | "아무도 없음" 가중치 (메인 NPC 미등장 확률) | - |
+| `connections` | 연결된 장소 ID 목록 | - |
+
+### `sub_npcs` 형식
+
+```json
+{ "npc_id": "고유ID", "display_name": "화면 표시 이름", "description": "동작 묘사 (is here. 등)" }
+```
+
+---
+
+## 11. 정경 텍스트 (Atmosphere Text)
+
+### 출력 구조
+
+매 턴(장소 진입 / 시간 경과)마다 다음 순서로 한 덩이의 텍스트가 조합되어 표시됩니다.
+
+```
+[장소 묘사] [글로벌 이벤트 텍스트]
+
+[플레이어 상태 묘사]
+
+[메인 NPC 묘사]
+[서브 NPC 1 묘사]
+[서브 NPC 2 묘사]
+```
+
+### 플레이어 상태 반영 기준
+
+`MetricStore`의 수치에 따라 자동으로 다음 문구가 추가됩니다.
+
+| 메트릭 | 기준 | 표시 문구 |
+|--------|------|-----------|
+| `player.hp` / `player.health` | ≤ 20 | gravely injured |
+| | ≤ 40 | seriously injured |
+| | ≤ 60 | hurt |
+| `player.sanity` / `player.san` / `player.mental` | ≤ 20 | mind unraveling |
+| | ≤ 40 | grip slipping |
+| | ≤ 60 | uneasy |
+| `player.hunger` | ≤ 10 | starving |
+| | ≤ 30 | hungry |
+| | ≥ 90 | completely full |
+| `player.stamina` | ≤ 20 | exhausted |
+| | ≤ 40 | tired |
+
+> **참고**: 새 상태 메트릭이나 문구를 추가하려면 `scripts/game/atmosphere_describer.gd`의 `_get_player_status_text()`를 수정합니다.
+
+---
+
+## 12. 메시지 창 설정 (`message_log`)
+
+### 폰트 교체 방법
+
+비트맵/픽셀 스타일 폰트를 사용하려면:
+
+1. 원하는 폰트 파일(`.ttf`, `.otf`)을 `assets/fonts/`에 복사
+2. Godot 에디터에서 `scenes/ui/message_log.tscn` 열기
+3. `MessageLog` 노드의 인스펙터에서 **Message Font** 슬롯에 파일 드래그
+4. (또는 `assets/ui/main_theme.tres`의 `default_font`를 교체하여 전역 적용)
+
+### 인스펙터 설정 항목
+
+| 항목 | 설명 | 기본값 |
+|------|------|--------|
+| `Message Font` | 메시지 폰트 | (없음) |
+| `Message Font Size` | 폰트 크기 | 22 |
+| `Outline Size` | 아웃라인 두께 | 2px |
+| `Outline Color` | 아웃라인 색상 | 검정 |
+
+> `message_font`가 비어 있으면 현재 테마의 기본 폰트를 사용합니다.
+
+---
+
+*마지막 수정: 2026-05-20*

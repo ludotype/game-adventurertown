@@ -1,6 +1,15 @@
 {
   "place_id": "town_square",
   "display_name": "중앙 광장",
+  "description": "The town square bustles with activity. Merchants hawk their wares beneath fluttering banners, and the cobblestones are worn smooth by countless footsteps.",
+  "descriptions": {
+    "morning": "Morning mist still clings to the cobblestones as vendors set up their stalls. The air smells of fresh bread and woodsmoke.",
+    "night": "The square is nearly empty. A lone watchman patrols with a lantern, and the banners hang limp in the still night air."
+  },
+  "sub_npcs": [
+    { "npc_id": "merchant", "display_name": "a tired merchant", "description": "counts copper coins with glazed eyes." },
+    { "npc_id": "dog", "display_name": "a stray dog", "description": "sniffs at a discarded fish bone." }
+  ],
   "background_path": "res://assets/bg/town_square.png",
   "bgm": "town_day",
   "empty_weight": 8,

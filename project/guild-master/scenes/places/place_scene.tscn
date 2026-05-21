@@ -89,14 +89,15 @@ grow_horizontal = 0
 
 [node name="MessageLog" parent="UILayer/UIRoot" instance=ExtResource("9_msglog")]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -300.0
+anchors_preset = 1
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+offset_left = 20.0
 offset_top = 100.0
-offset_right = 300.0
-offset_bottom = 300.0
-grow_horizontal = 2
+offset_right = 620.0
+offset_bottom = 340.0
+grow_horizontal = 1
 
 [node name="InventoryGridPanel" parent="UILayer/UIRoot" instance=ExtResource("8_invgrid")]
 layout_mode = 1

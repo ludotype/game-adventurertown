@@ -40,6 +40,7 @@
 │                                                                     │
 │  ┌─ Runtime Engines (logic) ─────────────────────────────────────┐  │
 │  │ ActionRunner   ConditionEvaluator   EventBus                   │  │
+│  │ AtmosphereDescriber (정경 텍스트 조합)                            │  │
 │  │ DialogueManager (애드온)            BGMManager   AudioManager │  │
 │  │ SaveManager                                                   │  │
 │  └───────────────────────────────────────────────────────────────┘  │
@@ -49,10 +50,11 @@
                                 │
 ┌─────────────────────── SCENE LAYER ────────────────────────────────┐
 │  PlaceScene (단일 씬, 모든 장소를 데이터로 처리)                   │
-│   ├─ MoveBar    (connections → 버튼)                               │
-│   ├─ ActionBar  (actions → 버튼, when 조건으로 활성/비활성)        │
-│   ├─ NPCOverlay (NPCSpawner 추첨 결과 + 클릭 입력)                 │
-│   └─ PlaceLabel                                                    │
+│   ├─ MoveBar       (connections → 버튼)                            │
+│   ├─ ActionBar     (actions → 버튼, when 조건으로 활성/비활성)       │
+│   ├─ NPCOverlay    (NPCSpawner 추첨 결과 + 클릭 입력)              │
+│   ├─ MessageLog    (정경 텍스트 패널: 장소/시간/상태/NPC 묘사)       │
+│   └─ PlaceLabel                                                   │
 └────────────────────────────────────────────────────────────────────┘
                                 ▲
                                 │ reads via Registry
@@ -80,6 +82,14 @@
 {
   "place_id": "flower_shop",
   "display_name": "꽃집",
+  "description": "The scent of roses and lavender fills the small shop.",
+  "descriptions": {
+    "morning": "Morning light streams through the windows, illuminating rows of fresh-cut flowers.",
+    "night": "The shop is dark, only a single lantern flickering over the counter."
+  },
+  "sub_npcs": [
+    { "npc_id": "cat", "display_name": "a stray cat", "description": "sleeps among the flower pots." }
+  ],
   "background_path": "res://assets/bg/flower_shop.png",
   "bgm": "town_day",
   "empty_weight": 6,
@@ -468,6 +478,7 @@ Princess Maker · Stardew Valley · Persona의 커뮤니티 링크 · Harvest Mo
 | 2026-05-16 | Phase 3 착수 | InteractionRegistry, common/char interaction, NPC 클릭 대화, data/dialogues 샘플 추가 |
 | 2026-05-16 | MetricStore 추가 | key 기반 범용 상태 저장소, metric 조건/액션, 문서화 추가 |
 | 2026-05-16 | 컨셉 정리 | 길드 관리/자동전투 컨셉 제거, 1인칭 연애 어드벤처 방향으로 예시/용어 전면 정리 |
+| 2026-05-20 | 정경 텍스트 시스템 | `AtmosphereDescriber` 추가. 장소 JSON에 `descriptions`(시간대별), `sub_npcs` 필드 추가. 메시지 창을 로그→단일 정경 텍스트 패널로 개조. |
 
 ---
 

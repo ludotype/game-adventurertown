@@ -65,11 +65,6 @@ func _enter_place(target_place_id: String) -> void:
 	if has_node("/root/CrisisManager") and CrisisManager.has_method("apply_mandatory_events"):
 		CrisisManager.apply_mandatory_events("place_entered", _get_action_context())
 
-	var place_data := PlaceRegistry.get_place(place_id)
-	var desc: String = place_data.get("description", "")
-	if not desc.is_empty() and message_log:
-		message_log.append_message(desc)
-
 	_refresh_action_buttons()
 
 
@@ -265,19 +260,32 @@ func _get_action_context(target_npc_id: String = "") -> Dictionary:
 func _on_npc_spawned(npc_data: Dictionary) -> void:
 	_current_npc_data = npc_data
 	npc_panel.set_npc(npc_data)
-
-	var greeting := String(npc_data.get("greeting", ""))
-	var display_name := String(npc_data.get("display_name", ""))
-	if not greeting.is_empty() and message_log:
-		message_log.append_message(display_name + ": " + greeting)
-
 	_refresh_action_buttons()
+	_refresh_atmosphere_text()
 
 
 func _on_empty_spawned() -> void:
 	_current_npc_data.clear()
 	npc_panel.clear()
 	_refresh_action_buttons()
+	_refresh_atmosphere_text()
+
+
+func _refresh_atmosphere_text() -> void:
+	if not message_log:
+		return
+	var place_data := PlaceRegistry.get_place(place_id)
+	var current_time := default_time_of_day
+	if has_node("/root/TimeSystem"):
+		current_time = TimeSystem.current_time_of_day
+	var atmosphere := AtmosphereDescriber.describe({
+		"place_data": place_data,
+		"time_of_day": current_time,
+		"player_metrics": _get_player_metrics(),
+		"main_npc": _current_npc_data,
+		"sub_npcs": place_data.get("sub_npcs", [])
+	})
+	message_log.set_message(atmosphere)
 
 
 func _on_npc_clicked() -> void:
@@ -335,7 +343,7 @@ func _on_metric_changed(key: String, _value) -> void:
 
 func _on_log_emitted(_message: String, _context: Dictionary) -> void:
 	if message_log:
-		message_log.append_message(_message)
+		message_log.set_message(_message)
 
 
 func _open_inventory() -> void:

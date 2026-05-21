@@ -30,6 +30,8 @@
 | `empty_weight` | 100 | — |
 | `connections` | `hallway` | — |
 | 배치 NPC | 없음 (플레이어 전용) | — |
+| sub_npcs | `[{ "npc_id":"stray_cat", "display_name":"a stray cat", "description":"curls up on the windowsill, purring softly." }]` | — |
+| 정경 텍스트 | 기본: 낡지만 정갈한 여관 방... / morning: Morning light spills... / night: The room is lit only by... | — |
 | 행동 | 쉬기 (HP 회복, `haunted` 시 악몽), 잠자고 하루 넘기기, 소지품 확인, 둘러보기 | — |
 
 ### 1.2 복도 (`hallway`)
@@ -74,6 +76,8 @@
 | `empty_weight` | 8 | — |
 | `connections` | `street_south`, `street_north`, `street_west`, `clinic` | — |
 | 배치 NPC | 엘레나, 꽃집 주인, 기타 마을 NPC | □ 엘레나 초상화, □ 꽃집 주인 초상화 |
+| sub_npcs | `[{ "npc_id":"merchant", "display_name":"a tired merchant", "description":"counts copper coins with glazed eyes." }, { "npc_id":"dog", "display_name":"a stray dog", "description":"sniffs at a discarded fish bone." }]` | — |
+| 정경 텍스트 | 기본: The town square bustles... / morning: Morning mist... / night: The square is nearly empty... | — |
 | 행동 | 둘러보기 | — |
 
 ### 1.6 북쪽 거리 (`street_north`)
@@ -184,7 +188,28 @@
 
 ---
 
-## 4. 아트 에셋 체크리스트
+## 4. 장소 JSON 필드 정의
+
+새 장소를 추가할 때 사용하는 공통 필드입니다.
+
+| 필드 | 타입 | 설명 | 필수 |
+|------|------|------|------|
+| `place_id` | string | 고유 ID (파일명과 일치 권장) | O |
+| `display_name` | string | 화면에 표시될 이름 | O |
+| `description` | string | **기본 정경 텍스트** (시간대별 오버라이드가 없을 때 사용) | — |
+| `descriptions` | object | **시간대별 정경 텍스트**. `morning`, `afternoon`, `evening`, `night` 등의 키 사용 | — |
+| `sub_npcs` | array | **배경 NPC 목록**. `{ npc_id, display_name, description }` 형태 | — |
+| `background_path` | string | 배경 이미지 리소스 경로 | — |
+| `bgm` | string | 재생할 BGM ID | — |
+| `empty_weight` | int | "아무도 없음" 가중치 (메인 NPC 미등장 확률 조절) | — |
+| `connections` | string[] | 연결된 장소 ID 목록 | — |
+| `tags` | string[] | 태그 (indoor, shop 등) | — |
+
+> `sub_npcs`의 `description`은 문장 끝에 동사(~is here, ~counts coins) 형태로 작성합니다. 출력 시 `display_name + " " + description`으로 조합됩니다.
+
+---
+
+## 5. 아트 에셋 체크리스트
 
 ### 배경 일러스트 (Background)
 
@@ -231,5 +256,5 @@
 
 ---
 
-**문서 버전**: 1.1
-**최종 업데이트**: 2026-05-16
+**문서 버전**: 1.2
+**최종 업데이트**: 2026-05-20
