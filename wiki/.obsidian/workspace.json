@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "01_시스템/crisis_system_design.md",
+                "file": "00_헌법/new_direction.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "crisis_system_design"
+              "title": "new_direction"
             }
           }
         ]
@@ -75,7 +75,7 @@
             }
           },
           {
-            "id": "f33e2f2cdfe7e65e",
+            "id": "8f9b868388ac1ec7",
             "type": "leaf",
             "state": {
               "type": "mk-path-view",
@@ -194,6 +194,11 @@
   },
   "active": "ddb0761cde6374fe",
   "lastOpenFiles": [
+    "00_헌법/new_direction.md.tmp.24672.40e79733036b",
+    "00_헌법/game_concept.md",
+    "00_헌법/new_direction.md",
+    "00_헌법/game_loop.md",
+    "01_시스템/crisis_system_design.md",
     "02_콘텐츠/planner_guide.md.tmp.25352.b2c90c75d270",
     "01_시스템/dungeon_exploration.md.tmp.25352.98312154f611",
     "01_시스템/dungeon_exploration.md.tmp.25352.107f2542e45d",
@@ -204,7 +209,6 @@
     "02_콘텐츠/places.md",
     "00_헌법/architecture.md",
     "02_콘텐츠/scg_phone_sms_elapsed.md",
-    "00_헌법/game_concept.md",
     "00_헌법/game_concept.md.tmp.25352.7b821343c754",
     "00_헌법/game_concept.md.tmp.25352.9e289d4e19b4",
     "00_헌법/game_concept.md.tmp.25352.feb60254f25e",
@@ -213,7 +217,6 @@
     "00_헌법/game_concept.md.tmp.25352.acbad71e4c6b",
     "README.md",
     "00_헌법/README.md",
-    "02_콘텐츠/planner_guide.md.tmp.25352.092628e5a709",
     "content-inbox/README.md",
     "01_시스템/README.md",
     "00_헌법/coding_rules.md",
@@ -221,15 +224,12 @@
     "01_시스템/tool_design_editor.md",
     "01_시스템/evaluation_report.md",
     "01_시스템/emergent_storytelling.md",
-    "01_시스템/crisis_system_design.md",
     "01_시스템/autonomous_npc_design.md",
-    "00_헌법/game_loop.md",
     "tool_design_editor.md",
     "ink-guide.md",
     "planner-guide.md",
     "DESIGNER_SCG_PHONE_SMS_ELAPSED.md",
     "Untitled.md",
-    "Game_Concept.md",
     "ATTACHMENTS/char-morigan.png",
     "ATTACHMENTS/20260309002.png",
     "ATTACHMENTS/char-tessa.jpg",
