@@ -58,7 +58,6 @@
     "//PPB/PPB/DESIGN/PPB/DESIGN/Lore",
     "//PPB/PPB/DESIGN/PPB/DESIGN/Lore/PPB/DESIGN/Lore/Geography",
     "//PPB/PPB/MECHANICS/PPB/MECHANICS/Enemies",
-    "/",
     "folder",
     "folder/folder/BACKUP",
     "folder/folder/DESIGN",
@@ -95,9 +94,10 @@
     "//00_Core_Logic",
     "//05_Modding",
     "//img",
-    "//00_헌법",
     "//02_콘텐츠",
-    "//01_시스템"
+    "//01_시스템",
+    "/",
+    "//00_헌법"
   ],
   "expandFolderOnClick": true,
   "spacesFolder": "Tags",

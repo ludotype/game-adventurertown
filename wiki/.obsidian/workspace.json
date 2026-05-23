@@ -89,7 +89,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "ba04de9338374e41",
@@ -192,7 +192,7 @@
       "bases:새 베이스 생성하기": false
     }
   },
-  "active": "ddb0761cde6374fe",
+  "active": "8f9b868388ac1ec7",
   "lastOpenFiles": [
     "00_헌법/new_direction.md.tmp.24672.40e79733036b",
     "00_헌법/game_concept.md",

@@ -86,9 +86,10 @@
 | `set_flag` | `key`, `value` | 게임 플래그를 설정합니다. |
 | `set_metric` | `key`, `value` | 이름표가 붙은 숫자 값을 지정합니다. |
 | `change_metric` | `key`, `amount` | 이름표가 붙은 숫자 값을 증가/감소시킵니다. |
-| `advance_time` | `time_units` | 기본 시간 단위만큼 시간을 진행합니다. 기본값은 1입니다. |
-| `advance_minutes` | `minutes` | 예외적으로 정확한 분 단위만큼 시간을 진행합니다. |
-| `sleep_until_next_day` | 없음 | 다음 날 아침으로 이동합니다. |
+| `spend_ap` **(New)** | `amount` | 지정한 양만큼 행동력(AP)을 소모합니다. |
+| `advance_time` **(Legacy)** | `time_units` | [폐기 예정] 레거시 시간 진행. |
+| `advance_minutes` **(Legacy)** | `minutes` | [폐기 예정] 레거시 분 단위 시간 진행. |
+| `sleep_until_next_day` **(Legacy)** | 없음 | [폐기 예정] 레거시 다음 날 아침 이동. (AP 모두 소모 후 휴식 행동으로 대체) |
 | `sequence` | `actions` | 여러 행동을 순서대로 실행합니다. |
 | `if` | `when`, `then`, `else` | 조건에 따라 다른 행동을 실행합니다. |
 | `game_over` | `reason`, `game_over_type` | 게임 오버를 발생시킵니다. (`normal`, `doom`, `heroine`) |
@@ -176,17 +177,24 @@
 | `place_blocked` | `{ "place_blocked": "tavern" }` | 특정 장소가 봉쇄 상태인지 확인합니다. |
 | `has_item` | `{ "has_item": "holy_symbol" }` 또는 `{ "has_item": ["holy_symbol", 2] }` | 인벤토리에 특정 아이템(지정 개수 이상)이 있는지 확인합니다. |
 
-### 시간 시스템
+### 시간 시스템 (아카이브됨 / Legacy)
 
-게임 내부 시간은 24시간제입니다. 화면에는 `Day 1 07:00`처럼 표시됩니다.
+> [!WARNING]
+> **시간 시스템(Time System) 폐기 및 아카이브 알림 (2026-05-22)**
+> 본 섹션의 24시간제 세밀한 시간 추적 시스템(time unit 방식)은 **행동력(AP, Action Point) 기반 보드게임식 턴제 루프**로 전면 전환됨에 따라 **폐기 및 아카이브(Deprecated)**되었습니다.
+> - **신규 기획 표준:** 모든 행동 및 장소 이동은 시간(unit) 대신 **행동력(AP)**을 소모합니다. (예: `spend_ap` 액션 사용)
+> - **주/야간 페이즈:** 플레이어가 20 AP를 모두 사용하거나 강제로 휴식하면 밤(Night Phase)이 찾아오고, 밤이 깊어지면 파멸(Doom) 수치가 증가하고 신화/위기 사건이 전개되는 보드게임식 턴 루프를 따릅니다.
+> - 본 문서의 하위 내용은 레거시 시스템을 사용 중인 기존 코드 및 에셋 호환성을 위해 참고용으로만 유지됩니다. 신규 콘텐츠 기획 시에는 AP 및 주/야간 페이즈 기준 기획인 [[00_헌법/new_direction]] 문서를 최우선으로 참고하십시오.
 
-기본 행동 시간 소모량은 **time unit**으로 작성합니다. JSON에서는 `time_units` 필드를 사용합니다.
+게임 내부 시간은 24시간제입니다. 화면에는 `Day 1 07:00`처럼 표시됩니다. (레거시 사양)
+
+기본 행동 시간 소모량은 **time unit**으로 작성합니다. JSON에서는 `time_units` 필드를 사용합니다. (레거시 사양)
 
 - 기본값: `time_units: 1`
 - 현재 기준: `1 time_unit = 30분`
 - 밸런스 변경 시 `TimeSystem.minutes_per_time_unit`만 바꾸면 전체 행동 시간이 같이 조정됩니다.
 
-시간 블록은 기획자가 편하게 쓰기 위한 별칭입니다.
+시간 블록은 기획자가 편하게 쓰기 위한 별칭입니다. (레거시 사양)
 
 ```
 dawn        05:00 ~ 07:00
@@ -198,13 +206,19 @@ night       22:00 ~ 24:00
 late_night  00:00 ~ 05:00
 ```
 
-예를 들어 복도에서 "잠시 기다리기" 행동을 만들려면 다음처럼 작성합니다.
+예를 들어 복도에서 "잠시 기다리기" 행동을 만드는 레거시 작성 방식입니다. (사용 중단)
 
 ```json
 { "id": "wait", "label": "잠시 기다리기", "type": "advance_time", "time_units": 1 }
 ```
 
-정확히 10분만 흐르게 해야 하는 예외 상황은 `advance_minutes`를 사용합니다.
+대신, 행동력(AP)을 소모하는 신규 행동은 다음과 같이 작성합니다.
+
+```json
+{ "id": "accompany_patrol", "label": "순찰대 동행", "type": "spend_ap", "amount": 3 }
+```
+
+정확히 10분만 흐르게 해야 하는 예외 상황은 `advance_minutes`를 사용했었습니다. (사용 중단)
 
 ```json
 { "id": "short_wait", "label": "잠깐 기다리기", "type": "advance_minutes", "minutes": 10 }
@@ -400,19 +414,20 @@ project/guild-master/data/dialogues/{dialogue_id}.ink
 
 `.ink` 파일을 수정한 후에는 반드시 `inklecate`로 `.ink.json`를 컴파일해야 게임에 반영됩니다.
 
-최소 대화 예시는 다음과 같습니다.
+최소 대화 예시는 다음과 같습니다. (레거시/행동력 AP 소모로 대체됨)
 
 ```ink
-EXTERNAL advance_time(time_units)
+EXTERNAL advance_time(time_units) // 레거시
+EXTERNAL spend_ap(amount)         // 신규
 
 -> start
 === start ===
 
 좋은 아침이에요. # speaker=엘레나
 
-* 잠시 이야기한다
-  ~ advance_time(1)
-  짧은 대화였지만, 시간은 흘렀어요. # speaker=엘레나
+* 잠시 이야기하며 힌트를 얻는다 [3 AP 소모]
+  ~ spend_ap(3)
+  짧은 대화였지만, 행동력을 소모해 단서를 얻었습니다. # speaker=엘레나
 
 * 그만 간다
   필요하면 다시 말을 걸어 주세요. # speaker=엘레나
@@ -519,6 +534,7 @@ data/interactions/
 ### Common Interaction 예시
 
 ```json
+// 레거시 예시 (아카이브됨: time_block 및 advance_time 사용)
 {
   "interaction_id": "playmusic",
   "label": "연주한다",
@@ -528,13 +544,13 @@ data/interactions/
       "priority": 50,
       "when": {
         "all_of": [
-          { "time_block": ["night", "late_night"] },
+          { "time_block": ["night", "late_night"] }, // 레거시 시간 조건
           { "not": { "at_place": "inn_room" } }
         ]
       },
       "actions": [
         { "type": "log", "message": "늦은 시각의 서툰 연주에 누군가가 벽을 두드렸다." },
-        { "type": "advance_time", "time_units": 1 }
+        { "type": "spend_ap", "amount": 1 } // [신규 표준] 시간 진행 대신 AP 소모
       ]
     }
   ]
