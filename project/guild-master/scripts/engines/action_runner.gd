@@ -13,7 +13,7 @@ signal metric_changed(key: String, value)
 signal log_emitted(message: String, context: Dictionary)
 
 const MAX_DEPTH := 32
-const INK_BALLOON_SCENE := "res://Story/InkBalloon/ink_balloon.tscn"
+const BALLOON_SCENE := "res://scenes/ui/dialogue/balloon.tscn"
 const DIALOGUE_SEARCH_DIRS: PackedStringArray = [
 	"res://data/dialogues/",
 	"res://Story/Dialogues-samples/",

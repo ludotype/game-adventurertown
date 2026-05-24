@@ -271,9 +271,6 @@ BGM Tracks
 | `player.hp` / `player.health` | ≤ 20 | gravely injured |
 | | ≤ 40 | seriously injured |
 | | ≤ 60 | hurt |
-| `player.sanity` / `player.san` / `player.mental` | ≤ 20 | mind unraveling |
-| | ≤ 40 | grip slipping |
-| | ≤ 60 | uneasy |
 | `player.hunger` | ≤ 10 | starving |
 | | ≤ 30 | hungry |
 | | ≥ 90 | completely full |
