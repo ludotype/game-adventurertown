@@ -117,6 +117,23 @@ func _run_dialogue(action: Dictionary) -> bool:
 	if dialogue_id.is_empty():
 		return _fail(action, "dialogue action requires dialogue_id")
 
+	# 1. Dialogue Manager .dialogue 리소스 탐색 및 자동 재생
+	var dialogue_path := _find_dialogue_resource_path(dialogue_id)
+	if not dialogue_path.is_empty():
+		var dialogue_resource = load(dialogue_path)
+		if dialogue_resource != null:
+			var balloon_scene = load(BALLOON_SCENE)
+			if balloon_scene != null:
+				var balloon = balloon_scene.instantiate()
+				get_tree().root.add_child(balloon)
+				
+				var title := String(action.get("title", "start"))
+				balloon.start(dialogue_resource, title)
+				return true
+			else:
+				push_error("ActionRunner: Failed to load balloon scene at " + BALLOON_SCENE)
+
+	# 2. 레거시 일반 텍스트 파일 폴백
 	var txt_path := "res://data/dialogues/" + dialogue_id + ".txt"
 	if FileAccess.file_exists(txt_path):
 		var file := FileAccess.open(txt_path, FileAccess.READ)
@@ -231,13 +248,13 @@ func _run_if(action: Dictionary, context: Dictionary, depth: int) -> bool:
 	return run(branch, context, depth + 1)
 
 
-func _find_ink_resource_path(dialogue_id: String) -> String:
+func _find_dialogue_resource_path(dialogue_id: String) -> String:
 	if dialogue_id.begins_with("res://") and ResourceLoader.exists(dialogue_id):
 		return dialogue_id
 
 	var file_name := dialogue_id
-	if not file_name.ends_with(".ink.json"):
-		file_name += ".ink.json"
+	if not file_name.ends_with(".dialogue"):
+		file_name += ".dialogue"
 
 	for base_dir: String in DIALOGUE_SEARCH_DIRS:
 		var path: String = base_dir + file_name
