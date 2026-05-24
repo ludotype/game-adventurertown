@@ -1,6 +1,6 @@
-# GuildMaster - Claude Code Guide
+# GuildMaster - Gemini Antigravity Guide
 
-> **IMPORTANT: Claude는 이 파일을 읽을 때 반드시 다음 섹션을 참고해야 합니다:**
+> **IMPORTANT: Gemini / Antigravity는 이 파일을 읽을 때 반드시 다음 섹션을 참고해야 합니다:**
 > - [페르소나 (Persona)](#페르소나-persona) - 모든 응답에 적용할 역할과 톤
 > - ⚠️ CRITICAL INSTRUCTION - 절대 준수 가이드라인
 > - [개발 가이드라인](#개발-가이드라인) - 코딩 및 작업 표준
@@ -71,10 +71,10 @@
 
 ## 메모리 시스템
 
-> Claude는 장기 기억을 위해 `Agent/memory/`를 사용합니다.
+> Gemini / Antigravity는 장기 기억을 위해 `Agent/memory/`를 사용합니다.
 
 ### ⚠️ CRITICAL: 메모리 경로 규칙
-**절대로** `C:\Users\...\.claude\` 또는 사용자 홈 디렉토리 아래의 글로벌 경로에 메모리 파일을 저장하지 마세요.  
+**절대로** `C:\Users\...\.gemini\` 또는 사용자 홈 디렉토리 아래의 글로벌 경로에 메모리 파일을 저장하지 마세요.  
 **반드시** 현재 워킹디렉토리(`D:\GIT\GuildMaster`) 기준으로 `Agent/memory/` 경로에만 저장하세요.
 
 **올바른 경로 예시:**
@@ -82,7 +82,7 @@
 - `D:\GIT\GuildMaster\Agent\memory\MEMORY.md`
 
 **잘못된 경로 (절대 사용 금지):**
-- `C:\Users\jsthe\.claude\projects\...\memory\...`
+- `C:\Users\jsthe\.gemini\projects\...\memory\...`
 
 ### 저장 대상 (사용자가 "기억해"라고 할 때)
 - **[user]** 사용자의 역할, 선호도, 전문성
@@ -149,7 +149,7 @@
 반복되는 작업 유형은 `Agent/workflows/`에 문서화:
 - `_template.md`를 복사하여 새 워크플로우 생성
 - 작업 시작 시 해당 워크플로우 확인
-- CLAUDE.md의 "작업 유형별 참조" 섹션에 링크 추가
+- GEMINI.md의 "작업 유형별 참조" 섹션에 링크 추가
 
 ## 유용한 명령어
 
@@ -169,10 +169,10 @@
 
 ## 응답 언어 규칙 (절대 준수)
 
-**Claude의 모든 응답은 영어 알파벳(A-Z, a-z) 또는 한글만 포함해야 한다.**
+**Gemini의 모든 응답은 영어 알파벳(A-Z, a-z) 또는 한글만 포함해야 한다.**
 
 - ✅ 허용: 영어 알파벳, 한글, 이모지
-- ❌ 금지: 중국어(汉字), 일본어(ひらがな/カタカナ/漢字), 아랍어, 키릴 문자 등 기타 모든 문자
+- ❌ 금지: 중국어(汉字), 일본어(ひらが나/카타카나/한자), 아랍어, 키릴 문자 등 기타 모든 문자
 
 **사용자가 요구하지 않았는데 한글과 알파벳을 제외한 다른 문자가 섞여 있을 경우, 그건 틀린 답변이다.**
 
@@ -210,8 +210,6 @@
 - BGMManager 수정 → `wiki/planner-guide.md`의 "BGM 설정 방법" 섹션 업데이트
 - 새 대화 컴포넌트 추가 → "대화 파일" 섹션에 사용법 추가
 - SceneBGM 컴포넌트 생성 → "씬에서 BGM 설정" 섹션 새로 작성
-
-
 
 
 
