@@ -42,7 +42,7 @@
 ~ start
 ===
 
-엘레나: "좋은 아침이에요. 기분 좋은 하루네요!"
+루이제: "좋은 아침이에요. 기분 좋은 하루네요!"
 
 => END
 ```
@@ -66,11 +66,11 @@
 ~ choice_sample
 ===
 
-엘레나: "오늘의 일정을 결정해 주세요."
+루이제: "오늘의 일정을 결정해 주세요."
 
 - 공부를 집중적으로 한다
-	엘레나: "탁월한 선택이에요. 의지력이 상승할 것 같아요!"
-	set player.will + 5
+	루이제: "탁월한 선택이에요. 의지력이 상승할 것 같아요!"
+	set player.willpower + 5
 	=> start
 	
 - 외출해서 휴식을 취한다 => ~ go_outside
@@ -87,7 +87,7 @@
 대사 중간에 캐릭터 스탠딩 CG를 표시하거나 퇴장시킬 수 있도록 `[scg ...]` 커스텀 태그를 지원합니다.
 
 ```dialogue
-[scg scgl hop morigan_smile]
+[scg scgl hop luise_smile]
 모리건: "후후, 그렇게 긴장하지 않아도 괜찮아."
 ```
 
@@ -103,10 +103,10 @@
 
 1. **캐릭터 폴더 구조 (강력 추천)**: 
    `res://graphics/scg/{character_name}/{expression}.png`
-   - 예: `morigan_smile` 혹은 `morigan/smile`로 인자를 받으면 → `res://graphics/scg/morigan/smile.png` 자동 로드
+   - 예: `luise_smile` 혹은 `luise/smile`로 인자를 받으면 → `res://graphics/scg/luise/smile.png` 자동 로드
 2. **플랫 단일 파일 구조**: 
    `res://graphics/scg/{character_name}_{expression}.png`
-   - 예: `res://graphics/scg/morigan_smile.png` 로드
+   - 예: `res://graphics/scg/luise_smile.png` 로드
 3. **폴백 직접 구조**: 
    `res://graphics/scg/{scg_file_name}.png`
 
@@ -124,12 +124,12 @@ do ActionRunner.run({"type": "spend_ap", "amount": 3})
 do ActionRunner.run({"type": "change_metric", "key": "player.stamina", "amount": -10})
 
 # 2. 전역 플래그 설정 및 상태카드 부여
-do ActionRunner.run({"type": "set_flag", "key": "is_elena_met", "value": true})
+do ActionRunner.run({"type": "set_flag", "key": "is_luise_met", "value": true})
 do ActionRunner.run({"type": "add_condition", "condition_id": "exhausted"})
 
 # 3. 브금(BGM) 제어
 do BGMManager.push_bgm_by_name("bgm_tension")
-엘레나: "주변의 공기가 갑자기 무거워진 것 같아요..."
+루이제: "주변의 공기가 갑자기 무거워진 것 같아요..."
 do BGMManager.pop_bgm()
 ```
 

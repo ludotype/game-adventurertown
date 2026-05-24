@@ -10,19 +10,18 @@
 | 한국어 명칭 | 영어 명칭 (ID) | 구역 (District) | 비고 |
 |---|---|---|---|
 | **나틀락** | **Natlach** | - | 크툴루 신화의 아틀락 나챠에서 유래한 메인 고대 도시 명칭 (구 에밀도르) |
-| 여관방 | Inn Room (`inn_room`) | 주거/생활 구역 | 플레이어 개인 안식 공간 |
-| 복도 | Hallway (`hallway`) | 주거/생활 구역 | 객실 간의 이동 통로 |
-| 여관 로비 | Lobby (`lobby`) | 주거/생활 구역 | 모험가 대기실 및 의뢰 접수 |
-| 남쪽 거리 | South Street (`street_south`) | 중앙 광장 구역 | 로비와 광장을 잇는 골목길 |
-| 중앙 광장 | Town Square (`town_square`) | 중앙 광장 구역 | 분수대와 여신상이 있는 광장 |
-| 치료소 | Clinic (`clinic`) | 중앙 광장 구역 | 부상 및 정신 정화 공간 |
-| 무기 점포 | Weapon Shop (`weapon_shop`) | 중앙 광장 구역 | 대장장이 록이 운영하는 대장간 |
-| 북쪽 거리 | North Street (`street_north`) | 북쪽 유적 구역 | 유적으로 통하는 음침한 거리 |
-| 선술집 | Tavern (`tavern`) | 북쪽 유적 구역 | 정보 매매 및 의뢰 게시판 |
-| 꽃집 | Flower Shop (`flower_shop`) | 북쪽 유적 구역 | 기이한 회복용 꽃잎을 파는 곳 |
-| 고대 유적 진입로 | Ancient Ruins (`dungeon_01`) | 북쪽 유적 구역 | 지하 심연 유적으로 들어가는 던전 문 |
-| 서쪽 거리 | West Street (`street_west`) | 서쪽 경비대 구역 | 광장과 경비대 본부를 잇는 거리 |
-| 경비대 본부 | Guard Headquarters (`guard_hq`) | 서쪽 경비대 구역 | 치안 유지 및 파멸 억제 공간 |
+| 루이제의 여관 로비 | Lobby (`lobby`) | 북부 | 모험가 대기실 및 의뢰 접수. 루이제가 운영하는 여관 로비 |
+| 골동품 상점 | Curio Shop (`curio_shop`) | 북부 | 고대 유물 및 신비 용품 거래 상점 |
+| 경비대 | Guard Station (`guard_station`) | 북부 | 치안 유지 및 파멸 억제 공간 |
+| 대도서관 | Grand Library (`grand_library`) | 대학가 | 고대 역사 및 금기 지식 보관 도서관 |
+| 천문탑 | Astronomy Tower (`astronomy_tower`) | 대학가 | 별의 궤적 연구 및 파멸 예측 탑 |
+| 도적들의 소굴 | Rogue's Den (`rogues_den`) | 슬럼가 | 범죄 조직 아지트 및 지하 투기장 |
+| 부랑자 골목 | Beggar's Alley (`beggars_alley`) | 슬럼가 | 소외받은 이들의 거주지 및 정보 온상 |
+| 폐양조장 & 마녀의 오두막 | Abandoned Distillery (`abandoned_distillery`) | 슬럼가 | 금기 주술 및 비약 조제 장소 |
+| 성당 본당 | Cathedral Nave (`cathedral_nave`) | 대성당 구역 | 치유와 정화의 신앙 중심지 |
+| 주요 대로 | Main Avenue (`main_avenue`) | 거리 | 도시 중심 동맥. 상대적으로 안전한 연결선 |
+| 뒷골목 | Back Alley (`back_alley`) | 거리 | 범죄자와 사교도가 출몰하는 위험한 통로 |
+| 하수도 입구 | Sewer Entrance (`sewer_entrance`) | 거리 | 지하 던전으로 통하는 입구 |
 
 ---
 
@@ -32,20 +31,21 @@
 
 | 한국어 이름 | 영어 이름 (ID) | 위치 (Location) | 주 역할 (Role) |
 |---|---|---|---|
-| **엘레나** | **Elena** | 치료소 (`clinic`) | 수련 의사, 스태미나 회복 및 정신 이상 상태 카드 정화 |
 | **루이제** | **Luise** | 여관 로비 (`lobby`) | 여관 주인, 객실 휴식 조율 및 전체 위기 퀘스트 안내 |
-| **셰퍼드** | **Shepard** | 경비대 본부 (`guard_hq`) | 경비대장, 단서 토큰 수집을 통한 도시 파멸도(Doom) 하락 |
-| **록** | **Rock** | 무기 점포 (`weapon_shop`) | 외눈박이 대장장이, 무기 및 방어구 장비 강화 |
-| **선술집 주인** | **Tavern Owner** | 선술집 (`tavern`) | 주점 주인, 정보 매매 및 NPA 위치 밀고 브로커 |
-| **꽃집 처녀** | **Flower Girl** | 꽃집 (`flower_shop`) | 꽃집 여주인, 회복제 및 정신 진정용 꽃잎 차 판매 |
+| **셰퍼드** | **Shepard** | 경비대 (`guard_station`) | 경비대원, 단서 토큰 수집을 통한 도시 파멸도(Doom) 하락 |
+| **경비대장** | **Guard Captain** | 경비대 (`guard_station`) | 경비대 지휘관, 고난이도 치안 퀘스트 발행 |
+| **신부** | **Priest** | 성당 본당 (`cathedral_nave`) | 성직자, 치유/정화 및 정보원 |
+| **수녀** | **Nun** | 성당 본당 (`cathedral_nave`) | 소문통, 고해성사 이벤트 제공 |
+| **골동품 상인** | **Curio Dealer** | 골동품 상점 (`curio_shop`) | 유물 감정 및 희귀 아이템 판매 |
+| **마녀** | **Witch** | 폐양조장 (`abandoned_distillery`) | 금기 주술 연구자, 비약 조제 및 상태 면역 버프 |
 
 ### 2.2 자율 액터 (NPA: Non-Playable Actors)
 
 | 한국어 이름 | 영어 이름 (ID) | 주 활동 영역 | 캐릭터 성향 및 클래스 |
 |---|---|---|---|
-| **마슈** | **Marsh** | 선술집, 북쪽 거리 | 호탕한 전사 (Warrior), 잦은 유적 출입, 부상(Wounded) 잦음 |
-| **렐리아나** | **Relliana** | 치료소, 중앙 광장 | 차분한 신관 (Cleric), 고성공률 탐사, 축복(Blessed) 버프 공유 |
-| **케이** | **Kay** | 복도, 남쪽 거리 구석 | 냉소적인 도적 (Rogue), 높은 기동력, 단서(Clue) 공유 조건 까다로움 |
+| **마슈** | **Marsh** | 경비대, 주요 대로 | 호탕한 전사 (Warrior), 잦은 유적 출입, 부상(Wounded) 잦음 |
+| **렐리아나** | **Relliana** | 성당 본당, 주요 대로 | 차분한 신관 (Cleric), 고성공률 탐사, 축복(Blessed) 버프 공유 |
+| **케이** | **Kay** | 뒷골목, 도적들의 소굴 | 냉소적인 도적 (Rogue), 높은 기동력, 단서(Clue) 공유 조건 까다로움 |
 
 ---
 
@@ -62,5 +62,5 @@
 
 ---
 
-*문서 버전: 1.0*  
-*최종 업데이트: 2026-05-24 by Antigravity*
+*문서 버전: 2.0 (피벗 후 재작성)*
+*최종 업데이트: 2026-05-24*

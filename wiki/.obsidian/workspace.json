@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00_헌법/new_direction.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "new_direction"
+              "title": "README"
             }
           }
         ]
@@ -89,7 +89,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 423.5
   },
   "right": {
     "id": "ba04de9338374e41",
@@ -194,29 +194,34 @@
   },
   "active": "ddb0761cde6374fe",
   "lastOpenFiles": [
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.ba996d5de5a0",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.a602449debcf",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.0db84b7b9865",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.5fbecc3bdc20",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.9164ab676469",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.89a8a08385e8",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.78380c7bd7b3",
+    "01_시스템/wiki_audit_checklist.md.tmp.34080.111b47fe5179",
+    "02_콘텐츠/planner_guide.md.tmp.34080.88d0795ded08",
+    "01_시스템/emergent_storytelling.md.tmp.34080.217c525c2ca3",
+    "02_콘텐츠/planner_guide.md.tmp.34080.bb13412584a2",
+    "01_시스템/wiki_audit_checklist.md",
     "01_시스템/condition_cards_design.md",
-    "02_콘텐츠/world_and_places.md.tmp.34080.7b703c8a453d",
-    "00_헌법/glossary.md.tmp.34080.980016abbe7c",
-    "00_헌법/glossary.md",
     "01_시스템/npa_simulation_system.md",
-    "02_콘텐츠/world_and_places.md",
     "01_시스템/dialogue_manager_guide.md",
+    "00_헌법/coding_rules.md",
+    "01_시스템/evaluation_report.md",
+    "01_시스템/emergent_storytelling.md",
+    "00_헌법/game_concept.md",
+    "00_헌법/game_loop.md",
+    "00_헌법/new_direction_quiz.md",
+    "00_헌법/new_direction.md",
+    "00_헌법/glossary.md",
+    "02_콘텐츠/world_and_places.md",
     "01_시스템/2026-05-24-dialogue-manager-pivot-plan.md",
     "00_헌법/2026-05-24-wiki-cleanup-and-pivot-plan.md",
     "01_시스템/2026-05-24-city-map-editor-plan.md",
-    "00_헌법/new_direction.md",
-    "00_헌법/new_direction.md.tmp.34080.08b7d6ca2beb",
-    "00_헌법/new_direction.md.tmp.34080.8728066793d9",
-    "00_헌법/new_direction.md.tmp.34080.b7595f1dddf5",
-    "00_헌법/new_direction.md.tmp.34080.58059b866fea",
-    "00_헌법/new_direction.md.tmp.34080.f734636ae66b",
-    "00_헌법/new_direction.md.tmp.34080.3540e9545eb3",
-    "00_헌법/new_direction.md.tmp.34080.eb629a55c006",
-    "00_헌법/new_direction.md.tmp.34080.0e99076e04cc",
-    "00_헌법/new_direction_quiz.md",
     "01_시스템/dungeon_exploration.md",
-    "00_헌법/game_concept.md",
-    "00_헌법/game_loop.md",
     "01_시스템/crisis_system_design.md",
     "02_콘텐츠/planner_guide.md",
     "02_콘텐츠/README.md",
@@ -225,11 +230,6 @@
     "02_콘텐츠/scg_phone_sms_elapsed.md",
     "README.md",
     "00_헌법/README.md",
-    "content-inbox/README.md",
-    "01_시스템/README.md",
-    "00_헌법/coding_rules.md",
-    "01_시스템/ink_guide.md",
-    "01_시스템/tool_design_editor.md",
     "ATTACHMENTS/char-morigan.png",
     "ATTACHMENTS/20260309002.png",
     "ATTACHMENTS/char-tessa.jpg",

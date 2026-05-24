@@ -20,7 +20,7 @@
 ```
 1. 장소 JSON 작성 → data/places/
 2. NPC 스케줄 JSON 작성 → data/npc_schedules/
-3. 대화 .ink 작성 → data/dialogues/ 또는 Story/
+3. 대화 .dialogue 작성 → data/dialogues/
 4. 이벤트 JSON 작성 → data/events/
 5. interaction JSON 작성 → data/interactions/
 6. (선택) content-inbox에 기획서 전달 → 프로그래머가 구현

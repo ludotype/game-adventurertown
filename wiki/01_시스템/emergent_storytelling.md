@@ -24,21 +24,32 @@
 
 ```
 data/interactions/place/
-├── tavern/
+├── lobby/
 │   ├── gamble.json
-│   ├── gather_intel.json
+│   ├── gossip.json
 │   └── drink.json
-├── guard_hq/
-│   ├── gather_intel.json
-│   └── request_aid.json
-├── clinic/
-│   └── receive_treatment.json
-└── weapon_shop/
-    ├── repair_weapon.json
-    └── sharpen_weapon.json
+├── guard_station/
+│   ├── guard_quest.json
+│   ├── accompany_patrol.json
+│   └── emergency_aid.json
+├── cathedral_nave/
+│   ├── pray.json
+│   └── cleanse.json
+├── curio_shop/
+│   ├── browse_wares.json
+│   └── appraise_relic.json
+├── rogues_den/
+│   ├── fight_in_pit.json
+│   └── black_market.json
+├── beggars_alley/
+│   ├── alms_for_clues.json
+│   └── scavenge.json
+└── abandoned_distillery/
+    ├── witchs_brew.json
+    └── decipher_ritual.json
 ```
 
-### 실제 구현 예시: `tavern/gamble.json`
+### 실제 구현 예시: `lobby/gamble.json`
 
 ```json
 {
@@ -47,7 +58,7 @@ data/interactions/place/
   "available_when": { "metric_gte": ["player.gold", 10] },
   "events": [
     {
-      "id": "gamble_tavern",
+      "id": "gamble_lobby",
       "priority": 0,
       "actions": [
         { "type": "change_metric", "key": "player.gold", "amount": -10 },
@@ -93,7 +104,7 @@ data/interactions/place/
 ```
 
 **핵심 규칙:**
-- `outcome_check` action으로 `1d6 + attribute vs difficulty * 3` 판정
+- `outcome_check` action으로 다이스 풀 판정 (`player.{attribute}`만큼 d6 굴림, 4+ 성공 개수 vs `difficulty`)
 - `critical_success` / `success` / `failure` / `critical_failure` 4분기
 - `available_when`으로 cost/선행조건 제어 (예: 골드 10 이상 필요)
 - 결과는 ActionRunner action으로 표현 → 기획자가 직접 체인을 설계
@@ -113,10 +124,10 @@ data/interactions/place/
 | 단계 | 구현 | 설명 |
 |------|------|------|
 | **Debt** | `data/conditions/debt.json` | duration=5. `on_remove`에서 `player.gold >= 50`이면 상환, 아니면 `hunted` 추가 |
-| **Hunted** | `data/conditions/hunted.json` | duration=3. `rest_attempt` / `place_entered` trigger로 강제 이벤트 발동. `char/shepard/resolve_hunted.json`로 해결 가능 |
-| **Ambush** | `data/mandatory_events/ambush.json` | trigger_on: `place_entered`. when: `has_condition: hunted`. observation 체크 실패 시 HP-15, `injured` 추가 |
-| **Night Intruder** | `data/mandatory_events/night_intruder.json` | trigger_on: `rest_attempt`. when: `has_condition: hunted`. combat 체크 실패 시 HP-10, mental-5 |
-| **Injured** | `data/conditions/injured.json` | `add_condition` by Ambush event. `daily_midnight` reckoning으로 HP 추가 감소. `clinic/receive_treatment.json`로 회복 |
+| **Hunted** | `data/conditions/hunted.json` | duration=3. `rest_attempt` / `place_entered` trigger로 강제 이벤트 발동. `data/interactions/char/shepard/resolve_hunted.json`로 해결 가능 |
+| **Ambush** | `data/mandatory_events/ambush.json` | trigger_on: `place_entered`. when: `has_condition: hunted`. insight 체크 실패 시 HP-15, `injured` 추가 |
+| **Night Intruder** | `data/mandatory_events/night_intruder.json` | trigger_on: `rest_attempt`. when: `has_condition: hunted`. physique 체크 실패 시 HP-10, stamina -5 |
+| **Injured** | `data/conditions/injured.json` | `add_condition` by Ambush event. `daily_midnight` reckoning으로 HP 추가 감소. `lobby/rest.json` 또는 `cathedral_nave/pray.json`로 회복 |
 
 ### debt.json 예시
 
@@ -174,9 +185,11 @@ data/mandatory_events/
     { "type": "log", "message": "뒷골목에서 누군가가 당신을 덮친다!" },
     {
       "type": "attribute_check",
-      "attribute": "observation",
+      "attribute": "insight",
       "difficulty": 2,
-      "pass_message": "적의 기습을 미리 눈치채고 피했다.",
+      "pass_actions": [
+        { "type": "log", "message": "적의 기습을 미리 눈치채고 피했다." }
+      ],
       "fail_actions": [
         { "type": "change_metric", "key": "player.hp", "amount": -15 },
         { "type": "add_condition", "condition_id": "injured", "duration": 4 },
@@ -199,12 +212,14 @@ data/mandatory_events/
     { "type": "log", "message": "어둠 속에서 누군가가 방문을 두드린다..." },
     {
       "type": "attribute_check",
-      "attribute": "combat",
+      "attribute": "physique",
       "difficulty": 2,
-      "pass_message": "침입자를 격퇴하고 밤을 지새웠다.",
+      "pass_actions": [
+        { "type": "log", "message": "침입자를 격퇴하고 밤을 지새웠다." }
+      ],
       "fail_actions": [
         { "type": "change_metric", "key": "player.hp", "amount": -10 },
-        { "type": "change_metric", "key": "player.mental", "amount": -5 },
+        { "type": "change_metric", "key": "player.stamina", "amount": -5 },
         { "type": "log", "message": "침입자에게 당했다. 밤새 잠을 이루지 못했다." }
       ]
     }
@@ -218,7 +233,7 @@ data/mandatory_events/
 |-----------|----------|------|
 | `day_started` | 하루 시작 시 (자정) | 위기 이벤트의 `per_day_effects`와 함께 처리 |
 | `place_entered` | 특정 장소 입장 시 | `hunted` 상태로 으슥한 곳에 들어갈 때 기습 |
-| `rest_attempt` | 휴식/잠자기 시도 시 | `inn_room/sleep.json` 또는 `rest.json`의 첫 번째 action으로 `trigger_mandatory` 실행 |
+| `rest_attempt` | 휴식 시도 시 | `lobby/rest.json`의 첫 번째 action으로 `trigger_mandatory` 실행 |
 | `condition_removed` | 상태 이상 제거 시 | 빚 갚았을 때 후속 |
 | `crisis_triggered` | 위기 발생 시 | 전역 이벤트 |
 
@@ -230,21 +245,25 @@ data/mandatory_events/
 
 | 장소 | 특수 행동 | 결과 체인 | 상태 |
 |------|----------|----------|------|
-| **선술집** | 도박 | `outcome_check`(luck, 2). 대성공: +50골드 / 성공: +30 / 실패: `debt` + 추가 -20 / 대실패: `debt` + `hunted` | ✅ 구현 |
-| **선술집** | 정보 수집 (술값 내고) | `outcome_check`(observation, 1). 성공: `clue_token` +1 / 실패: mental -1 | ✅ 구현 |
-| **선술집** | 술 한 잔 | 아침 mental -2. 그 외 mental +2, HP +3 | ✅ 구현 |
-| **경비대 본부** | 정보 수집 | `outcome_check`(observation, 1). 성공: `clue_token` +1 | ✅ 구현 |
-| **경비대 본부** | 순찰대 동행 | HP +15, `npc.shepard.trust` +1, 시간 3 unit | ✅ 구현 |
-| **경비대 본부** | 구호 요청 | HP < 30 시 무료 HP +10 | ✅ 구현 |
-| **여관방** | 휴식 | HP +10. `haunted` 상태 시 `rest_attempt` trigger 발동, 악몽 | ✅ 구현 |
-| **치료소** | 치료받기 | `injured` 시 20골드로 부상 제거 + HP +30 / 일반 10골드 HP +20 | ✅ 구현 |
-| **꽃집** | 꽃다발 구매 | 10골드 → `flower_bouquet` 아이템 획득 | ✅ 구현 |
-| **무기상** | 무기 수리 | 15골드 → 공격력 +3 (영구) | ✅ 구현 |
-| **무기상** | 무기 강화 (일시적) | 5골드 → 공격력 +1 | ✅ 구현 |
-| **복도** | 문 너머 소리 듣기 | `outcome_check`(observation, 2). 성공: `clue_token` +1 | ✅ 구현 |
-| **거리 (남쪽)** | 바닥 수색 | `outcome_check`(luck, 1). 성공: 골드 +5 | ✅ 구현 |
-| **거리 (북쪽)** | 유적 관찰 | `outcome_check`(observation, 2). 성공: `clue_token` +1 | ✅ 구현 |
-| **고대 유적** | 깊숙이 탐험 | `random_loot` (전리품 테이블: `rusty_sword`, `potion`, `holy_symbol`) | ✅ 구현 |
+| **여관 로비** | 도박 | `outcome_check`(luck, 2). 대성공: +50골드 / 성공: +30 / 실패: `debt` + 추가 -20 / 대실패: `debt` + `hunted` | ✅ 구현 |
+| **여관 로비** | 소문 귀동냥 | `outcome_check`(insight, 1). 성공: `clue_token` +1 / 실패: stamina -1 | ✅ 구현 |
+| **여관 로비** | 술 한 잔의 여유 | stamina +2, HP +3. 다음 날 '숙취'(stamina -2) | ✅ 구현 |
+| **여관 로비** | 휴식 | HP 회복. `haunted` 상태 시 `rest_attempt` trigger 발동, 악몽 | ✅ 구현 |
+| **골동품 상점** | 진열대 살펴보기 | `outcome_check`(influence, 1). 성공 시 희귀 아이템 구매 기회 또는 `holy_symbol` 등장 | ✅ 구현 |
+| **골동품 상점** | 신비물 감정 | `outcome_check`(insight, 1). 성공: 고급 단서 + 30골드 / 실패: 10골드 | ✅ 구현 |
+| **경비대** | 순찰대 동행 | HP +15, `npc.shepard.trust` +1, 행동력 3 AP 소모 | ✅ 구현 |
+| **경비대** | 응급 구호 요청 | HP < 20% 시 무료 HP +10 | ✅ 구현 |
+| **경비대** | 경비 기여 | `clue_token` 기부 → `global.doom` 하락 | ✅ 구현 |
+| **성당 본당** | 기도 | `outcome_check`(willpower, 1) 또는 luck. 치유/고해성사/축복/무반응 분기 | ✅ 구현 |
+| **성당 본당** | 정화 | `outcome_check`(willpower, 2). 파멸 토큰 제거 및 장소 위기 해제 | ✅ 구현 |
+| **도적들의 소굴** | 지하 투기장 참전 | `outcome_check`(physique, 2). 대성공: +80골드 + `용기` / 성공: +40골드 / 실패: HP -30 + `부상` | ✅ 구현 |
+| **도적들의 소굴** | 암시장 밀거래 | `outcome_check`(insight, 1) 또는 influence. 특수 아이템 구매 또는 할인 | ✅ 구현 |
+| **부랑자 골목** | 자선과 정보 수집 | `outcome_check`(influence, 1). 성공: 평판 +1, `clue_token` +1 | ✅ 구현 |
+| **부랑자 골목** | 골목 폐허 수색 | `outcome_check`(insight, 1). 성공: 정크 부품 획득 / 실패: HP -5 | ✅ 구현 |
+| **폐양조장** | 마녀의 비약 조제 | `outcome_check`(insight, 1). 성공: stamina +10 + `강화된 신체` / 실패: stamina -5, HP -10 | ✅ 구현 |
+| **폐양조장** | 금기된 주술 전수 | `outcome_check`(willpower, 2). 성공: `정화의 의식` 단서 / 실패: stamina -5 | ✅ 구현 |
+| **대도서관** | 고서 조사 | `outcome_check`(insight, 1). 성공: 단서 또는 던전 해금 정보 | ✅ 구현 |
+| **천문탑** | 천체 관측 | `outcome_check`(insight, 2) 또는 willpower. 위기 다음 단계 예측 힌트 | ✅ 구현 |
 
 ---
 
@@ -271,5 +290,5 @@ data/mandatory_events/
 
 ---
 
-**문서 버전**: 1.1
-**최종 업데이트**: 2026-05-16
+**문서 버전**: 2.0 (피벗 후 재작성)
+**최종 업데이트**: 2026-05-24

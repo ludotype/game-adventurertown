@@ -14,7 +14,7 @@
 wiki/content-inbox/
 ├── quest_luise_chapter1.md
 ├── item_new_weapons.md
-└── dialogue_elena_birthday.md
+└── dialogue_luise_birthday.md
 ```
 
 - Markdown (.md) 또는 JSON (.json)으로 작성
@@ -27,7 +27,7 @@ wiki/content-inbox/
 Claude가 파일을 읽고:
 1. 기획意도를 이해
 2. 필요한 JSON 파일을 `data/` 폴더에 생성
-3. `.ink` 대화 파일을 작성 및 컴파일
+3. `.dialogue` 대화 파일을 작성
 4. `wiki/planner_guide.md`에 변경 사항을 반영
 
 ### 3. 완료 후 처리
@@ -47,7 +47,7 @@ Claude가 파일을 읽고:
 ## 개요
 - 대상 NPC: {npc_id}
 - 트리거: {조건}
-- 참조 파일: data/dialogues/{dialogue_id}.ink
+- 참조 파일: data/dialogues/{dialogue_id}.dialogue
 
 ## 대사 흐름
 
@@ -91,4 +91,4 @@ Claude가 파일을 읽고:
 
 - 상위: [[README]]
 - 기획 가이드: [[planner_guide]]
-- Ink 대화 가이드: [[ink_guide]]
+- Dialogue Manager 가이드: [[dialogue_manager_guide]]

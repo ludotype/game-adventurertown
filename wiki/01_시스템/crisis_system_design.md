@@ -55,11 +55,13 @@ Eldritch Horror의 3가지 핵심 메커닉을 게임의 시간/일상 루프에
       "when": { "time_block": "night" },
       "action": {
         "type": "attribute_check",
-        "attribute": "will",
+        "attribute": "willpower",
         "difficulty": 2,
-        "pass_message": "의지력으로 악몽을 견뎌냈다.",
+        "pass_actions": [
+          { "type": "log", "message": "의지력으로 악몽을 견뎌냈다." }
+        ],
         "fail_actions": [
-          { "type": "change_metric", "key": "player.mental", "amount": -5 },
+          { "type": "change_metric", "key": "player.stamina", "amount": -5 },
           { "type": "add_condition", "condition_id": "haunted", "duration": 3 },
           { "type": "log", "message": "악몽 때문에 휴식을 취하지 못했다." }
         ]
@@ -85,12 +87,12 @@ Eldritch Horror의 3가지 핵심 메커닉을 게임의 시간/일상 루프에
     "warning_days": 10,
     "warning_dialogue": "nightmare_warning",
     "per_day_effects": [
-      { "type": "change_metric", "key": "player.mental", "amount": -1 }
+      { "type": "change_metric", "key": "player.stamina", "amount": -1 }
     ],
     "doom_type": "compound",
     "doom_actions": [
       { "type": "set_flag", "key": "crisis.nightmare_town.doomed", "value": true },
-      { "type": "block_place", "place_id": "tavern" },
+      { "type": "block_place", "place_id": "lobby" },
       { "type": "dialogue", "dialogue_id": "nightmare_doom" },
       { "type": "game_over", "reason": "마을이 영원한 악몽에 잠겼다.", "type": "normal" }
     ]
@@ -122,10 +124,10 @@ Eldritch Horror의 3가지 핵심 메커닉을 게임의 시간/일상 루프에
     "trigger": "daily_midnight",
     "action": {
       "type": "attribute_check",
-      "attribute": "will",
+      "attribute": "willpower",
       "difficulty": 1,
       "fail_actions": [
-        { "type": "change_metric", "key": "player.mental", "amount": -3 }
+        { "type": "change_metric", "key": "player.stamina", "amount": -3 }
       ]
     }
   },
@@ -216,7 +218,7 @@ CrisisManager.apply_reckoning(context)
   - reckoning.trigger == context 인 것만 실행
     ↓
 각 상태 카드의 정산 액션 실행:
-  - attribute_check (will/observation/strength)
+  - `attribute_check` (willpower/insight/physique). 다이스 풀로 판정: 스탯값만큼 d6 굴림, 4+ 성공 개수 >= difficulty면 성공.
   - 성공: stack -1 또는 유지
   - 실패: 지정된 패널티 + 둠 +1
     ↓
@@ -228,7 +230,7 @@ CrisisManager.apply_reckoning(context)
 파멸된 위기가 `block_place` 액션을 가지면, 해당 장소가 잠긴다.
 
 ```json
-{ "type": "block_place", "place_id": "tavern", "reason": "악몽으로 주점이 폐쇄되었다." }
+{ "type": "block_place", "place_id": "lobby", "reason": "악몽으로 여관이 폐쇄되었다." }
 ```
 
 **봉쇄 효과:**
@@ -243,18 +245,21 @@ CrisisManager.apply_reckoning(context)
 |------|--------|------|
 | **위기 파멸 오버** | 특정 위기의 doom_days 도달 | 해당 위기 파멸 대화 → 오버 |
 | **둠 트래커 오버** | 둠 20 도달 | 세계 멸망 대화 → 오버 |
-| **히로인 게임오버** | 루이제 납치 이벤트 실패 | 루이제 관련 오버 → 해당 히로인 루트 종료 |
-| **생존 실패** | HP/mental 0 이하 | 던전 또는 정산으로 사망 |
+| **NPC 구출 실패 오버** | 중요 NPC 구출 이벤트 실패 | 해당 NPC 관련 오버 → 세션 종료 |
+| **생존 실패** | HP 0 이하 | 던전 또는 정산으로 사망 |
 
 **오버 후 처리:**
 - `game_over` action의 `type` 필드로 구분:
   - `"normal"`: 일반 엔딩 → 세이브 유지, 계속하기 가능
   - `"doom"`: 파멸 엔딩 → 세이브 삭제 또는 NG+ 제안
-  - `"heroine"`: 히로인 오버 → 해당 히로인만 비활성화, 다른 히로인 계속 가능
+  - `"npc_loss"`: NPC 구출 실패 오버 → 해당 NPC 스토리라인 종료
 
 ---
 
-## 4. 루이제/연애 루프와의 통합
+## 4. [DEPRECATED] 루이제/연애 루프와의 통합
+
+> ⚠️ **본 섹션은 아카이브되었습니다.** 현재 컨셉(코스믹 호러 로그라이트 RPG)에는 히로인/연애 루트가 없습니다.
+> NPC 상호작용은 Trust 기반 조력 시스템으로 대체되었습니다. 참고용으로만 보존합니다.
 
 ### 4.1 위기 상태에 따른 루이제 변화
 
@@ -297,7 +302,7 @@ CrisisManager.apply_reckoning(context)
 | 파멸 유형 | 루이제 반응 | 관계 영향 |
 |-----------|------------|----------|
 | 주점 봉쇄 | 루이제 다른 장소로 이동 (lobby 또는 inn_room) | 조우 패턴 변화, 대사에 불만 |
-| 마을 전체 파멸 | 특별 오버 대화 | 해당 히로인 루트 종료 또는 엔딩 분기 |
+| 마을 전체 파멸 | 특별 오버 대화 | 세계 멸망 엔딩 또는 최후 저항 분기 |
 
 ---
 
@@ -330,7 +335,7 @@ CrisisManager.apply_reckoning(context)
 | `crisis_active` | `{ "crisis_active": "nightmare_town" }` | 특정 위기가 활성 상태인지 |
 | `doom_gte` | `{ "doom_gte": 10 }` | 둠 트래커가 N 이상인지 |
 | `has_condition` | `{ "has_condition": ["haunted", 1] }` | 특정 상태 카드를 N개 보유 중인지 |
-| `place_blocked` | `{ "place_blocked": "tavern" }` | 특정 장소가 봉쇄 상태인지 |
+| `place_blocked` | `{ "place_blocked": "lobby" }` | 특정 장소가 봉쇄 상태인지 |
 
 ### 5.4 TimeSystem 연결
 
@@ -378,7 +383,7 @@ func advance_day():
 | 샘플 상태 카드 5종 | `haunted`, `poisoned`, `bleeding`, `cursed`, `terrified` |
 | 루이제 위기 반응 | 위기 활성 시 대사 분기 3종 |
 | 루이제 의뢰 시스템 | 위기 관련 던전 의뢰 대화 + 아이템 연결 |
-| 주점 봉쇄 시나리오 | `nightmare_town` 파멸 → tavern 봉쇄 → 루이제 이동 → 특별 대화 |
+| 여관 봉쇄 시나리오 | `nightmare_town` 파멸 → lobby 봉쇄 → 루이제 이동 → 특별 대화 |
 
 **검수 기준:**
 - 루이제가 악몽 위기 중 걱정하는 대사를 한다
@@ -391,7 +396,7 @@ func advance_day():
 | 작업 | 설명 |
 |------|------|
 | 위기 발생 확률 튜닝 | 너무 자주 또는 너무 드물지 않게 |
-| attribute_check 난이도 | will 1~5 기준으로 difficulty 밸런싱 |
+| attribute_check 난이도 | willpower 1~5 기준으로 difficulty 밸런싱 |
 | 둠 증감량 조정 | 게임오버까지 적절한 템포 |
 | 다중 위기 조합 테스트 | minor+major+doom 동시 활성 시나리오 |
 
