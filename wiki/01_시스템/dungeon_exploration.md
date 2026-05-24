@@ -55,7 +55,7 @@
 
 **🟡 7~9 (부분 성공)**
 > "가스실을 통과하는 데는 성공했지만, 짙은 가스를 들이마셔 기침이 멈추지 않는다."
-> → HP -5 / 정신력 -2
+> → HP -5 / 스태미나 -2
 
 **🔴 6- (실패)**
 > "지독한 독가스에 정신을 잃을 뻔했다. 황급히 뒤로 물러날 수밖에 없었다."
@@ -67,7 +67,7 @@
 
 | 대가 유형 | 예시 |
 |---|---|
-| 자원 소모 | HP, 정신력, 소모품(횃불, 회복약) |
+| 자원 소모 | HP, 스태미나, 소모품(횃불, 회복약) |
 | 상태 이상 | `add_condition("poisoned", 3)` → 마을에서 루이제가 걱정 |
 | 미래 변형 | "발목을 삐끗했다 → 다음 이벤트는 강제로 '좁은 통로'" |
 | 강제 귀환 | 체력 0이 아니어도 "너무 무서워서 도망친다" |
@@ -100,7 +100,7 @@ Ink 스크립트에서 `~ roll_2d6(bonus)`를 호출합니다. Godot의 `InkActi
 ```ink
 EXTERNAL roll_2d6(bonus)
 EXTERNAL change_metric(key, amount)
-EXTERNAL advance_time(units)
+EXTERNAL spend_ap(amount)
 ```
 
 ### 5.2 분기 예시
@@ -113,13 +113,13 @@ EXTERNAL advance_time(units)
 
 { result >= 10:
     숨을 꾹 참고 무사히 통과했다.
-    ~ advance_time(1)
+    ~ spend_ap(2)
     -> next_event
 - else:
     { result >= 7:
         가스실을 통과했지만 기침이 멈추지 않는다.
         ~ change_metric("player.hp", -5)
-        ~ change_metric("player.sanity", -2)
+        ~ change_metric("player.stamina", -2)
         -> next_event
     - else:
         지독한 독가스에 정신을 잃을 뻔했다.
@@ -137,13 +137,13 @@ VAR has_gas_mask = false
 === start ===
 { has_gas_mask:
     방독면 덕에 독가스를 거뜬히 통과했다.
-    ~ advance_time(1)
+    ~ spend_ap(2)
     -> next_event
 - else:
     ~ temp result = roll_2d6(0)
     { result >= 10:
         숨을 꾹 참고 무사히 통과했다.
-        ~ advance_time(1)
+        ~ spend_ap(2)
         -> next_event
     - else:
         { result >= 7:
