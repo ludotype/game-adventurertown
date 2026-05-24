@@ -194,6 +194,8 @@
   },
   "active": "ddb0761cde6374fe",
   "lastOpenFiles": [
+    "01_시스템/npa_simulation_system.md",
+    "02_콘텐츠/world_and_places.md",
     "01_시스템/dialogue_manager_guide.md",
     "01_시스템/2026-05-24-dialogue-manager-pivot-plan.md",
     "00_헌법/2026-05-24-wiki-cleanup-and-pivot-plan.md",
@@ -228,8 +230,6 @@
     "01_시스템/tool_design_editor.md",
     "01_시스템/evaluation_report.md",
     "01_시스템/emergent_storytelling.md",
-    "01_시스템/autonomous_npc_design.md",
-    "tool_design_editor.md",
     "ATTACHMENTS/char-morigan.png",
     "ATTACHMENTS/20260309002.png",
     "ATTACHMENTS/char-tessa.jpg",
