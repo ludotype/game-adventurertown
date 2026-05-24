@@ -554,29 +554,64 @@ special_conditions:
 
 ## 13. 개발자 도구 (Developer Tools)
 
-> ⚠️ **1인 개발 효율성을 위한 필수 도구입니다.**
+> ⚠️ **1인 개발 효율성 및 무한한 확장팩(Expansion) 확장을 위한 필수 도구입니다.**
 
-### 13.1 도시 맵 에디터 (City Map Editor)
+### 13.1 도시 맵 에디터 (City Map Editor) [확정 스펙: 1안 데이터 주도형 JSON 하이브리드]
 
-Godot 4.x 엔진 내에서 **도시 전체 구조를 GUI로 편집**할 수 있는 툴 모드입니다.
+아컴 호러 보드게임의 확장판(예: 던위치, 인스머스가 맵 옆에 추가 결합되는 구조)처럼 **무한한 맵 확장과 수정의 용이성**을 확보하기 위해, Godot 4.x 엔진 내에서 GUI로 편집하되 **100% 데이터 주도형 JSON**으로 저장 및 동적 빌드하는 방식을 채택합니다.
 
-**기능:**
-- **Place 노드 배치**: 장소(Place)를 씬에 드래그앤드롭으로 배치. 좌표/이름/태그를 인스펙터에서 설정.
-- **Connection(거리) 편집**: 장소 노드 간 선으로 연결. 거리의 이름/조우 확률/이동력 소모/이벤트 ID를 에지 속성으로 설정.
-- **구역(Zone) 설정**: 여러 장소를 묶어 구역 단위로 관리 (북부/슬럼가/대성당 등).
-- **보내기**: `Export to JSON` 버튼으로 `data/places/*.json` + `data/connections/*.json` 자동 생성.
+#### 13.1.1 핵심 메커니즘
+1. **에디터 툴 모드 (`@tool`)**: Godot 4.x의 2D 씬 뷰에서 노드(Place)를 드래그앤드롭하여 배치하고, 드래그 선을 통해 연결 관계(Connection)를 시각적으로 편집합니다.
+2. **데이터 이원화 저장**: `Save / Export to JSON` 버튼을 클릭하면 다음 두 스펙의 파일이 자동으로 생성 및 동기화됩니다.
+   - **장소 속성 및 레이아웃 데이터 (`places.json`)**: 각 장소의 게임 데이터와 지도 내 시각적 배치 좌표를 기록합니다.
+   - **연결선 데이터 (`connections.json`)**: 장소 간 연결 구조와 이동 비용, 조우 속성을 기록합니다.
+3. **런타임 맵 빌더 (Dynamic Map Manager)**: 게임 로딩 시, 미리 만들어진 단 하나의 `Place_Template.tscn` UI 씬을 불러와 JSON의 X/Y 좌표 데이터에 맞게 화면에 동적으로 생성(Instantiate)하고 배치합니다. 장소 간 연결선은 `Line2D` 노드를 통해 동적으로 그립니다.
 
-**구현 방식:**
-```gdscript
-@tool
-extends Node
-class_name CityMapEditor
-# Godot 에디터 내에서 직접 실행. RUN 없이 편집 가능.
+#### 13.1.2 JSON 데이터 스키마 (Data Schema)
+
+* **`places.json` 예시:**
+```json
+{
+  "places": [
+    {
+      "id": "fireside_amber",
+      "name": "Fireside Amber",
+      "display_name_kr": "불가사의한 루비 선술집",
+      "tags": ["선술집 주인", "정보원", "데이트 가능", "치유"],
+      "zone": "north_district",
+      "coordinate": { "x": 450, "y": 200 },
+      "base_npc": ["luise"],
+      "description": "루이제가 운영하는 안락하고 비교적 안전한 선술집입니다."
+    }
+  ]
+}
 ```
 
+* **`connections.json` 예시:**
+```json
+{
+  "connections": [
+    {
+      "id": "conn_tavern_to_library",
+      "from": "fireside_amber",
+      "to": "grand_library",
+      "name": "Tavern Library Path",
+      "display_name_kr": "도서관 골목 대로",
+      "movement_cost": 1,
+      "encounter_chance": 0.15,
+      "event_ids": ["evt_street_merchant", "evt_alley_ambush"]
+    }
+  ]
+}
+```
+
+#### 13.1.3 확장팩(Expansion) 및 모딩(Modding) 설계
+* **동적 폴더 스캔**: 게임 기동 시 `data/places.json` 및 `data/connections.json`을 기본 로드한 후, 추가적으로 `data/expansions/` 하위 폴더의 모든 JSON 파일들을 자동으로 검색하여 병합(Merge)합니다.
+* **자동 스티칭(Auto-Stitching)**: 새 파일에 정의된 확장 구역의 장소가 기존 장소의 ID를 `from` 또는 `to`로 지칭하는 경우, 시스템이 이를 인지하여 런타임 지도의 기존 노드 옆에 새 연결선과 새 노드를 즉시 동적 렌더링하고 스티칭해 붙여 줍니다. 이로써 메인 코드 수정 없는 무한한 맵 확장을 완벽히 구현합니다.
+
 **왜 필요한가:**
-- 글로만 "여기는 어디랑 연결된다"고 쓰는 것은 비효율적.
-- 기획자가 눈으로 보며 도시 구조를 설계/수정할 수 있어야 1인 개발이 지속 가능.
+- 글로만 맵 관계를 적거나, 복잡한 Godot 씬 자체를 하드코딩으로 분할하는 것은 1인 개발 지속성 및 향후 확장팩 확장에 치명적인 리스크입니다.
+- 데이터를 완벽하게 텍스트(JSON)로 주도하게 설계함으로써, 기획 수정이 번개처럼 빠르며 세이브/로드 시 장소의 오염/던전화 상태 저장도 매우 깔끔하게 통합됩니다.
 
 ---
 
