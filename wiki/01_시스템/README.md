@@ -10,11 +10,11 @@
 
 | 문서 | 설명 |
 |------|------|
-| [[autonomous_npc_design]] | 자율 NPC 행동 설계 |
+| [[npa_simulation_system]] | **NPA 시뮬레이션** — 자율 탐사 액터 행동 및 위기 대응 시뮬레이션 설계 |
 | [[crisis_system_design]] | 위기(크라이시스) 시스템 설계 |
 | [[emergent_storytelling]] | 에머전트 스토리텔링 체인 |
-| [[evaluation_report]] | 시스템 평가 및 검수 보고서 |
-| [[ink_guide]] | **Ink 대화 엔진** 사용법 및 문법 |
+| [[condition_cards_design]] | **상태 카드 시스템** — 정신(환각/편집증 등) 및 신체 상태 카드 설계서 |
+| [[dialogue_manager_guide]] | **대화 엔진 가이드** — Godot Dialogue Manager 사용법 및 연출 태그 가이드 |
 | [[tool_design_editor.md]] | 툴/에디터 설계 |
 
 ---
@@ -26,7 +26,7 @@
                                      ↓
                               [ConditionEvaluator]
                                      ↓
-                        [InkBalloon] / [EventBus]
+                        [CustomBalloon] / [EventBus]
 ```
 
 ---

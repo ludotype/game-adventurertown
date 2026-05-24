@@ -120,7 +120,7 @@
 
 ```dialogue
 # 1. 턴제 행동력(AP) 또는 스태미나 소모하기
-do ActionRunner.run({"type": "advance_time", "time_units": 1})
+do ActionRunner.run({"type": "spend_ap", "amount": 3})
 do ActionRunner.run({"type": "change_metric", "key": "player.stamina", "amount": -10})
 
 # 2. 전역 플래그 설정 및 상태카드 부여

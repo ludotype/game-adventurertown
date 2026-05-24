@@ -17,3 +17,13 @@
   - [x] 부랑자 골목 (Beggar's Alley) 특수행동, 효과, AP 비용, 텍스트 예시 기입 (완료)
   - [x] 폐양조장 & 마녀의 오두막 (The Abandoned Distillery / Witch's Hovel) 특수행동, 효과, AP 비용, 텍스트 예시 기입 (완료)
 - [x] 최종 검토 및 사용자 보고 (완료)
+
+## 3차 추가 작업 계획 (위키 대청소 및 레거시 아카이빙)
+- [x] 레거시 및 피벗 이전 구버전 기획서 8개 파일을 `wiki/.trash/` 폴더로 이동 (완료)
+- [x] `wiki/00_헌법/README.md` 인덱스를 `new_direction` 및 `glossary` 참조로 정돈 (완료)
+- [x] `wiki/01_시스템/README.md` 인덱스를 최신 설계(`npa_simulation_system`, `condition_cards_design`, `dialogue_manager_guide`) 참조로 정돈 (완료)
+- [x] `wiki/02_콘텐츠/README.md` 인덱스를 `world_and_places`, `planner_guide` 참조로 정돈하고 레거시 링크 제거 (완료)
+- [x] 메인 포털 인덱스 `wiki/README.md`를 나무위키 스타일의 아름다운 대문으로 완벽히 재작성 (완료)
+- [x] `audit_wiki_pivot.py` 기획 적합성 감사 수행 및 `dialogue_manager_guide.md` 내 잔존하던 레거시 `time_units` 완벽 정정 (완료)
+- [x] Git 커밋 및 Push (완료)
+
