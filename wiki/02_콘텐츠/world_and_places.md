@@ -9,7 +9,7 @@
 
 - [1. 도시 개요](#1-도시-개요)
 - [2. 북부 (North District)](#2-북부-north-district)
-  - [2.1 루이제의 여관 로비 (`lobby`)](#21-루이제의-여관-로비-lobby)
+  - [2.1 Fireside Amber (`fireside_amber`)](#21-fireside-amber-fireside_amber)
   - [2.2 골동품 상점 (`curio_shop`)](#22-골동품-상점-curio_shop)
   - [2.3 경비대 (`guard_station`)](#23-경비대-guard_station)
 - [3. 대학가 (University District)](#3-대학가-university-district)
@@ -40,18 +40,18 @@
 ## 2. 북부 (North District)
 
 - **특징**: 플레이어와 모험가들이 여정을 풀고 안전을 도모하는 북쪽 거점 지역. 정보 교류, 장비 정비, 치안 유지 기능이 집중되어 있습니다.
-- **포함 장소**: 루이제의 여관 로비 (`lobby`), 골동품 상점 (`curio_shop`), 경비대 (`guard_station`)
+- **포함 장소**: Fireside Amber (`fireside_amber`), 골동품 상점 (`curio_shop`), 경비대 (`guard_station`)
 
-### 2.1 루이제의 여관 로비 (`lobby`)
+### 2.1 Fireside Amber (`fireside_amber`)
 
-- **설명**: 벽난로가 타오르는 아늑하면서도 어딘가 무거운 분위기의 모험가 대기실입니다. 행운 체크가 많으며 비교적 안전합니다.
+- **설명**: 벽난로가 타오르는 아늑하면서도 어딘가 무거운 분위기의 선술집 겸 여관 로비입니다. 행운 체크가 많으며 비교적 안전합니다.
 - **주요 기능**:
   - **휴식하기 (`Rest`)**: 일정량의 HP 및 스태미나를 즉시 회복합니다. (단, `haunted` 등의 정신 이상 상태 카드 보유 시 수면 중 악몽 이벤트를 마주합니다.)
   - **하루 넘기기 (`Sleep`)**: 날짜를 변경하고 다음 야간 단계(Night Phase)를 격발시킵니다.
   - **소문 귀동냥 (`Gossip`)**: 술값을 치르고 정보 수집. `[통찰]` 판정 진행. 성공 시 주요 괴현상 추적용 정보(또는 단서) 획득. 실패 시 헛소문을 듣거나 스태미나 -1.
   - **판돈 도박 (`Gamble`)**: 10골드를 베팅해 주사위를 굴리는 `[행운]` 체크. 대성공 시 +50골드, 성공 시 +30골드. 실패 시 판돈을 잃고 사채를 써 `[빚(Debt)]` 상태 획득. 대실패 시 야바위꾼들의 표적이 되어 `[추적당함(Hunted)]` 상태 카드를 얻습니다.
   - **술 한 잔의 여유 (`Drink`)**: 맥주 한 잔을 사 마십니다. 스태미나 +2 및 HP +3 회복. 단, 다음 날 아침 '숙취(스태미나 -2)' 패널티를 얻습니다.
-- **배치 NPC**: **루이제 (Luise)** (여관 주인), 점원 (Inn Staff)
+- **배치 NPC**: **루이제 (Luise)** (선술집 겸 여관 주인), 점원 (Inn Staff)
 
 ### 2.2 골동품 상점 (`curio_shop`)
 
@@ -177,10 +177,10 @@
 
 도시 곳곳에 고정적으로 머물며 플레이어의 탐색을 보조하고 고유의 메커니즘을 제공하는 정적 인물들입니다.
 
-### 7.1 루이제 (Luise) — 여관 주인
+### 7.1 루이제 (Luise) — 선술집 겸 여관 주인
 
 - **역할**: 모험가들의 마스터이자, 도시 전반의 가이드 역할을 수행하는 자애로우면서도 단호한 눈빛의 인물입니다.
-- **위치**: `lobby`
+- **위치**: `fireside_amber`
 - **핵심 기능**: 휴식, 퀘스트 브리핑, 도시 소문 제공
 - **신뢰도 상승 루트**: 위기 해결 보고, 단서 토큰 기부, 정기적 대화
 
@@ -227,8 +227,8 @@
 ## 8. 장소 간 연결 구조 (Connections)
 
 ```
-lobby <-> curio_shop <-> guard_station
-lobby <-> main_avenue <-> grand_library
+fireside_amber <-> curio_shop <-> guard_station
+fireside_amber <-> main_avenue <-> grand_library
 main_avenue <-> cathedral_nave
 main_avenue <-> back_alley <-> rogues_den
 back_alley <-> beggars_alley <-> abandoned_distillery
@@ -246,11 +246,11 @@ back_alley <-> sewer_entrance
 |---|---|---|---|
 | 장소 | 치료소 (`clinic`) | 중앙 광장 구역 | **미정**: 성당 본당(`cathedral_nave`)에 치유 기능이 통합됨 |
 | 장소 | 무기 점포 (`weapon_shop`) | 중앙 광장 구역 | **미정**: 골동품 상점(`curio_shop`)으로 기능 이전 검토 |
-| 장소 | 선술집 (`tavern`) | 북쪽 유적 구역 | **제거**: 루이제의 여관(`lobby`)으로 통합 |
+| 장소 | 선술집 (`tavern`) | 북쪽 유적 구역 | **제거**: Fireside Amber(`fireside_amber`)로 통합 |
 | 장소 | 꽃집 (`flower_shop`) | 북쪽 유적 구역 | **미정**: 마녀의 오두막(`abandoned_distillery`) 또는 기타 장소로 이전 검토 |
 | 정적 NPC | 엘레나 (Elena) | 치료소 | **미정**: 성당 본당(`cathedral_nave`)의 수녀/신부로 통합 검토 |
 | 정적 NPC | 록 (Rock) | 무기 점포 | **미정**: 골동품 상인으로 역할 통합 또는 신규 배치 검토 |
-| 정적 NPC | 선술집 주인 (Tavern Owner) | 선술집 | **제거**: 루이제가 여관을 직접 운영 |
+| 정적 NPC | 선술집 주인 (Tavern Owner) | 선술집 | **제거**: 루이제가 Fireside Amber를 직접 운영 |
 | 정적 NPC | 꽃집 처녀 (Flower Girl) | 꽃집 | **미정**: 신규 배치 또는 제거 검토 |
 | 자율 NPA | 마슈 (Marsh) | 경비대, 주요 대로 | **변경 완료**: `guard_station` + `main_avenue`로 이동 확정 |
 | 자율 NPA | 렐리아나 (Relliana) | 성당 본당, 주요 대로 | **변경 완료**: `cathedral_nave` + `main_avenue`로 이동 확정 |
