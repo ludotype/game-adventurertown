@@ -14,6 +14,7 @@ Claude가 세션 간에 기억하는 정보 목록입니다. (최대 200줄, 그
 ### [feedback] — 작업 방식 피드백
 - [feedback_coding_style.md](feedback_coding_style.md) — Python PEP8, JS camelCase 선호
 - [feedback_glob_patterns.md](feedback_glob_patterns.md) — Windows Glob 패턴: leading ./ 사용 금지
+- [feedback_legacy_concept_check.md](feedback_legacy_concept_check.md) — CLAUDE.md 및 프로젝트 메모리의 레거시 컨셉/아키텍처 정보를 확인하는 원칙
 - [feedback_lessons_from_failures.md](feedback_lessons_from_failures.md) — 중요한 실패 후 자동 기록 원칙
 
 ### [project] — 프로젝트 상태

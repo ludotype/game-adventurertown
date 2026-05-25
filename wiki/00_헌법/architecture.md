@@ -470,7 +470,7 @@ project/guild-master/
 4. **tags 시스템** — 단순 ID 매칭을 넘어 "indoor 장소에서만", "shop 태그 NPC만" 같은 패턴 매칭 가능 (Phase 후반 확장).
 5. **NPC schedule + condition** — NPC가 시간/플래그/날짜에 따라 다른 곳에 있고, 다른 대사를 한다.
 
-Princess Maker · Stardew Valley · Persona의 커뮤니티 링크 · Harvest Moon — 이 정도 깊이까지 본 구조로 도달 가능하다. 한계는 어휘를 얼마나 늘리느냐에 달려 있다.
+Arkham Horror · World of Horror · Loop Hero — 이 정도 깊이까지 본 구조로 도달 가능하다. 한계는 어휘를 얼마나 늘리느냐에 달려 있다.
 
 ---
 

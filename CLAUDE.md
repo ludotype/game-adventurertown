@@ -22,7 +22,7 @@
 
 ## 프로젝트 개요
 
-이 게임은 비주얼 노벨 + 라이프 시뮬레이션 장르입니다. 프린세스 메이커 스타일의 행동 페이즈와 스토리 중심의 대화 시스템이 핵심입니다.
+이 게임은 아컴 호러 스타일의 보드게임식 다이스 풀 메카닉을 사용하는 롱폼 로그라이트 호러 RPG 텍스트 어드벤처입니다. 나틀락(Natlach) 도시를 탐험하며 고대 신의 그림자에 맞서는 것이 핵심입니다.
 
 ---
 
@@ -75,11 +75,11 @@
 
 ### ⚠️ CRITICAL: 메모리 경로 규칙
 **절대로** `C:\Users\...\.claude\` 또는 사용자 홈 디렉토리 아래의 글로벌 경로에 메모리 파일을 저장하지 마세요.  
-**반드시** 현재 워킹디렉토리(`D:\GIT\GuildMaster`) 기준으로 `Agent/memory/` 경로에만 저장하세요.
+**반드시** 현재 워킹디렉토리(`D:\GIT\game-guildmaster`) 기준으로 `Agent/memory/` 경로에만 저장하세요.
 
 **올바른 경로 예시:**
-- `D:\GIT\GuildMaster\Agent\memory\user_coding_style.md`
-- `D:\GIT\GuildMaster\Agent\memory\MEMORY.md`
+- `D:\GIT\game-guildmaster\Agent\memory\user_coding_style.md`
+- `D:\GIT\game-guildmaster\Agent\memory\MEMORY.md`
 
 **잘못된 경로 (절대 사용 금지):**
 - `C:\Users\jsthe\.claude\projects\...\memory\...`
