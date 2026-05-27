@@ -87,6 +87,24 @@ func run(action, context: Dictionary = {}, depth: int = 0) -> bool:
 			ok = _run_outcome_check(action_dict, context)
 		"trigger_mandatory":
 			ok = _run_trigger_mandatory(action_dict, context)
+		"unlock_dungeon":
+			ok = _run_unlock_dungeon(action_dict)
+		"seal_dungeon":
+			ok = _run_seal_dungeon(action_dict)
+		"advance_mystery":
+			ok = _run_advance_mystery(action_dict, context)
+		"resolve_mystery":
+			ok = _run_resolve_mystery(action_dict, context)
+		"activate_case":
+			ok = _run_activate_case(action_dict)
+		"collect_clue":
+			ok = _run_collect_clue(action_dict)
+		"auto_collect_clue":
+			ok = _run_auto_collect_clue(action_dict)
+		"record_cleanse":
+			ok = _run_record_cleanse(action_dict)
+		"auto_record_cleanse":
+			ok = _run_auto_record_cleanse(action_dict, context)
 		_:
 			ok = _fail(action_dict, "unknown action type: " + action_type)
 
@@ -472,6 +490,105 @@ func _run_trigger_mandatory(action: Dictionary, context: Dictionary) -> bool:
 	if not has_node("/root/CrisisManager") or not CrisisManager.has_method("apply_mandatory_events"):
 		return _fail(action, "CrisisManager autoload is missing")
 	CrisisManager.apply_mandatory_events(trigger_on, context)
+	return true
+
+
+func _run_unlock_dungeon(action: Dictionary) -> bool:
+	var dungeon_id := String(action.get("dungeon_id", ""))
+	if dungeon_id.is_empty():
+		return _fail(action, "unlock_dungeon requires dungeon_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("unlock_dungeon"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var mystery_id: String = action.get("mystery_id", "")
+	MysteryManager.unlock_dungeon(dungeon_id, mystery_id)
+	return true
+
+
+func _run_seal_dungeon(action: Dictionary) -> bool:
+	var dungeon_id := String(action.get("dungeon_id", ""))
+	if dungeon_id.is_empty():
+		return _fail(action, "seal_dungeon requires dungeon_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("seal_dungeon"):
+		return _fail(action, "MysteryManager autoload is missing")
+	MysteryManager.seal_dungeon(dungeon_id)
+	return true
+
+
+func _run_advance_mystery(action: Dictionary, context: Dictionary) -> bool:
+	var mystery_id := String(action.get("mystery_id", ""))
+	if mystery_id.is_empty():
+		return _fail(action, "advance_mystery requires mystery_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("advance_mystery_phase"):
+		return _fail(action, "MysteryManager autoload is missing")
+	MysteryManager.advance_mystery_phase(mystery_id, context)
+	return true
+
+
+func _run_resolve_mystery(action: Dictionary, context: Dictionary) -> bool:
+	var mystery_id := String(action.get("mystery_id", ""))
+	if mystery_id.is_empty():
+		return _fail(action, "resolve_mystery requires mystery_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("try_resolve_mystery"):
+		return _fail(action, "MysteryManager autoload is missing")
+	MysteryManager.try_resolve_mystery(mystery_id, context)
+	return true
+
+
+func _run_activate_case(action: Dictionary) -> bool:
+	var case_id := String(action.get("case_id", ""))
+	if case_id.is_empty():
+		return _fail(action, "activate_case requires case_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("activate_case"):
+		return _fail(action, "MysteryManager autoload is missing")
+	MysteryManager.activate_case(case_id)
+	return true
+
+
+func _run_collect_clue(action: Dictionary) -> bool:
+	var mystery_id := String(action.get("mystery_id", ""))
+	if mystery_id.is_empty():
+		return _fail(action, "collect_clue requires mystery_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("collect_clue"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var amount: int = action.get("amount", 1)
+	MysteryManager.collect_clue(mystery_id, amount)
+	return true
+
+
+func _run_record_cleanse(action: Dictionary) -> bool:
+	var mystery_id := String(action.get("mystery_id", ""))
+	if mystery_id.is_empty():
+		return _fail(action, "record_cleanse requires mystery_id")
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("record_cleanse"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var place_id: String = action.get("place_id", "")
+	MysteryManager.record_cleanse(mystery_id, place_id)
+	return true
+
+
+func _run_auto_collect_clue(action: Dictionary) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("get_active_mystery_id"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var mystery_id := String(action.get("mystery_id", MysteryManager.get_active_mystery_id()))
+	if mystery_id.is_empty():
+		return _fail(action, "auto_collect_clue: no active mystery")
+	if not MysteryManager.has_method("collect_clue"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var amount: int = action.get("amount", 1)
+	MysteryManager.collect_clue(mystery_id, amount)
+	return true
+
+
+func _run_auto_record_cleanse(action: Dictionary, context: Dictionary) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("get_active_mystery_id"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var mystery_id := String(action.get("mystery_id", MysteryManager.get_active_mystery_id()))
+	if mystery_id.is_empty():
+		return _fail(action, "auto_record_cleanse: no active mystery")
+	if not MysteryManager.has_method("record_cleanse"):
+		return _fail(action, "MysteryManager autoload is missing")
+	var place_id: String = action.get("place_id", context.get("place_id", ""))
+	MysteryManager.record_cleanse(mystery_id, place_id)
 	return true
 
 

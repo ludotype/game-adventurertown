@@ -1,0 +1,24 @@
+{
+  "interaction_id": "investigate",
+  "label": "조사한다",
+  "events": [
+    {
+      "id": "investigate_default",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "attribute_check",
+          "attribute": "insight",
+          "difficulty": 2,
+          "pass_actions": [
+            { "type": "log", "message": "주변을 샅샅이 뒤져 단서를 발견했다." },
+            { "type": "auto_collect_clue", "amount": 1 }
+          ],
+          "fail_actions": [
+            { "type": "log", "message": "아무것도 찾지 못했다. 이상한 기운이 스쳐 지나갔을 뿐이다." }
+          ]
+        }
+      ]
+    }
+  ]
+}

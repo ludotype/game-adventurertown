@@ -1,0 +1,9 @@
+{
+  "place_id": "library_underground",
+  "display_name": "대도서관 지하",
+  "background_path": "res://assets/bg/library_underground.png",
+  "bgm": "dungeon_ambient",
+  "empty_weight": 100,
+  "tags": ["던전", "지식"],
+  "connections": ["grand_library"]
+}

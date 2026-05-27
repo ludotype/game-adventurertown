@@ -1,0 +1,24 @@
+{
+  "interaction_id": "cleanse",
+  "label": "정화한다",
+  "events": [
+    {
+      "id": "cleanse_default",
+      "priority": 0,
+      "actions": [
+        {
+          "type": "attribute_check",
+          "attribute": "will",
+          "difficulty": 2,
+          "pass_actions": [
+            { "type": "log", "message": "왜곡된 기운을 정화했다. 공기가 조금 맑아진 것 같다." },
+            { "type": "auto_record_cleanse" }
+          ],
+          "fail_actions": [
+            { "type": "log", "message": "정화를 시도했지만, 기운은 여전히 불길하게 맴돈다." }
+          ]
+        }
+      ]
+    }
+  ]
+}

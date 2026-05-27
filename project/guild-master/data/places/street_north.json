@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/street_north.png",
   "bgm": "town_day",
   "empty_weight": 10,
-  "connections": ["town_square", "tavern", "flower_shop", "dungeon_01"]
+  "tags": ["거리"],
+  "connections": ["town_square", "tavern", "flower_shop", "dungeon_01", "grand_library", "abandoned_warehouse"]
 }

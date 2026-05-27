@@ -1,0 +1,9 @@
+{
+  "place_id": "harbor_underbelly",
+  "display_name": "항구 하부 수로",
+  "background_path": "res://assets/bg/harbor_underbelly.png",
+  "bgm": "dungeon_ominous",
+  "empty_weight": 100,
+  "tags": ["던전", "거리"],
+  "connections": ["street_south"]
+}

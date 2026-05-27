@@ -1,0 +1,9 @@
+{
+  "place_id": "grand_library",
+  "display_name": "대도서관",
+  "background_path": "res://assets/bg/grand_library.png",
+  "bgm": "library_silent",
+  "empty_weight": 4,
+  "tags": ["지식"],
+  "connections": ["street_north", "library_underground"]
+}

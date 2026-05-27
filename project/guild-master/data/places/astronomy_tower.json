@@ -1,0 +1,9 @@
+{
+  "place_id": "astronomy_tower",
+  "display_name": "천문탑",
+  "background_path": "res://assets/bg/astronomy_tower.png",
+  "bgm": "tower_ominous",
+  "empty_weight": 5,
+  "tags": ["지식"],
+  "connections": ["street_west", "astronomy_tower_basement"]
+}

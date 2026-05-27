@@ -1,0 +1,42 @@
+{
+  "mystery_id": "myst_02c_depths_awaken",
+  "display_name": "깊은 곳의 각성",
+  "description": "바다 밑에서 거대한 그림자가 움직이기 시작했다. The Slumbering Maw의 두 번째 각질이다.",
+  "mystery_type": "confrontation",
+  "linked_case_id": "case_02",
+  "linked_crisis_id": "",
+  "order_in_case": 3,
+  "phases": [
+    {
+      "phase_id": "phase_01_dungeon",
+      "phase_name": "심해 결전",
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "harbor_depths",
+        "boss_id": "abyssal_eye"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_02c_depths_awaken.resolved", "value": true },
+        { "type": "change_doom", "amount": -2 },
+        { "type": "change_metric", "key": "player.unlock_points", "amount": 100 },
+        { "type": "log", "message": "깊은 곳의 위협을 봉인했다. The Slumbering Maw의 각성이 또다시 늦춰졌다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 18,
+    "warning_days": 12,
+    "warning_dialogue": "mystery_depths_awaken_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 5 },
+      { "type": "game_over", "reason": "심해의 거대한 눈이 완전히 떠올랐다. 도시가 물에 잠겼다.", "game_over_type": "doom" }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "seal_dungeon", "dungeon_id": "harbor_depths" },
+      { "type": "set_flag", "key": "case.case_02.resolved", "value": true },
+      { "type": "log", "message": "Case 2 [깊은 곳의 각성] 완료. 다음 장이 해금되었다." }
+    ]
+  }
+}

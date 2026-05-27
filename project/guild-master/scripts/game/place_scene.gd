@@ -109,8 +109,8 @@ func _refresh_action_buttons() -> void:
 	if has_node("/root/InteractionRegistry"):
 		all_place_actions = InteractionRegistry.get_available_place_actions(place_id, context)
 
-	var allowed_general := ["wait", "look_around", "check_inventory", "playmusic"]
-	var allowed_place_only := ["rest", "sleep"]
+	var allowed_general := ["wait", "look_around", "check_inventory", "playmusic", "investigate"]
+	var allowed_place_only := ["rest", "sleep", "cleanse"]
 	var allowed_char := ["talk", "touch", "gift"]
 
 	# 1. 일반 행동 (상단)

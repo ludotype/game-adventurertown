@@ -1,0 +1,9 @@
+{
+  "place_id": "harbor_depths",
+  "display_name": "심해 구멍",
+  "background_path": "res://assets/bg/harbor_depths.png",
+  "bgm": "dungeon_ominous",
+  "empty_weight": 100,
+  "tags": ["던전", "거리"],
+  "connections": ["street_south"]
+}

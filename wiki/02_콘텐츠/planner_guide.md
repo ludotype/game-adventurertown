@@ -114,6 +114,15 @@
 | `random_loot` | `table_id` | 지정된 전리품 테이블에서 랜덤 아이템을 획득합니다. |
 | `outcome_check` | `attribute`, `difficulty`, `outcomes` | 다이스 풀 체크를 4분기로 수행합니다. `player.{attribute}` 값만큼 d6 굴림, 4+ 성공 개수로 분기. |
 | `trigger_mandatory` | `trigger_on` | 특정 trigger를 발동시켜 `data/mandatory_events/`의 강제 이벤트를 검사합니다. |
+| `unlock_dungeon` | `dungeon_id`, `mystery_id` (선택) | 던전을 미스터리에 의해 해금합니다. |
+| `seal_dungeon` | `dungeon_id` | 던전을 봉인(해금 해제)합니다. |
+| `advance_mystery` | `mystery_id` | 미스터리의 현재 단계를 진행시킵니다. |
+| `resolve_mystery` | `mystery_id` | 미스터리를 강제 해결합니다. (모든 단계 완료 후) |
+| `activate_case` | `case_id` | 새 Case를 활성화합니다. |
+| `collect_clue` | `mystery_id`, `amount` (기본 1) | 미스터리에 단서를 수집합니다. |
+| `auto_collect_clue` | `mystery_id` (생략 시 활성 mystery), `amount` (기본 1) | 현재 활성 미스터리에 단서를 자동 수집합니다. |
+| `record_cleanse` | `mystery_id`, `place_id` (선택) | 미스터리의 정화 진행도를 기록합니다. |
+| `auto_record_cleanse` | `mystery_id` (생략 시 활성 mystery), `place_id` (생략 시 context.place_id) | 현재 활성 미스터리의 정화 진행도를 자동 기록합니다. |
 
 ### `outcome_check` 작성 예시
 
@@ -192,6 +201,13 @@
 | `has_condition` | `{ "has_condition": "haunted" }` | 플레이어가 특정 상태 카드를 보유 중인지 확인합니다. |
 | `place_blocked` | `{ "place_blocked": "lobby" }` | 특정 장소가 봉쇄 상태인지 확인합니다. |
 | `has_item` | `{ "has_item": "holy_symbol" }` 또는 `{ "has_item": ["holy_symbol", 2] }` | 인벤토리에 특정 아이템(지정 개수 이상)이 있는지 확인합니다. |
+| `mystery_active` | `{ "mystery_active": "myst_01a_vanishing_letters" }` | 특정 미스터리가 현재 활성 상태인지 확인합니다. |
+| `mystery_phase_eq` | `{ "mystery_phase_eq": ["myst_01a", 1] }` | 특정 미스터리의 현재 단계가 지정값과 같은지 확인합니다. |
+| `mystery_resolved` | `{ "mystery_resolved": "myst_01a_vanishing_letters" }` | 특정 미스터리가 해결되었는지 확인합니다. |
+| `case_active` | `{ "case_active": "case_01" }` | 특정 Case가 현재 활성 상태인지 확인합니다. |
+| `case_resolved` | `{ "case_resolved": "case_01" }` | 특정 Case가 해결되었는지 확인합니다. |
+| `dungeon_unlocked` | `{ "dungeon_unlocked": "library_underground" }` | 특정 던전이 해금되었는지 확인합니다. |
+| `dungeon_sealed` | `{ "dungeon_sealed": "library_underground" }` | 특정 던전이 봉인되었는지 확인합니다. |
 
 ### 행동력 및 이동력 시스템 (Action Point & Movement System)
 
@@ -677,6 +693,8 @@ project/guild-master/
 ├── data/items/           ← 아이템 정의
 ├── data/loot_tables/     ← 전리품 테이블 정의
 ├── data/mandatory_events/ ← 강제 이벤트 정의 (상태 이상으로 발동)
+├── data/cases/           ← Case 정의 (확률 기반 mystery 활성화 설정)
+├── data/mysteries/       ← 미스터리 정의 (Case 단계적 목표)
 ├── scenes/places/        ← 장소 씬 (place_scene.tscn 1개로 모든 장소 처리)
 ├── scripts/systems/      ← 시스템 코드 (직접 수정 불필요)
 ├── scripts/state/        ← 날짜/시간, MetricStore, InventoryManager 등 (직접 수정 불필요)
@@ -844,6 +862,60 @@ splash_screen.tscn  →  title_screen.tscn  →  game_scene.tscn  (여관 로비
 
 ---
 
+## 13. Case JSON 구조 및 확률 기반 Mystery 활성화
+
+### 13.1 폴더 위치
+
+- `data/cases/case_01.json`
+- `data/mysteries/myst_01a_*.json`
+
+### 13.2 Case JSON 예시
+
+```json
+{
+  "case_id": "case_01",
+  "display_name": "잠든 자의 눈",
+  "description": "대도서관의 글자가 사라지고...",
+  "mystery_ids": [
+    "myst_01a_vanishing_letters",
+    "myst_01b_twisted_stars",
+    "myst_01c_sleeping_eye"
+  ],
+  "activation": {
+    "grace_period_days": 7,
+    "base_rate": 0.05,
+    "growth_rate": 0.08,
+    "slowdown_per_active_mystery": 0.25
+  }
+}
+```
+
+### 13.3 파라미터 설명
+
+| 필드 | 설명 |
+|------|------|
+| `mystery_ids` | 이 Case에 속한 mystery_id 목록 (순서대로 로드) |
+| `activation.grace_period_days` | 유예기간. 이 기간 동안은 `base_rate`만 적용 |
+| `activation.base_rate` | 유예기간 동안의 기본 활성화 확률 (매일 굴림) |
+| `activation.growth_rate` | 유예기간 이후 일별 확률 성장률 |
+| `activation.slowdown_per_active_mystery` | 활성 mystery 1개당 성장률 감소 계수 |
+
+### 13.4 작동 방식
+
+1. **Case 오픈** → 첫 번째 mystery (`mystery_ids[0]`) **즉시** 활성화
+2. **매일 아침** → pending mystery가 있으면 확률 굴림
+3. **확률 공식**: `base_rate + max(0, days - grace) × (growth_rate / (1 + active_count × slowdown))`
+4. **Mystery 해결** → resolve bonus `+0.25`를 적용한 **추가 굴림** 1회
+5. **모든 mystery 해결** → Case 완료 → 다음 Case 자동 해금
+
+### 13.5 플레이어 경험
+
+- **빠른 플레이어**: mystery를 빨리 해결하면 resolve bonus로 다음 mystery가 빨리 나옴
+- **느린 플레이어**: 활성 mystery가 많아서 성장률이 둔화되지만, 시간이 지나면 확률이 쌓여 결국 튀어나옴
+- **최악**: 3개 mystery가 동시에 활성화 + 각자 escalation 패널티 중첩
+
+---
+
 ## 관련 문서
 
 - 콘텐츠 폴더: [[02_콘텐츠/README]]
@@ -851,3 +923,4 @@ splash_screen.tscn  →  title_screen.tscn  →  game_scene.tscn  (여관 로비
 - 아키텍처 원칙: [[architecture]]
 - 게임 루프 및 GDD: [[new_direction]]
 - 컨텐츠 전달함: [[content-inbox/README]]
+- 루트 & 장비 시스템 설계: [[loot_and_equipment_system]]

@@ -1,0 +1,9 @@
+{
+  "place_id": "catacombs_depths",
+  "display_name": "지하 묘지 깊은 곳",
+  "background_path": "res://assets/bg/catacombs_depths.png",
+  "bgm": "dungeon_ominous",
+  "empty_weight": 100,
+  "tags": ["던전", "지식"],
+  "connections": ["street_south"]
+}

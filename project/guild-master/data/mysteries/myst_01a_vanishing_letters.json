@@ -1,0 +1,59 @@
+{
+  "mystery_id": "myst_01a_vanishing_letters",
+  "display_name": "사라지는 글자",
+  "description": "대도서관의 고서에서 글자가 사라지기 시작했다. 누군가 고대 룬을 흡수하고 있는 것 같다.",
+  "mystery_type": "research",
+  "linked_case_id": "case_01",
+  "linked_crisis_id": "the_slumbering_great_mind",
+  "order_in_case": 1,
+  "phases": [
+    {
+      "phase_id": "phase_01_clues",
+      "phase_name": "단서 추적",
+      "objective": {
+        "type": "collect_clues",
+        "target_tags": ["지식"],
+        "clues_needed": 3,
+        "check_attribute": "insight",
+        "check_difficulty": 2
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_01a_vanishing_letters.phase_01_done", "value": true },
+        { "type": "log", "message": "글자가 사라지는 근원지를 추적했다. 대도서관 지하에서 불길한 기운이 느껴진다." }
+      ]
+    },
+    {
+      "phase_id": "phase_02_dungeon",
+      "phase_name": "지하 제단 탐사",
+      "prerequisite": { "flag_eq": ["mystery.myst_01a_vanishing_letters.phase_01_done", true] },
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "library_underground",
+        "boss_id": "rune_eater"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_01a_vanishing_letters.resolved", "value": true },
+        { "type": "change_doom", "amount": -1 },
+        { "type": "change_metric", "key": "npc.luise.trust", "amount": 2 },
+        { "type": "log", "message": "사라지는 글자의 미스터리를 해결했다. 고서관의 지식이 다시금 안전해졌다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 14,
+    "warning_days": 10,
+    "warning_dialogue": "mystery_vanishing_letters_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 3 },
+      { "type": "block_place", "place_id": "grand_library", "reason": "모든 책의 글자가 사라져 대도서관이 폐쇄되었다." },
+      { "type": "dialogue", "dialogue_id": "mystery_vanishing_letters_doom" }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "remove_condition", "condition_id": "cognitive_distortion" },
+      { "type": "unblock_place", "place_id": "grand_library" },
+      { "type": "change_metric", "key": "player.unlock_points", "amount": 50 }
+    ]
+  }
+}

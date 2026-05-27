@@ -1,0 +1,16 @@
+{
+  "case_id": "case_02",
+  "display_name": "피의 장막",
+  "description": "항구에서 이상한 붉은 안개가 피어오르기 시작했다. 안개 속에서 무언가 거대한 것이 움직이고 있다.",
+  "mystery_ids": [
+    "myst_02a_crimson_fog",
+    "myst_02b_harbor_whispers",
+    "myst_02c_depths_awaken"
+  ],
+  "activation": {
+    "grace_period_days": 5,
+    "base_rate": 0.08,
+    "growth_rate": 0.10,
+    "slowdown_per_active_mystery": 0.30
+  }
+}

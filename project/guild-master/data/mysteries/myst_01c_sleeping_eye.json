@@ -1,0 +1,43 @@
+{
+  "mystery_id": "myst_01c_sleeping_eye",
+  "display_name": "잠든 자의 눈",
+  "description": "나틀락 지하 깊은 곳에서 거대한 눈이 떠오르려 한다. The Slumbering Maw의 첫 번째 각질이다.",
+  "mystery_type": "confrontation",
+  "linked_case_id": "case_01",
+  "linked_crisis_id": "",
+  "order_in_case": 3,
+  "phases": [
+    {
+      "phase_id": "phase_01_dungeon",
+      "phase_name": "지하 묘지 결전",
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "catacombs_depths",
+        "boss_id": "sleeping_eye_cultist"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_01c_sleeping_eye.resolved", "value": true },
+        { "type": "change_doom", "amount": -2 },
+        { "type": "change_metric", "key": "npc.luise.trust", "amount": 3 },
+        { "type": "change_metric", "key": "player.unlock_points", "amount": 100 },
+        { "type": "log", "message": "잠든 자의 눈을 봉인했다. The Slumbering Maw의 각성이 잠시 늦춰졌다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 21,
+    "warning_days": 14,
+    "warning_dialogue": "mystery_sleeping_eye_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 5 },
+      { "type": "game_over", "reason": "잠든 자의 눈이 완전히 떠올랐다. 도시가 악몽에 삼켜졌다.", "game_over_type": "doom" }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "seal_dungeon", "dungeon_id": "catacombs_depths" },
+      { "type": "set_flag", "key": "case.case_01.resolved", "value": true },
+      { "type": "log", "message": "Case 1 [잠든 자의 눈] 완료. 다음 장이 해금되었다." }
+    ]
+  }
+}

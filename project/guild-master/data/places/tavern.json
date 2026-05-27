@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/tavern.png",
   "bgm": "tavern_ambient",
   "empty_weight": 3,
+  "tags": ["상업", "음주"],
   "connections": ["street_north"]
 }

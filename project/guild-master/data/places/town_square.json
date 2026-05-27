@@ -13,5 +13,6 @@
   "background_path": "res://assets/bg/town_square.png",
   "bgm": "town_day",
   "empty_weight": 8,
+  "tags": ["거리", "상업"],
   "connections": ["street_south", "street_north", "street_west", "clinic"]
 }

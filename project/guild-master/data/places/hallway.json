@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/hallway.png",
   "bgm": "town_day",
   "empty_weight": 0,
+  "tags": ["거주지"],
   "connections": ["inn_room", "lobby"]
 }

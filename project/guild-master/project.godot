@@ -39,6 +39,8 @@ MetricStore="*res://scripts/state/metric_store.gd"
 CrisisRegistry="*res://scripts/systems/crisis_registry.gd"
 ConditionManager="*res://scripts/state/condition_manager.gd"
 CrisisManager="*res://scripts/systems/crisis_manager.gd"
+MysteryRegistry="*res://scripts/systems/mystery_registry.gd"
+MysteryManager="*res://scripts/systems/mystery_manager.gd"
 ItemRegistry="*res://scripts/systems/item_registry.gd"
 InventoryManager="*res://scripts/state/inventory_manager.gd"
 LootTableRegistry="*res://scripts/systems/loot_table_registry.gd"
@@ -53,7 +55,7 @@ window/stretch/aspect="expand"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
+enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg", "res://addons/gdUnit4/plugin.cfg")
 
 [input]
 
@@ -75,6 +77,7 @@ ui_focus_prev={
 [internationalization]
 
 locale/translations=PackedStringArray("res://assets/translations/dialogue/common_strings.en.translation", "res://assets/translations/dialogue/common_strings.ko.translation", "res://assets/translations/dialogue/common_strings.ja.translation", "res://assets/translations/ui/ui_common.en.translation", "res://assets/translations/ui/ui_common.ko.translation", "res://assets/translations/ui/ui_common.ja.translation")
+locale/translations_pot_files=PackedStringArray("res://data/dialogues/elena_default.dialogue", "res://data/dialogues/elena_standby_hallway.dialogue", "res://data/dialogues/elena_touch_default.dialogue", "res://data/dialogues/elena_touch_friendly.dialogue", "res://data/dialogues/elena_touch_morning.dialogue", "res://data/dialogues/luise_default.dialogue", "res://data/dialogues/rock_default.dialogue", "res://data/dialogues/shepard_default.dialogue")
 
 [physics]
 

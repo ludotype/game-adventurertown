@@ -12,5 +12,6 @@
   "background_path": "res://assets/bg/inn_room.png",
   "bgm": "inn_calm",
   "empty_weight": 100,
+  "tags": ["거주지"],
   "connections": ["hallway"]
 }

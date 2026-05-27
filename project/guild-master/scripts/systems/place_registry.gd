@@ -53,6 +53,8 @@ func _load_place_file(path: String) -> void:
 	var place_id: String = data["place_id"]
 	if not data.has("empty_weight"):
 		data["empty_weight"] = 0
+	if not data.has("tags"):
+		data["tags"] = []
 
 	_places[place_id] = data
 

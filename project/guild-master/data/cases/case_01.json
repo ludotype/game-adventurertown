@@ -1,0 +1,16 @@
+{
+  "case_id": "case_01",
+  "display_name": "잠든 자의 눈",
+  "description": "대도서관의 글자가 사라지고, 천문탑의 별빛이 왜곡되며, 지하 깊은 곳에서 무언가 눈을 뜨려 한다. The Slumbering Maw의 첫 번째 각질이다.",
+  "mystery_ids": [
+    "myst_01a_vanishing_letters",
+    "myst_01b_twisted_stars",
+    "myst_01c_sleeping_eye"
+  ],
+  "activation": {
+    "grace_period_days": 7,
+    "base_rate": 0.05,
+    "growth_rate": 0.08,
+    "slowdown_per_active_mystery": 0.25
+  }
+}

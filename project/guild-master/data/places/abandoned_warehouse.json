@@ -1,0 +1,9 @@
+{
+  "place_id": "abandoned_warehouse",
+  "display_name": "폐창고",
+  "background_path": "res://assets/bg/abandoned_warehouse.png",
+  "bgm": "dungeon_ambient",
+  "empty_weight": 100,
+  "tags": ["던전", "상업"],
+  "connections": ["street_north"]
+}

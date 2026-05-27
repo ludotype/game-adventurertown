@@ -1,0 +1,57 @@
+{
+  "mystery_id": "myst_01b_twisted_stars",
+  "display_name": "왜곡된 별빛",
+  "description": "천문탑에서 관측된 별들의 궤적이 이상하게 왜곡되고 있다. 어떤 힘이 하늘의 질서를 뒤틀고 있다.",
+  "mystery_type": "cleansing",
+  "linked_case_id": "case_01",
+  "linked_crisis_id": "the_slumbering_great_mind",
+  "order_in_case": 2,
+  "phases": [
+    {
+      "phase_id": "phase_01_cleanse",
+      "phase_name": "천문탑 정화",
+      "objective": {
+        "type": "cleanse_places",
+        "target_tags": ["지식"],
+        "cleanse_count": 2,
+        "doom_tokens_per_place": 3
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_01b_twisted_stars.phase_01_done", "value": true },
+        { "type": "log", "message": "천문탑의 왜곡된 기운이 조금씩 가라앉는다. 하지만 지하에서 더 강한 파동이 느껴진다." }
+      ]
+    },
+    {
+      "phase_id": "phase_02_dungeon",
+      "phase_name": "지하 관측소 탐사",
+      "prerequisite": { "flag_eq": ["mystery.myst_01b_twisted_stars.phase_01_done", true] },
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "astronomy_tower_basement",
+        "boss_id": "star_shaper"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_01b_twisted_stars.resolved", "value": true },
+        { "type": "change_doom", "amount": -1 },
+        { "type": "change_metric", "key": "player.unlock_points", "amount": 50 },
+        { "type": "log", "message": "왜곡된 별빛의 미스터리를 해결했다. 하늘의 질서가 회복되기 시작한다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 14,
+    "warning_days": 10,
+    "warning_dialogue": "mystery_twisted_stars_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 3 },
+      { "type": "block_place", "place_id": "astronomy_tower", "reason": "별빛의 왜곡이 극에 달해 천문탑이 폐쇄되었다." },
+      { "type": "dialogue", "dialogue_id": "mystery_twisted_stars_doom" }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "unblock_place", "place_id": "astronomy_tower" },
+      { "type": "change_metric", "key": "player.unlock_points", "amount": 50 }
+    ]
+  }
+}

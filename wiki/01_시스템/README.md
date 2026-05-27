@@ -16,6 +16,7 @@
 | [[condition_cards_design]] | **상태 카드 시스템** — 정신(환각/편집증 등) 및 신체 상태 카드 설계서 |
 | [[dialogue_manager_guide]] | **대화 엔진 가이드** — Godot Dialogue Manager 사용법 및 연출 태그 가이드 |
 | [[tool_design_editor.md]] | 툴/에디터 설계 |
+| [[loot_and_equipment_system]] | **루트 & 장비 시스템** — Loop Hero식 Item Points 및 몬스터 시그니처 드롭 설계 |
 
 ---
 

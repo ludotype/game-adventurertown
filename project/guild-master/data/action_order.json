@@ -167,6 +167,18 @@
 			"tags": [
 				"new"
 			]
+		},
+		{
+			"id": "cleanse",
+			"tags": [
+				"new"
+			]
+		},
+		{
+			"id": "investigate",
+			"tags": [
+				"new"
+			]
 		}
 	],
 	"version": 1

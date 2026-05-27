@@ -1,0 +1,56 @@
+{
+  "mystery_id": "myst_02a_crimson_fog",
+  "display_name": "붉은 안개",
+  "description": "거리의 상인들 사이에서 기이한 붉은 안개가 목격되고 있다. 뭔가가 숨 쉬고 있다.",
+  "mystery_type": "cleansing",
+  "linked_case_id": "case_02",
+  "linked_crisis_id": "",
+  "order_in_case": 1,
+  "phases": [
+    {
+      "phase_id": "phase_01_cleanse",
+      "phase_name": "상업 거리 정화",
+      "objective": {
+        "type": "cleanse_places",
+        "target_tags": ["상업"],
+        "cleanse_count": 2,
+        "doom_tokens_per_place": 2
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_02a_crimson_fog.phase_01_done", "value": true },
+        { "type": "log", "message": "붉은 안개가 조금 가라앉는다. 하지만 항구에서 더 강한 파동이 느껴진다." }
+      ]
+    },
+    {
+      "phase_id": "phase_02_dungeon",
+      "phase_name": "폐창고 탐사",
+      "prerequisite": { "flag_eq": ["mystery.myst_02a_crimson_fog.phase_01_done", true] },
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "abandoned_warehouse",
+        "boss_id": "fog_maw"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_02a_crimson_fog.resolved", "value": true },
+        { "type": "change_doom", "amount": -1 },
+        { "type": "change_metric", "key": "player.unlock_points", "amount": 50 },
+        { "type": "log", "message": "붉은 안개의 미스터리를 해결했다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 12,
+    "warning_days": 9,
+    "warning_dialogue": "mystery_crimson_fog_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 3 },
+      { "type": "block_place", "place_id": "tavern", "reason": "붉은 안개가 거리를 집어삼켰다." }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "unblock_place", "place_id": "tavern" },
+      { "type": "change_metric", "key": "player.unlock_points", "amount": 50 }
+    ]
+  }
+}

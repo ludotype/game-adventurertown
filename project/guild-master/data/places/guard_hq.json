@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/guard_hq.png",
   "bgm": "guard_hq",
   "empty_weight": 0,
+  "tags": ["치안", "정부"],
   "connections": ["street_west"]
 }

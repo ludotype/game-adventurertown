@@ -1,0 +1,57 @@
+{
+  "mystery_id": "myst_02b_harbor_whispers",
+  "display_name": "항구의 속삭임",
+  "description": "밤마다 항구에서 들려오는 이상한 속삭임. 어부들은 꿈속에서 무언가에게 이끌린다고 한다.",
+  "mystery_type": "research",
+  "linked_case_id": "case_02",
+  "linked_crisis_id": "",
+  "order_in_case": 2,
+  "phases": [
+    {
+      "phase_id": "phase_01_clues",
+      "phase_name": "속삭임의 근원 추적",
+      "objective": {
+        "type": "collect_clues",
+        "target_tags": ["거리"],
+        "clues_needed": 3,
+        "check_attribute": "insight",
+        "check_difficulty": 2
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_02b_harbor_whispers.phase_01_done", "value": true },
+        { "type": "log", "message": "속삭임의 근원지를 추적했다. 항구 깊은 곳에서 불길한 기운이 느껴진다." }
+      ]
+    },
+    {
+      "phase_id": "phase_02_dungeon",
+      "phase_name": "항구 하부 탐사",
+      "prerequisite": { "flag_eq": ["mystery.myst_02b_harbor_whispers.phase_01_done", true] },
+      "objective": {
+        "type": "dungeon_clear",
+        "dungeon_id": "harbor_underbelly",
+        "boss_id": "siren_shard"
+      },
+      "rewards_on_phase_complete": [
+        { "type": "set_flag", "key": "mystery.myst_02b_harbor_whispers.resolved", "value": true },
+        { "type": "change_doom", "amount": -1 },
+        { "type": "change_metric", "key": "player.unlock_points", "amount": 50 },
+        { "type": "log", "message": "항구의 속삭임을 잠재웠다." }
+      ]
+    }
+  ],
+  "escalation": {
+    "doom_if_ignored_days": 14,
+    "warning_days": 10,
+    "warning_dialogue": "mystery_harbor_whispers_warning",
+    "doom_actions": [
+      { "type": "change_doom", "amount": 3 },
+      { "type": "block_place", "place_id": "street_south", "reason": "항구의 안개가 거리를 덮었다." }
+    ]
+  },
+  "on_resolve": {
+    "actions": [
+      { "type": "unblock_place", "place_id": "street_south" },
+      { "type": "change_metric", "key": "player.unlock_points", "amount": 50 }
+    ]
+  }
+}

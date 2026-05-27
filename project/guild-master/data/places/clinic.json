@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/clinic.png",
   "bgm": "town_day",
   "empty_weight": 100,
+  "tags": ["의료"],
   "connections": ["town_square"]
 }

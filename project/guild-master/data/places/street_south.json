@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/street_south.png",
   "bgm": "town_day",
   "empty_weight": 10,
-  "connections": ["lobby", "town_square", "weapon_shop"]
+  "tags": ["거리"],
+  "connections": ["lobby", "town_square", "weapon_shop", "catacombs_depths", "harbor_underbelly", "harbor_depths"]
 }

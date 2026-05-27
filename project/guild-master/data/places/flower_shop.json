@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/flower_shop.png",
   "bgm": "town_day",
   "empty_weight": 6,
+  "tags": ["상업"],
   "connections": ["street_north"]
 }

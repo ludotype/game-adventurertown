@@ -62,6 +62,20 @@ func evaluate(condition, context: Dictionary = {}) -> bool:
 		return _evaluate_place_blocked(condition_dict["place_blocked"])
 	if condition_dict.has("has_item"):
 		return _evaluate_has_item(condition_dict["has_item"])
+	if condition_dict.has("mystery_active"):
+		return _evaluate_mystery_active(condition_dict["mystery_active"])
+	if condition_dict.has("mystery_phase_eq"):
+		return _evaluate_mystery_phase_eq(condition_dict["mystery_phase_eq"])
+	if condition_dict.has("mystery_resolved"):
+		return _evaluate_mystery_resolved(condition_dict["mystery_resolved"])
+	if condition_dict.has("case_active"):
+		return _evaluate_case_active(condition_dict["case_active"])
+	if condition_dict.has("case_resolved"):
+		return _evaluate_case_resolved(condition_dict["case_resolved"])
+	if condition_dict.has("dungeon_unlocked"):
+		return _evaluate_dungeon_unlocked(condition_dict["dungeon_unlocked"])
+	if condition_dict.has("dungeon_sealed"):
+		return _evaluate_dungeon_sealed(condition_dict["dungeon_sealed"])
 
 	push_warning("ConditionEvaluator: unknown condition keys: " + str(condition_dict.keys()))
 	return false
@@ -258,3 +272,63 @@ func _evaluate_has_item(args) -> bool:
 		if args.size() >= 2:
 			required_count = int(args[1])
 	return InventoryManager.has_item(item_id, required_count)
+
+
+func _evaluate_mystery_active(args) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("is_mystery_active"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var mystery_id := String(args)
+	return MysteryManager.is_mystery_active(mystery_id)
+
+
+func _evaluate_mystery_phase_eq(args) -> bool:
+	if typeof(args) != TYPE_ARRAY or args.size() < 2:
+		push_warning("ConditionEvaluator: mystery_phase_eq must be [mystery_id, phase_index]")
+		return false
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("get_mystery_current_phase"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var mystery_id := String(args[0])
+	var expected_phase: int = int(args[1])
+	return MysteryManager.get_mystery_current_phase(mystery_id) == expected_phase
+
+
+func _evaluate_mystery_resolved(args) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("is_mystery_resolved"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var mystery_id := String(args)
+	return MysteryManager.is_mystery_resolved(mystery_id)
+
+
+func _evaluate_case_active(args) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("get_active_case_id"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var case_id := String(args)
+	return MysteryManager.get_active_case_id() == case_id
+
+
+func _evaluate_case_resolved(args) -> bool:
+	if not has_node("/root/Flags") or not Flags.has_method("get_flag"):
+		push_warning("ConditionEvaluator: Flags autoload is missing")
+		return false
+	var case_id := String(args)
+	return Flags.get_flag("case." + case_id + ".resolved", false)
+
+
+func _evaluate_dungeon_unlocked(args) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("is_dungeon_unlocked"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var dungeon_id := String(args)
+	return MysteryManager.is_dungeon_unlocked(dungeon_id)
+
+
+func _evaluate_dungeon_sealed(args) -> bool:
+	if not has_node("/root/MysteryManager") or not MysteryManager.has_method("is_dungeon_sealed"):
+		push_warning("ConditionEvaluator: MysteryManager autoload is missing")
+		return false
+	var dungeon_id := String(args)
+	return MysteryManager.is_dungeon_sealed(dungeon_id)

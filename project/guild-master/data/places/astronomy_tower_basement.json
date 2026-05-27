@@ -1,0 +1,9 @@
+{
+  "place_id": "astronomy_tower_basement",
+  "display_name": "천문탑 지하",
+  "background_path": "res://assets/bg/astronomy_tower_basement.png",
+  "bgm": "dungeon_ominous",
+  "empty_weight": 100,
+  "tags": ["던전", "지식"],
+  "connections": ["astronomy_tower"]
+}

@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/west_gate.png",
   "bgm": "town_day",
   "empty_weight": 0,
+  "tags": ["거리"],
   "connections": ["street_west"]
 }

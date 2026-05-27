@@ -4,5 +4,6 @@
   "background_path": "res://assets/bg/lobby.png",
   "bgm": "inn_calm",
   "empty_weight": 6,
+  "tags": ["상업", "거주지"],
   "connections": ["hallway", "street_south"]
 }

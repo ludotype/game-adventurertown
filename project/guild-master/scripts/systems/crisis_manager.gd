@@ -163,6 +163,10 @@ func _filter_valid_candidates(candidates: Array, available_slots: float) -> Arra
 	return valid
 
 
+func activate_crisis_by_data(data: Dictionary) -> void:
+	_activate_crisis(data)
+
+
 func _activate_crisis(data: Dictionary) -> void:
 	var crisis_id: String = data["crisis_id"]
 	var escalation: Dictionary = data.get("escalation", {})
@@ -175,6 +179,10 @@ func _activate_crisis(data: Dictionary) -> void:
 	Flags.set_flag("crisis." + crisis_id + ".active", true)
 	crisis_triggered.emit(data)
 	_emit_log("Activated crisis " + crisis_id + " (doom_timer=" + str(doom_days) + ")")
+
+
+func doom_crisis(crisis_id: String) -> void:
+	_doom_crisis(crisis_id)
 
 
 func _doom_crisis(crisis_id: String) -> void:
