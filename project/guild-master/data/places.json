@@ -1,0 +1,24 @@
+{
+	"places": [
+		{
+			"base_npc": [],
+			"coordinate": {
+				"x": -540,
+				"y": -220
+			},
+			"display_name_kr": "새 장소",
+			"events": [
+				{
+					"dialogue_file": "",
+					"dialogue_title": "",
+					"display_name": "새 이벤트",
+					"event_id": "evt_new_0",
+					"triggers": {
+
+					}
+				}
+			],
+			"id": "place_0"
+		}
+	]
+}

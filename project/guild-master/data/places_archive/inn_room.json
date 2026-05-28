@@ -13,5 +13,5 @@
   "bgm": "inn_calm",
   "empty_weight": 100,
   "tags": ["거주지"],
-  "connections": []
+  "connections": ["hallway"]
 }
