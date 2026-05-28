@@ -44,8 +44,8 @@ func _ready() -> void:
 	_popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
 	add_child(_popup_menu)
 
-	# Godot 4.x GraphEdit 연결선 직선 설정 및 드래그 연결 해제 기능 활성화
-	graph_edit.connection_lines_curvature = 0.0
+	# Godot 4.x GraphEdit 연결선 곡선 설정 및 드래그 연결 해제 기능 활성화
+	graph_edit.connection_lines_curvature = 0.5
 	graph_edit.right_disconnects = true
 
 	graph_edit.popup_request.connect(_on_popup_request)
@@ -267,8 +267,12 @@ func _refresh_sidebar_path_list() -> void:
 		var path_idx = i
 		var path_data = selected_node.paths[path_idx]
 		
-		var hbox = HBoxContainer.new()
-		path_list_container.add_child(hbox)
+		var item_vbox = VBoxContainer.new()
+		path_list_container.add_child(item_vbox)
+		
+		# 첫 번째 줄: 경로명 입력 + 삭제
+		var row1 = HBoxContainer.new()
+		item_vbox.add_child(row1)
 		
 		var edit_name = LineEdit.new()
 		edit_name.text = path_data.get("button_name", "")
@@ -279,7 +283,7 @@ func _refresh_sidebar_path_list() -> void:
 			if selected_node:
 				selected_node._update_node_view()
 		)
-		hbox.add_child(edit_name)
+		row1.add_child(edit_name)
 		
 		var btn_del = Button.new()
 		btn_del.text = "🗑"
@@ -290,7 +294,42 @@ func _refresh_sidebar_path_list() -> void:
 				selected_node._update_node_view()
 				_refresh_sidebar_path_list()
 		)
-		hbox.add_child(btn_del)
+		row1.add_child(btn_del)
+		
+		# 두 번째 줄: 목적지 ID 입력
+		var row2 = HBoxContainer.new()
+		item_vbox.add_child(row2)
+		
+		var label_target = Label.new()
+		label_target.text = "  └ 🎯 대상 ID: "
+		label_target.modulate = Color(0.7, 0.7, 0.7)
+		row2.add_child(label_target)
+		
+		var edit_target_id = LineEdit.new()
+		edit_target_id.text = path_data.get("target_place_id", "")
+		edit_target_id.placeholder_text = "ex) inn_lobby (목적지 장소 ID)"
+		edit_target_id.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		
+		# 중요 🌟: 사이드바 -> 캔버스 실시간 피드백 바인딩!
+		edit_target_id.text_changed.connect(func(new_target_id: String):
+			var trimmed = new_target_id.strip_edges()
+			path_data["target_place_id"] = trimmed
+			
+			# 1. 캔버스 상의 기존 연결선(있다면) 선제적으로 제거
+			_disconnect_port_visuals_only(selected_node.name, path_idx)
+			
+			# 2. 만약 입력한 ID를 갖는 노드가 실제로 존재한다면, 캔버스 상에 연결선을 시각적으로 이어줌!
+			if trimmed != "":
+				var target_node = graph_edit.get_node_or_null(trimmed)
+				if target_node and target_node is GraphNode:
+					graph_edit.connect_node(selected_node.name, path_idx, target_node.name, 0)
+		)
+		row2.add_child(edit_target_id)
+		
+		# 아이템 간 구분을 위한 연한 구분선
+		var item_sep = HSeparator.new()
+		item_sep.modulate = Color(1.0, 1.0, 1.0, 0.2)
+		item_vbox.add_child(item_sep)
 
 func _disconnect_port_visuals_only(node_name: String, port_idx: int) -> void:
 	for conn in graph_edit.get_connection_list():
@@ -370,6 +409,10 @@ func _on_connection_request(from_node: StringName, from_port: int, to_node: Stri
 			from_node_obj.paths[from_port]["target_place_id"] = to_node_obj.place_id
 			graph_edit.connect_node(from_node, from_port, to_node, to_port)
 			print("Connected path: ", from_node_obj.paths[from_port]["button_name"], " -> ", to_node_obj.place_id)
+			
+			# 캔버스 -> 사이드바 실시간 동기화 🌟
+			if selected_node == from_node_obj:
+				_refresh_sidebar_path_list()
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	var from_node_obj = graph_edit.get_node(str(from_node))
@@ -378,6 +421,10 @@ func _on_disconnection_request(from_node: StringName, from_port: int, to_node: S
 			from_node_obj.paths[from_port]["target_place_id"] = ""
 			graph_edit.disconnect_node(from_node, from_port, to_node, to_port)
 			print("Disconnected path index: ", from_port)
+			
+			# 캔버스 -> 사이드바 실시간 동기화 🌟
+			if selected_node == from_node_obj:
+				_refresh_sidebar_path_list()
 
 func _on_save_pressed() -> void:
 	var places: Array = []

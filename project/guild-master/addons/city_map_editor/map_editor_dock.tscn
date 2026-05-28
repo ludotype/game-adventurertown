@@ -30,7 +30,7 @@ split_offset = -280
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-connection_lines_curvature = 0.0
+connection_lines_curvature = 0.5
 right_disconnects = true
 
 [node name="Sidebar" type="PanelContainer" parent="HSplitContainer"]
