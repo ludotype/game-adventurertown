@@ -8,6 +8,8 @@ var base_npc: Array = []
 var events: Array = []
 var paths: Array = []
 
+signal event_jump_requested(file_path: String, title_label: String)
+
 func _ready() -> void:
 	selectable = true
 	mouse_filter = Control.MOUSE_FILTER_PASS
@@ -91,6 +93,46 @@ func _update_node_view() -> void:
 	var sep = HSeparator.new()
 	add_child(sep)
 	set_slot(1, false, 0, Color.WHITE, false, 0, Color.WHITE)
+
+	# [신설 🌟] 자식 2: 장소별 이벤트(대화) 트리거 비주얼 목록 및 점프 단추 연동
+	if events.size() > 0:
+		var vbox_events = VBoxContainer.new()
+		vbox_events.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(vbox_events)
+		
+		# 이 슬롯은 포트 비활성화
+		var child_idx_ev = get_child_count() - 1
+		set_slot(child_idx_ev, false, 0, Color.WHITE, false, 0, Color.WHITE)
+		
+		for ev in events:
+			var hbox_ev = HBoxContainer.new()
+			hbox_ev.mouse_filter = Control.MOUSE_FILTER_PASS
+			vbox_events.add_child(hbox_ev)
+			
+			var label_ev = Label.new()
+			label_ev.text = "💬 " + ev.get("display_name", "새 이벤트")
+			label_ev.modulate = Color(0.85, 0.55, 0.85) # 연보라색
+			label_ev.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			label_ev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			hbox_ev.add_child(label_ev)
+			
+			var btn_jump = Button.new()
+			btn_jump.text = "🔗"
+			btn_jump.tooltip_text = "이 대화 이벤트를 Dialogue Manager에서 즉시 열어봅니다."
+			var file_path = ev.get("dialogue_file", "")
+			var title_lbl = ev.get("dialogue_title", "")
+			btn_jump.disabled = (file_path == "")
+			btn_jump.pressed.connect(func():
+				event_jump_requested.emit(file_path, title_lbl)
+			)
+			hbox_ev.add_child(btn_jump)
+			
+		# 아래 이동 경로와의 구분을 위한 얇은 구분선
+		var sep_ev = HSeparator.new()
+		sep_ev.modulate = Color(1.0, 1.0, 1.0, 0.3)
+		add_child(sep_ev)
+		var child_idx_sep_ev = get_child_count() - 1
+		set_slot(child_idx_sep_ev, false, 0, Color.WHITE, false, 0, Color.WHITE)
 
 	# 5. 자식 2번 이후: 이동 경로 선택지 목록 (진출용 양방향 좌/우 소켓 전면 개방 🌟)
 	for i in range(paths.size()):

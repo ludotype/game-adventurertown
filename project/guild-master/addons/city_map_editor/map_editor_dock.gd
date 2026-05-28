@@ -126,6 +126,7 @@ func _create_place_node(data: Dictionary = {}) -> void:
 	
 	graph_edit.add_child(node)
 	node.setup_node(default_data)
+	node.event_jump_requested.connect(_jump_to_dialogue)
 
 func _on_node_selected(node: Node) -> void:
 	if node is GraphNode:
