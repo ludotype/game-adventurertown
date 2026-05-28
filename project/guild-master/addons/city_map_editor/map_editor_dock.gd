@@ -267,12 +267,21 @@ func _refresh_sidebar_path_list() -> void:
 		var path_idx = i
 		var path_data = selected_node.paths[path_idx]
 		
-		var item_vbox = VBoxContainer.new()
+		var item_vbox = PathDragDropPanel.new()
+		item_vbox.path_index = path_idx
+		item_vbox.dock = self
 		path_list_container.add_child(item_vbox)
 		
-		# 첫 번째 줄: 경로명 입력 + 삭제
+		# 첫 번째 줄: 드래그 핸들(↕) + 경로명 입력 + 삭제
 		var row1 = HBoxContainer.new()
 		item_vbox.add_child(row1)
+		
+		var label_handle = Label.new()
+		label_handle.text = " ↕ "
+		label_handle.modulate = Color(0.3, 0.8, 0.5)
+		label_handle.mouse_filter = Control.MOUSE_FILTER_PASS
+		label_handle.tooltip_text = "이곳을 마우스로 잡아 드래그하면 위아래 순서가 변경됩니다."
+		row1.add_child(label_handle)
 		
 		var edit_name = LineEdit.new()
 		edit_name.text = path_data.get("button_name", "")
@@ -520,3 +529,66 @@ func _load_json(path: String) -> Dictionary:
 	if result is Dictionary:
 		return result
 	return {}
+
+# ==========================================
+# 🌟 이동 경로 드래그 앤 드롭 순서 변경 이너 클래스 및 헬퍼
+# ==========================================
+
+func _on_path_reordered(from_idx: int, to_idx: int) -> void:
+	if not selected_node:
+		return
+		
+	var paths = selected_node.paths
+	if from_idx < 0 or from_idx >= paths.size() or to_idx < 0 or to_idx >= paths.size():
+		return
+		
+	# 1. 데이터 상 순서 체인지
+	var moved_item = paths.remove_at(from_idx)
+	paths.insert(to_idx, moved_item)
+	
+	# 2. 캔버스 슬롯 및 연결망 물리적 재건 (데이터 포트 인덱스 동기화 보장)
+	selected_node._update_node_view()
+	_rebuild_node_connections(selected_node)
+	
+	# 3. 사이드바 UI 리프레시
+	_refresh_sidebar_path_list()
+	print("Successfully reordered path: ", from_idx, " -> ", to_idx)
+
+func _rebuild_node_connections(node: GraphNode) -> void:
+	# 이 노드에서 출발해 뻗어나가던 모든 선을 임시 제거
+	for conn in graph_edit.get_connection_list():
+		if conn.get("from", "") == node.name:
+			graph_edit.disconnect_node(node.name, conn.get("from_port", 0), conn.get("to", ""), conn.get("to_port", 0))
+	
+	# 새로운 순서에 대치되도록 시각적 연결 곡선을 완벽히 재배치 복구
+	for i in range(node.paths.size()):
+		var path_data = node.paths[i]
+		var target_id = path_data.get("target_place_id", "")
+		if target_id != "":
+			var target_node = graph_edit.get_node_or_null(target_id)
+			if target_node:
+				graph_edit.connect_node(node.name, i, target_node.name, 0)
+
+# 드래그 앤 드롭 정렬 감지 패널
+class PathDragDropPanel extends VBoxContainer:
+	var path_index: int = 0
+	var dock: Control = null
+	
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		
+	func _get_drag_data(_at_position: Vector2) -> Variant:
+		var preview = Label.new()
+		preview.text = "↕ 이동 경로 정렬 변경 중..."
+		preview.modulate = Color(0.3, 0.8, 0.5)
+		set_drag_preview(preview)
+		return {"from_idx": path_index}
+		
+	func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+		return data is Dictionary and data.has("from_idx")
+		
+	func _drop_data(_at_position: Vector2, data: Variant) -> void:
+		var from_idx = data.get("from_idx", -1)
+		var to_idx = path_index
+		if from_idx != -1 and from_idx != to_idx:
+			dock._on_path_reordered(from_idx, to_idx)
