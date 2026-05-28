@@ -154,14 +154,21 @@ func _refresh_action_buttons() -> void:
 	action_panel.add_section("이동")
 	var place_data := PlaceRegistry.get_place(place_id)
 	if not place_data.is_empty():
-		var connections: Array = place_data.get("connections", [])
-		for raw_id in connections:
-			var target_id := String(raw_id)
-			if not PlaceRegistry.has_place(target_id):
-				push_warning("PlaceScene: connection to unknown place_id: " + target_id)
+		var paths: Array = place_data.get("paths", [])
+		for path_item in paths:
+			if not (path_item is Dictionary):
 				continue
-			var target_data := PlaceRegistry.get_place(target_id)
-			action_panel.add_movement(target_data.get("display_name", target_id), target_id)
+			var target_id := String(path_item.get("target_place_id", ""))
+			if target_id == "" or not PlaceRegistry.has_place(target_id):
+				push_warning("PlaceScene: path target invalid or unknown: " + target_id)
+				continue
+			
+			var button_name := String(path_item.get("button_name", ""))
+			if button_name == "":
+				var target_data := PlaceRegistry.get_place(target_id)
+				button_name = target_data.get("display_name_kr", target_id)
+				
+			action_panel.add_movement(button_name, target_id)
 
 
 

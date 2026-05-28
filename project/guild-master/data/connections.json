@@ -1,3 +1,46 @@
 {
-	"connections": []
+	"connections": [
+		{
+			"from": "",
+			"from_port": 1,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 0
+		},
+		{
+			"from": "",
+			"from_port": 1,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 0
+		},
+		{
+			"from": "",
+			"from_port": 1,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 0
+		},
+		{
+			"from": "",
+			"from_port": 2,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 0
+		},
+		{
+			"from": "",
+			"from_port": 0,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 2
+		},
+		{
+			"from": "",
+			"from_port": 0,
+			"movement_cost": 1,
+			"to": "",
+			"to_port": 1
+		}
+	]
 }

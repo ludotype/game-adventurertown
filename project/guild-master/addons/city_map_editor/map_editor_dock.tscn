@@ -30,6 +30,8 @@ split_offset = -280
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+connection_lines_curvature = 0.0
+right_disconnects = true
 
 [node name="Sidebar" type="PanelContainer" parent="HSplitContainer"]
 custom_minimum_size = Vector2(280, 0)
@@ -49,6 +51,11 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.7, 1, 1)
 text = "장소 정보 상세"
 horizontal_alignment = 1
+
+[node name="DuplicateButton" type="Button" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.8, 0.3, 1)
+text = "❐ 현재 장소 복제 (Copy)"
 
 [node name="EmptyNotice" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
 layout_mode = 2
@@ -73,6 +80,13 @@ text = "장소 표시 한글명"
 layout_mode = 2
 placeholder_text = "장소 한글명"
 
+[node name="TypeLabel" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
+layout_mode = 2
+text = "장소 공간 타입"
+
+[node name="TypeOptionButton" type="OptionButton" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
+layout_mode = 2
+
 [node name="NPCLabel" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
 layout_mode = 2
 text = "상주 NPC (쉼표 구분)"
@@ -84,8 +98,32 @@ placeholder_text = "ex) luise, inn_staff"
 [node name="HSeparator" type="HSeparator" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
 layout_mode = 2
 
+[node name="PathSection" type="VBoxContainer" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
+layout_mode = 2
+
+[node name="PathTitleLabel" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/PathSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.8, 0.5, 1)
+text = "이동 경로 선택지 목록"
+
+[node name="AddPathButton" type="Button" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/PathSection"]
+layout_mode = 2
+text = "+ 경로 추가"
+
+[node name="PathListContainer" type="VBoxContainer" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/PathSection"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HSeparator2" type="HSeparator" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
+layout_mode = 2
+
 [node name="EventSection" type="VBoxContainer" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent"]
 layout_mode = 2
+
+[node name="EventTitleLabel" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.5, 0.8, 1)
+text = "이벤트(대화) 트리거 목록"
 
 [node name="AddEventButton" type="Button" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
 layout_mode = 2

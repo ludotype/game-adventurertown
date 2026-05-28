@@ -1,24 +1,104 @@
 {
 	"places": [
 		{
-			"base_npc": [],
+			"base_npc": [
+				"luise"
+			],
 			"coordinate": {
-				"x": -540,
-				"y": -220
+				"x": 740,
+				"y": -380
 			},
-			"display_name_kr": "새 장소",
-			"events": [
+			"display_name_kr": "파이어사이드 앰버 - 로비",
+			"events": [],
+			"id": "inn_lobby",
+			"paths": [
 				{
-					"dialogue_file": "",
-					"dialogue_title": "",
-					"display_name": "새 이벤트",
-					"event_id": "evt_new_0",
-					"triggers": {
-
-					}
+					"button_name": "방으로",
+					"movement_cost": 1.0,
+					"target_place_id": "inn_room"
+				},
+				{
+					"button_name": "거리로",
+					"movement_cost": 1.0,
+					"target_place_id": "easttown_street_1"
 				}
 			],
-			"id": "place_0"
+			"place_type": "indoors",
+			"size": {
+				"x": 208,
+				"y": 238
+			}
+		},
+		{
+			"base_npc": [],
+			"coordinate": {
+				"x": 500,
+				"y": -380
+			},
+			"display_name_kr": "파이어사이드 앰버 - 방",
+			"events": [],
+			"id": "inn_room",
+			"paths": [
+				{
+					"button_name": "여관 로비로",
+					"movement_cost": 1.0,
+					"target_place_id": "inn_lobby"
+				}
+			],
+			"place_type": "indoors",
+			"size": {
+				"x": 200,
+				"y": 178
+			}
+		},
+		{
+			"base_npc": [],
+			"coordinate": {
+				"x": 900,
+				"y": -60
+			},
+			"display_name_kr": "동쪽 거리",
+			"events": [],
+			"id": "easttown_street_2",
+			"paths": [
+				{
+					"button_name": "서쪽으로",
+					"movement_cost": 1.0,
+					"target_place_id": "easttown_street_1"
+				}
+			],
+			"place_type": "outdoors",
+			"size": {
+				"x": 200,
+				"y": 178
+			}
+		},
+		{
+			"base_npc": [],
+			"coordinate": {
+				"x": 420,
+				"y": -80
+			},
+			"display_name_kr": "동쪽 거리",
+			"events": [],
+			"id": "easttown_street_1",
+			"paths": [
+				{
+					"button_name": "파이어사이드 앰버",
+					"movement_cost": 1.0,
+					"target_place_id": "inn_lobby"
+				},
+				{
+					"button_name": "동쪽으로",
+					"movement_cost": 1.0,
+					"target_place_id": "easttown_street_2"
+				}
+			],
+			"place_type": "outdoors",
+			"size": {
+				"x": 200,
+				"y": 238
+			}
 		}
 	]
 }
