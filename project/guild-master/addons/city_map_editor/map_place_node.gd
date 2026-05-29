@@ -9,6 +9,7 @@ var events: Array = []
 var paths: Array = []
 
 signal event_jump_requested(file_path: String, title_label: String)
+signal context_menu_requested(position: Vector2)
 
 func _ready() -> void:
 	selectable = true
@@ -16,6 +17,12 @@ func _ready() -> void:
 	resizable = true # 마우스로 크기 자유 조절 활성화 🌟
 	resize_request.connect(_on_resize_request)
 	_update_node_view()
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			accept_event()
+			context_menu_requested.emit(get_global_mouse_position())
 
 func _on_resize_request(new_size: Vector2) -> void:
 	size = new_size
@@ -39,6 +46,16 @@ func setup_node(data: Dictionary) -> void:
 	size = Vector2(s_data.get("x", 200), s_data.get("y", 180))
 
 	_update_node_view()
+
+func _create_event_jump_button(file_path: String, title_lbl: String) -> Button:
+	var btn_jump = Button.new()
+	btn_jump.text = "🔗"
+	btn_jump.tooltip_text = "이 대화 이벤트를 Dialogue Manager에서 즉시 열어봅니다."
+	btn_jump.disabled = (file_path == "")
+	btn_jump.pressed.connect(func():
+		event_jump_requested.emit(file_path, title_lbl)
+	)
+	return btn_jump
 
 func _update_node_view() -> void:
 	# 0. 부모 GraphEdit와 연결 정보 임시 백업 (리프레시 시 연결 붕괴 방지 🌟)
@@ -94,50 +111,34 @@ func _update_node_view() -> void:
 	add_child(sep)
 	set_slot(1, false, 0, Color.WHITE, false, 0, Color.WHITE)
 
-	# [신설 🌟] 자식 2: 장소별 이벤트(대화) 트리거 비주얼 목록 및 점프 단추 연동
+	# [신설 🌟] 자식 2: 장소별 이벤트(대화) 트리거 통계 요약 (슬림화)
 	if events.size() > 0:
-		var vbox_events = VBoxContainer.new()
-		vbox_events.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		add_child(vbox_events)
+		var hbox_summary = HBoxContainer.new()
+		hbox_summary.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(hbox_summary)
 		
-		# 이 슬롯은 포트 비활성화
 		var child_idx_ev = get_child_count() - 1
 		set_slot(child_idx_ev, false, 0, Color.WHITE, false, 0, Color.WHITE)
 		
-		for ev in events:
-			var hbox_ev = HBoxContainer.new()
-			hbox_ev.mouse_filter = Control.MOUSE_FILTER_PASS
-			vbox_events.add_child(hbox_ev)
-			
-			var label_ev = Label.new()
-			label_ev.text = "💬 " + ev.get("display_name", "새 이벤트")
-			label_ev.modulate = Color(0.85, 0.55, 0.85) # 연보라색
-			label_ev.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			label_ev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			hbox_ev.add_child(label_ev)
-			
-			var btn_jump = Button.new()
-			btn_jump.text = "🔗"
-			btn_jump.tooltip_text = "이 대화 이벤트를 Dialogue Manager에서 즉시 열어봅니다."
-			var file_path = ev.get("dialogue_file", "")
-			var title_lbl = ev.get("dialogue_title", "")
-			btn_jump.disabled = (file_path == "")
-			btn_jump.pressed.connect(func():
-				event_jump_requested.emit(file_path, title_lbl)
-			)
-			hbox_ev.add_child(btn_jump)
-			
-		# 아래 이동 경로와의 구분을 위한 얇은 구분선
+		var label_summary = Label.new()
+		label_summary.text = "💬 매핑된 대화 이벤트: " + str(events.size()) + "개"
+		label_summary.modulate = Color(0.85, 0.55, 0.85)
+		label_summary.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label_summary.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		hbox_summary.add_child(label_summary)
+		
+		# 아래 이동 경로와의 구분을 위한 연한 구분선
 		var sep_ev = HSeparator.new()
 		sep_ev.modulate = Color(1.0, 1.0, 1.0, 0.3)
 		add_child(sep_ev)
 		var child_idx_sep_ev = get_child_count() - 1
 		set_slot(child_idx_sep_ev, false, 0, Color.WHITE, false, 0, Color.WHITE)
 
-	# 5. 자식 2번 이후: 이동 경로 선택지 목록 (진출용 양방향 좌/우 소켓 전면 개방 🌟)
+	# 5. 이동 경로 선택지 목록 (진출용 양방향 좌/우 소켓 전면 개방 🌟)
+	var path_start_idx = get_child_count()
 	for i in range(paths.size()):
 		var path_data = paths[i]
-		var child_idx = i + 2
+		var child_idx = path_start_idx + i
 
 		var hbox_path = HBoxContainer.new()
 		hbox_path.mouse_filter = Control.MOUSE_FILTER_IGNORE

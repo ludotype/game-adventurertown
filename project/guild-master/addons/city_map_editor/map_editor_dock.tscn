@@ -123,12 +123,44 @@ layout_mode = 2
 [node name="EventTitleLabel" type="Label" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.5, 0.8, 1)
-text = "이벤트(대화) 트리거 목록"
+text = "대화 이벤트 트리거 관리"
 
-[node name="AddEventButton" type="Button" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
+[node name="OpenEventEditorButton" type="Button" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
 layout_mode = 2
-text = "+ 이벤트 추가"
+theme_override_colors/font_color = Color(0.9, 0.6, 0.9, 1)
+text = "💬 대화 이벤트 편집기 열기"
 
-[node name="EventListContainer" type="VBoxContainer" parent="HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection"]
+[node name="EventEditorDialog" type="AcceptDialog" parent="."]
+title = "💬 대화 이벤트 트리거 매니저"
+initial_position = 2
+size = Vector2i(850, 500)
+custom_minimum_size = Vector2(850, 500)
+
+[node name="DialogVBox" type="VBoxContainer" parent="EventEditorDialog"]
+offset_left = 8
+offset_top = 8
+offset_right = 842
+offset_bottom = 451
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="DialogTitleLabel" type="Label" parent="EventEditorDialog/DialogVBox"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_colors/font_color = Color(0.8, 0.5, 0.8, 1)
+text = "장소에 매핑된 스토리 대화 이벤트 목록을 쾌적하게 구성하고 바로 Dialogue Manager로 점프해 보세요."
+horizontal_alignment = 1
+
+[node name="AddEventPopupButton" type="Button" parent="EventEditorDialog/DialogVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.6, 0.9, 1)
+text = "+ 새 스토리 대화 이벤트 추가"
+
+[node name="DialogScroll" type="ScrollContainer" parent="EventEditorDialog/DialogVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EventPopupListContainer" type="VBoxContainer" parent="EventEditorDialog/DialogVBox/DialogScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8

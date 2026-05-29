@@ -24,10 +24,12 @@ extends Control
 @onready var add_path_button: Button = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/PathSection/AddPathButton
 @onready var path_list_container: VBoxContainer = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/PathSection/PathListContainer
 
-# 이벤트 섹션
+# 이벤트 섹션 및 팝업 에디터
 @onready var event_section: VBoxContainer = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection
-@onready var event_list_container: VBoxContainer = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection/EventListContainer
-@onready var add_event_button: Button = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection/AddEventButton
+@onready var open_event_editor_button: Button = $HSplitContainer/Sidebar/ScrollContainer/SidebarContent/EventSection/OpenEventEditorButton
+@onready var event_editor_dialog: AcceptDialog = $EventEditorDialog
+@onready var add_event_popup_button: Button = $EventEditorDialog/DialogVBox/AddEventPopupButton
+@onready var event_popup_list_container: VBoxContainer = $EventEditorDialog/DialogVBox/DialogScroll/EventPopupListContainer
 
 # 툴바 버튼
 @onready var save_button: Button = $Toolbar/SaveButton
@@ -38,11 +40,24 @@ var _popup_menu: PopupMenu
 var _node_counter: int = 0
 var _last_popup_position: Vector2 = Vector2.ZERO
 
+# EditorFileDialog 탐색기 바인딩 변수 🌟
+var _file_dialog: EditorFileDialog
+var _active_event_line_edit: LineEdit
+var _active_event_dict: Dictionary
+
 func _ready() -> void:
 	_popup_menu = PopupMenu.new()
 	_popup_menu.add_item("새 장소 노드 생성")
 	_popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
 	add_child(_popup_menu)
+
+	# EditorFileDialog 동적 초기화 🌟
+	_file_dialog = EditorFileDialog.new()
+	_file_dialog.file_mode = EditorFileDialog.FILE_MODE_OPEN_FILE
+	_file_dialog.add_filter("*.dialogue", "Dialogue Files (*.dialogue)")
+	_file_dialog.title = "대화 스크립트 파일 선택"
+	_file_dialog.file_selected.connect(_on_dialogue_file_selected)
+	add_child(_file_dialog)
 
 	# Godot 4.x GraphEdit 연결선 곡선 설정 및 드래그 연결 해제 기능 활성화
 	graph_edit.connection_lines_curvature = 0.5
@@ -68,7 +83,10 @@ func _ready() -> void:
 	type_option.item_selected.connect(_on_type_selected)
 	
 	add_path_button.pressed.connect(_on_add_path_pressed)
-	add_event_button.pressed.connect(_on_add_event_pressed)
+	open_event_editor_button.pressed.connect(_on_open_event_editor_pressed)
+	add_event_popup_button.pressed.connect(_on_add_event_popup_pressed)
+	event_editor_dialog.confirmed.connect(_on_event_dialog_closed)
+	event_editor_dialog.canceled.connect(_on_event_dialog_closed)
 
 	_update_sidebar_visibility(false)
 
@@ -76,8 +94,20 @@ func _on_popup_request(position: Vector2) -> void:
 	var compensated_x = (position.x + graph_edit.scroll_offset.x) / graph_edit.zoom
 	var compensated_y = (position.y + graph_edit.scroll_offset.y) / graph_edit.zoom
 	_last_popup_position = Vector2(compensated_x, compensated_y)
-	
+
+	_popup_menu.clear()
+	_popup_menu.add_item("새 장소 노드 생성")
 	_popup_menu.position = Vector2i(get_global_mouse_position())
+	_popup_menu.popup()
+
+func _on_node_context_menu_requested(node: GraphNode, position: Vector2) -> void:
+	node.selected = true
+	_on_node_selected(node)
+
+	_popup_menu.clear()
+	_popup_menu.add_item("새 장소 노드 생성")
+	_popup_menu.add_item("현재 노드 삭제")
+	_popup_menu.position = Vector2i(position)
 	_popup_menu.popup()
 
 func _on_popup_menu_id_pressed(id: int) -> void:
@@ -90,6 +120,38 @@ func _on_popup_menu_id_pressed(id: int) -> void:
 				}
 			}
 			_create_place_node(default_coords)
+		1:
+			_delete_selected_node()
+
+func _delete_selected_node() -> void:
+	if not selected_node:
+		return
+
+	var node_name = selected_node.name
+
+	# 타 노드의 경로 중 이 노드를 가리키는 target_place_id를 정리
+	for child in graph_edit.get_children():
+		if child is GraphNode and child != selected_node:
+			for path in child.paths:
+				if path.get("target_place_id", "") == node_name:
+					path["target_place_id"] = ""
+
+	# 이 노드와 연결된 모든 연결선 제거
+	for conn in graph_edit.get_connection_list():
+		if conn.get("from", "") == node_name or conn.get("to", "") == node_name:
+			graph_edit.disconnect_node(
+				conn.get("from", ""),
+				conn.get("from_port", 0),
+				conn.get("to", ""),
+				conn.get("to_port", 0)
+			)
+
+	graph_edit.remove_child(selected_node)
+	selected_node.queue_free()
+	selected_node = null
+
+	_update_sidebar_visibility(false)
+	print("Deleted node: ", node_name)
 
 func _create_place_node(data: Dictionary = {}) -> void:
 	var node = preload("res://addons/city_map_editor/map_place_node.gd").new()
@@ -127,6 +189,9 @@ func _create_place_node(data: Dictionary = {}) -> void:
 	graph_edit.add_child(node)
 	node.setup_node(default_data)
 	node.event_jump_requested.connect(_jump_to_dialogue)
+	node.context_menu_requested.connect(func(pos: Vector2):
+		_on_node_context_menu_requested(node, pos)
+	)
 
 func _on_node_selected(node: Node) -> void:
 	if node is GraphNode:
@@ -167,7 +232,6 @@ func _load_node_to_sidebar() -> void:
 	
 	npc_edit.text = ", ".join(selected_node.base_npc)
 	_refresh_sidebar_path_list()
-	_refresh_sidebar_event_list()
 
 func _on_id_changed(new_text: String) -> void:
 	if selected_node:
@@ -257,6 +321,71 @@ func _on_add_path_pressed() -> void:
 	selected_node._update_node_view()
 	_refresh_sidebar_path_list()
 
+# ==========================================
+# 🌟 사이드바 경로 리스트 헬퍼 (클로저 버그 방지)
+# ==========================================
+
+func _create_path_up_button(idx: int) -> Button:
+	var btn = Button.new()
+	btn.text = "▲"
+	btn.tooltip_text = "이 이동 경로를 위로 한 칸 올립니다."
+	btn.disabled = (idx == 0)
+	btn.pressed.connect(func():
+		_on_path_swapped(idx, idx - 1)
+	)
+	return btn
+
+func _create_path_down_button(idx: int, max_idx: int) -> Button:
+	var btn = Button.new()
+	btn.text = "▼"
+	btn.tooltip_text = "이 이동 경로를 아래로 한 칸 내립니다."
+	btn.disabled = (idx == max_idx)
+	btn.pressed.connect(func():
+		_on_path_swapped(idx, idx + 1)
+	)
+	return btn
+
+func _create_path_name_edit(path_data: Dictionary) -> LineEdit:
+	var edit = LineEdit.new()
+	edit.text = path_data.get("button_name", "")
+	edit.placeholder_text = "경로 선택지 이름"
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	edit.text_changed.connect(func(new_text: String):
+		path_data["button_name"] = new_text
+		if selected_node:
+			selected_node._update_node_view()
+	)
+	return edit
+
+func _create_path_target_edit(path_data: Dictionary, path_idx: int) -> LineEdit:
+	var edit = LineEdit.new()
+	edit.text = path_data.get("target_place_id", "")
+	edit.placeholder_text = "ex) inn_lobby (목적지 장소 ID)"
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	edit.text_changed.connect(func(new_target_id: String):
+		var trimmed = new_target_id.strip_edges()
+		path_data["target_place_id"] = trimmed
+		# 1. 캔버스 상의 기존 연결선(있다면) 선제적으로 제거
+		_disconnect_port_visuals_only(selected_node.name, path_idx)
+		# 2. 만약 입력한 ID를 갖는 노드가 실제로 존재한다면, 캔버스 상에 연결선을 시각적으로 이어줌!
+		if trimmed != "":
+			var target_node = graph_edit.get_node_or_null(trimmed)
+			if target_node and target_node is GraphNode:
+				graph_edit.connect_node(selected_node.name, path_idx, target_node.name, 0)
+	)
+	return edit
+
+func _create_path_delete_button(node: GraphNode, idx: int) -> Button:
+	var btn = Button.new()
+	btn.text = "🗑"
+	btn.pressed.connect(func():
+		_disconnect_port_visuals_only(node.name, idx)
+		node.paths.remove_at(idx)
+		node._update_node_view()
+		_refresh_sidebar_path_list()
+	)
+	return btn
+
 func _refresh_sidebar_path_list() -> void:
 	for child in path_list_container.get_children():
 		child.queue_free()
@@ -265,88 +394,32 @@ func _refresh_sidebar_path_list() -> void:
 		return
 
 	for i in range(selected_node.paths.size()):
-		var path_idx = i
-		var path_data = selected_node.paths[path_idx]
-		
+		var path_data = selected_node.paths[i]
+		var max_idx = selected_node.paths.size() - 1
+
 		var item_vbox = VBoxContainer.new()
 		path_list_container.add_child(item_vbox)
-		
+
 		# 첫 번째 줄: 정렬 버튼(▲/▼) + 경로명 입력 + 삭제
 		var row1 = HBoxContainer.new()
 		item_vbox.add_child(row1)
-		
-		# 위로 이동 버튼 ▲
-		var btn_up = Button.new()
-		btn_up.text = "▲"
-		btn_up.tooltip_text = "이 이동 경로를 위로 한 칸 올립니다."
-		btn_up.disabled = (path_idx == 0)
-		btn_up.pressed.connect(func():
-			_on_path_swapped(path_idx, path_idx - 1)
-		)
-		row1.add_child(btn_up)
-		
-		# 아래로 이동 버튼 ▼
-		var btn_down = Button.new()
-		btn_down.text = "▼"
-		btn_down.tooltip_text = "이 이동 경로를 아래로 한 칸 내립니다."
-		btn_down.disabled = (path_idx == selected_node.paths.size() - 1)
-		btn_down.pressed.connect(func():
-			_on_path_swapped(path_idx, path_idx + 1)
-		)
-		row1.add_child(btn_down)
-		
-		var edit_name = LineEdit.new()
-		edit_name.text = path_data.get("button_name", "")
-		edit_name.placeholder_text = "경로 선택지 이름"
-		edit_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		edit_name.text_changed.connect(func(new_text: String):
-			path_data["button_name"] = new_text
-			if selected_node:
-				selected_node._update_node_view()
-		)
-		row1.add_child(edit_name)
-		
-		var btn_del = Button.new()
-		btn_del.text = "🗑"
-		btn_del.pressed.connect(func():
-			if selected_node:
-				_disconnect_port_visuals_only(selected_node.name, path_idx)
-				selected_node.paths.remove_at(path_idx)
-				selected_node._update_node_view()
-				_refresh_sidebar_path_list()
-		)
-		row1.add_child(btn_del)
-		
+
+		row1.add_child(_create_path_up_button(i))
+		row1.add_child(_create_path_down_button(i, max_idx))
+		row1.add_child(_create_path_name_edit(path_data))
+		row1.add_child(_create_path_delete_button(selected_node, i))
+
 		# 두 번째 줄: 목적지 ID 입력
 		var row2 = HBoxContainer.new()
 		item_vbox.add_child(row2)
-		
+
 		var label_target = Label.new()
 		label_target.text = "  └ 🎯 대상 ID: "
 		label_target.modulate = Color(0.7, 0.7, 0.7)
 		row2.add_child(label_target)
-		
-		var edit_target_id = LineEdit.new()
-		edit_target_id.text = path_data.get("target_place_id", "")
-		edit_target_id.placeholder_text = "ex) inn_lobby (목적지 장소 ID)"
-		edit_target_id.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		
-		# 중요 🌟: 사이드바 -> 캔버스 실시간 피드백 바인딩!
-		edit_target_id.text_changed.connect(func(new_target_id: String):
-			var trimmed = new_target_id.strip_edges()
-			path_data["target_place_id"] = trimmed
-			
-			# 1. 캔버스 상의 기존 연결선(있다면) 선제적으로 제거
-			_disconnect_port_visuals_only(selected_node.name, path_idx)
-			
-			# 2. 만약 입력한 ID를 갖는 노드가 실제로 존재한다면, 캔버스 상에 연결선을 시각적으로 이어줌!
-			if trimmed != "":
-				var target_node = graph_edit.get_node_or_null(trimmed)
-				if target_node and target_node is GraphNode:
-					graph_edit.connect_node(selected_node.name, path_idx, target_node.name, 0)
-		)
-		row2.add_child(edit_target_id)
-		
+
+		row2.add_child(_create_path_target_edit(path_data, i))
+
 		# 아이템 간 구분을 위한 연한 구분선
 		var item_sep = HSeparator.new()
 		item_sep.modulate = Color(1.0, 1.0, 1.0, 0.2)
@@ -357,69 +430,194 @@ func _disconnect_port_visuals_only(node_name: String, port_idx: int) -> void:
 		if conn.get("from", "") == node_name and conn.get("from_port", -1) == port_idx:
 			graph_edit.disconnect_node(node_name, port_idx, conn.get("to", ""), conn.get("to_port", 0))
 
-func _on_add_event_pressed() -> void:
+func _on_open_event_editor_pressed() -> void:
+	if not selected_node:
+		return
+	event_editor_dialog.title = "💬 [" + selected_node.display_name_kr + "] 대화 이벤트 트리거 매니저"
+	_refresh_popup_event_list()
+	event_editor_dialog.popup_centered()
+
+func _on_add_event_popup_pressed() -> void:
 	if not selected_node:
 		return
 	selected_node.events.append({
-		"event_id": "evt_new_" + str(selected_node.events.size()),
+		"event_id": "evt_" + str(selected_node.events.size()) + "_" + str(Time.get_ticks_msec()),
 		"display_name": "새 이벤트",
-		"dialogue_file": "",
-		"dialogue_title": "",
+		"dialogue_file": "res://data/dialogues/test_dialogue.dialogue", # 기본 템플릿 경로 가이드 제공 🌟
+		"dialogue_title": "start",
 		"triggers": {}
 	})
-	_refresh_sidebar_event_list()
+	_refresh_popup_event_list()
 
-func _refresh_sidebar_event_list() -> void:
-	for child in event_list_container.get_children():
+func _on_event_dialog_closed() -> void:
+	if selected_node:
+		selected_node._update_node_view()
+
+# ==========================================
+# 🌟 팝업 이벤트 리스트 헬퍼 (클로저 버그 방지)
+# ==========================================
+
+func _create_event_name_edit(ev: Dictionary) -> LineEdit:
+	var edit = LineEdit.new()
+	edit.text = ev.get("display_name", "")
+	edit.placeholder_text = "이벤트 이름 (ex: 루이세의 고민)"
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	edit.custom_minimum_size = Vector2(160, 0)
+	edit.text_changed.connect(func(new_text: String):
+		ev["display_name"] = new_text
+	)
+	return edit
+
+func _create_event_file_edit(ev: Dictionary) -> LineEdit:
+	var edit = LineEdit.new()
+	edit.text = ev.get("dialogue_file", "")
+	edit.placeholder_text = "dialogue 리소스 경로 (ex: res://data/dialogues/inn.dialogue)"
+	edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	edit.custom_minimum_size = Vector2(320, 0)
+	edit.text_changed.connect(func(new_text: String):
+		ev["dialogue_file"] = new_text.strip_edges()
+	)
+	return edit
+
+func _create_event_label_edit(ev: Dictionary) -> LineEdit:
+	var edit = LineEdit.new()
+	edit.text = ev.get("dialogue_title", "")
+	edit.placeholder_text = "대화 라벨 (ex: morigan_talk)"
+	edit.custom_minimum_size = Vector2(140, 0)
+	edit.text_changed.connect(func(new_text: String):
+		ev["dialogue_title"] = new_text.strip_edges()
+	)
+	return edit
+
+func _create_event_jump_button(file_path: String, title_label: String) -> Button:
+	var btn = Button.new()
+	btn.text = "🔗 점프"
+	btn.tooltip_text = "이 대화 스크립트 파일을 Dialogue Manager에서 즉시 열어줍니다."
+	btn.pressed.connect(func():
+		_jump_to_dialogue(file_path, title_label)
+	)
+	return btn
+
+func _create_event_delete_button(node: GraphNode, idx: int) -> Button:
+	var btn = Button.new()
+	btn.text = "🗑"
+	btn.pressed.connect(func():
+		node.events.remove_at(idx)
+		_refresh_popup_event_list()
+	)
+	return btn
+
+# ==========================================
+# 🌟 EditorFileDialog 탐색기 헬퍼 (클로저 버그 방지)
+# ==========================================
+
+func _open_file_dialog_for_event(line_edit: LineEdit, ev: Dictionary) -> void:
+	_active_event_line_edit = line_edit
+	_active_event_dict = ev
+	_file_dialog.popup_centered_ratio()
+
+func _on_dialogue_file_selected(path: String) -> void:
+	if _active_event_line_edit:
+		_active_event_line_edit.text = path
+	if _active_event_dict:
+		_active_event_dict["dialogue_file"] = path
+
+func _create_file_browse_button(line_edit: LineEdit, ev: Dictionary) -> Button:
+	var btn = Button.new()
+	btn.text = "📁"
+	btn.tooltip_text = "프로젝트 내의 .dialogue 파일을 탐색합니다."
+	btn.pressed.connect(func():
+		_open_file_dialog_for_event(line_edit, ev)
+	)
+	return btn
+
+func _refresh_popup_event_list() -> void:
+	for child in event_popup_list_container.get_children():
 		child.queue_free()
 
 	if not selected_node:
 		return
 
 	for i in range(selected_node.events.size()):
-		var ev_idx = i
-		var ev = selected_node.events[ev_idx]
-		
-		var hbox = HBoxContainer.new()
-		event_list_container.add_child(hbox)
+		var ev = selected_node.events[i]
 
-		var edit_ev_name = LineEdit.new()
-		edit_ev_name.text = ev.get("display_name", "")
-		edit_ev_name.placeholder_text = "이벤트명"
-		edit_ev_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		edit_ev_name.text_changed.connect(func(new_text: String):
-			ev["display_name"] = new_text
-		)
-		hbox.add_child(edit_ev_name)
+		# 750px 이상의 드넓은 가로 공간을 적극적으로 나누어 활용하는 테이블 뷰 구성 🌟
+		var item_hbox = HBoxContainer.new()
+		event_popup_list_container.add_child(item_hbox)
 
-		var btn_jump = Button.new()
-		btn_jump.text = "점프"
-		btn_jump.pressed.connect(func():
-			_jump_to_dialogue(ev.get("dialogue_file", ""), ev.get("dialogue_title", ""))
-		)
-		hbox.add_child(btn_jump)
+		# 1. 이벤트명 입력
+		item_hbox.add_child(_create_event_name_edit(ev))
 
-		var btn_del = Button.new()
-		btn_del.text = "🗑"
-		btn_del.pressed.connect(func():
-			if selected_node:
-				selected_node.events.remove_at(ev_idx)
-				_refresh_sidebar_event_list()
-		)
-		hbox.add_child(btn_del)
+		# 2. dialogue 스크립트 리소스 경로 입력 + 📁 탐색기 버튼 🌟
+		var hbox_file = HBoxContainer.new()
+		item_hbox.add_child(hbox_file)
+		var file_edit = _create_event_file_edit(ev)
+		hbox_file.add_child(file_edit)
+		hbox_file.add_child(_create_file_browse_button(file_edit, ev))
+
+		# 3. 대화 라벨 이름 입력
+		item_hbox.add_child(_create_event_label_edit(ev))
+
+		# 4. 점프 단추 🔗
+		var file_path = ev.get("dialogue_file", "")
+		var title_label = ev.get("dialogue_title", "")
+		item_hbox.add_child(_create_event_jump_button(file_path, title_label))
+
+		# 5. 삭제 단추 🗑️
+		item_hbox.add_child(_create_event_delete_button(selected_node, i))
 
 func _jump_to_dialogue(file_path: String, title_label: String) -> void:
 	if file_path == "":
 		return
-	if not FileAccess.file_exists(file_path):
-		printerr("Dialogue file does not exist: ", file_path)
-		return
 
-	var dialogue_resource = load(file_path)
-	if dialogue_resource:
-		EditorInterface.edit_resource(dialogue_resource)
-		EditorInterface.select_file(file_path)
-		print("Successfully opened and jumped to dialogue: ", file_path)
+	var clean_label = title_label.strip_edges()
+	if clean_label == "":
+		clean_label = "start"
+
+	# 1. 파일 자동 생성 검증 🌟
+	if not FileAccess.file_exists(file_path):
+		print("Dialogue file does not exist. Creating new file at: ", file_path)
+		var base_dir = file_path.get_base_dir()
+		if not DirAccess.dir_exists_absolute(base_dir):
+			DirAccess.make_dir_recursive_absolute(base_dir)
+
+		var file = FileAccess.open(file_path, FileAccess.WRITE)
+		if file:
+			file.store_string("~ " + clean_label + "\n")
+			file.store_string("# 여기에 [" + clean_label + "] 대화 스크립트를 작성해 주세요.\n")
+			file.close()
+			EditorInterface.get_resource_filesystem().scan()
+		else:
+			printerr("Failed to create dialogue file: ", file_path)
+			return
+	else:
+		# 2. 기존 파일 내 라벨 자동 보완(Append) 검증 🌟
+		var file = FileAccess.open(file_path, FileAccess.READ)
+		if file:
+			var content = file.get_as_text()
+			file.close()
+
+			var label_pattern = "~ " + clean_label
+			if not label_pattern in content:
+				print("Label '", clean_label, "' not found in dialogue file. Appending new label section.")
+				var append_file = FileAccess.open(file_path, FileAccess.READ_WRITE)
+				if append_file:
+					append_file.seek_end()
+					append_file.store_string("\n\n~ " + clean_label + "\n")
+					append_file.store_string("# 여기에 [" + clean_label + "] 이벤트 대화를 작성해 주세요.\n")
+					append_file.close()
+					EditorInterface.get_resource_filesystem().scan()
+
+	# 3. Dialogue Manager 플러그인을 활용한 정밀 점프 격발 🌟
+	if DMPlugin.instance != null:
+		DMPlugin.open_file_at_title(file_path, clean_label)
+		print("Successfully jumped to dialogue: ", file_path, " -> ", clean_label)
+	else:
+		var dialogue_resource = load(file_path)
+		if dialogue_resource:
+			EditorInterface.edit_resource(dialogue_resource)
+			EditorInterface.select_file(file_path)
+			print("Dialogue Manager plugin instance not found. Opened file without title jump: ", file_path)
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	var from_node_obj = graph_edit.get_node(str(from_node))
